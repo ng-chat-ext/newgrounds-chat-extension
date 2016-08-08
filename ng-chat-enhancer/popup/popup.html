@@ -1,0 +1,77 @@
+<!doctype html>
+<html>
+<head>
+  <title>Newgrounds Chat Enhancer</title>
+  <link type="text/css" rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+
+
+	<h1>Block List</h1>
+
+	<ol id="olNameList"></ol>
+
+	<input type="text" id="txtUsername" />
+	<input type="button" id="btnBlockUser" value="Block User" />
+	<div id="status"></div>
+
+
+
+
+
+
+	<h1>Settings</h1>
+
+
+	<div class="settings">
+
+		<div>
+			<label>
+				<div><b>Show all last seen timings</b></div>
+				<input id="chkSetLastSeen" type="checkbox" value="lastSeen" />
+			</label>
+		</div>
+
+		<!-- Font -->
+		<div>
+			<label>
+				<div><span><b>Font</b></span><span class="float-right">Arial</span></div>
+				<input id="txtSetFont" type="text" />
+			</label>
+			<input type="button" id="btnSetFont" value="Save Font" />
+			<input type="button" id="btnSetFont" value="Reset" />
+		</div>
+
+	</div>
+
+	
+	<div class="settings">
+
+		<!-- User Last Seen -->
+		<div>
+			<div>
+				Show All Last Seen
+			</div><div>
+				<input id="chkSetLastSeen" type="checkbox" value="lastSeen" />
+			</div>
+		</div>
+
+		<!-- Font -->
+		<div>
+			<div>
+				Font
+			</div><div>
+				<input id="txtSetFont" type="text" />
+			</div>
+		</div>
+		
+	</div>
+
+
+
+
+	<script src="popup.js"></script>
+</body>
+</html>
+

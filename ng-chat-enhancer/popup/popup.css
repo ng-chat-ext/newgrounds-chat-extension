@@ -1,0 +1,89 @@
+@font-face {
+	font-family: 'pakenham';
+	font-style: normal;
+	font-weight: 400;
+	src: url('../fonts/pakenham.woff') format('woff');
+}
+
+
+
+body {
+	background-color: #23272a;
+	color: #c9bebe;
+	font-family: "Segoe UI", "Lucida Grande", Tahoma, sans-serif;
+	font-size: 80%;
+
+	margin: 1.5em 1em;
+	width: 280px;
+}
+
+input[type="text"],
+input[type="password"] {
+    background: #ea8d42;
+    border-color: #000;
+    border-style: solid;
+    border-width: 0 1px 2px 1px;
+    box-sizing: border-box;
+
+    font-weight: bold;
+    height: 25px;
+    padding: 3px 5px;
+    width: 100%;
+}
+
+input[type="button"] {
+	background-color: #34393e;
+	border: 0;
+	color: #eeb211;
+	cursor: pointer;
+
+    font-weight: bold;
+
+	margin: 0.5em 0;
+	padding: 0.4em 0.7em;
+    outline: 0;
+}
+
+input[type="button"]:hover {
+	background-color: #eeb211;
+	color: #34393e;
+}
+
+h1, h2, h3 {
+	color: #fff;
+	font-family: 'pakenham';
+	font-weight: normal;
+}
+
+label {
+	display: inline-block;
+}
+
+
+
+#status {
+	/* avoid an excessively wide status text */
+	white-space: pre;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	max-width: 400px;
+}
+
+.float-right {
+	float: right;
+}
+
+
+
+
+
+.settings div {
+	display: inline-block;
+}
+.settings > div {
+	width: 100%;
+}
+.settings > div > div {
+	vertical-align: middle;
+	width: 50%;
+}

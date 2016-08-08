@@ -1,0 +1,39 @@
+{
+  "manifest_version": 2,
+
+  "name": "Newgrounds Chat Enhancer",
+  "short_name": "NGCE",
+  "description": "Client-side blocking. Remove airhorn overlay. User last seen times.",
+  "version": "1.0.2.4",
+
+  "browser_action": {
+    "default_icon": {
+      "38": "icon.png"
+    },
+    "default_title": "Newgrounds Chat",
+    "default_popup": "popup/popup.html"
+  },
+
+  "background": {
+    "scripts": ["background.js"]
+  },
+
+  "permissions": [
+    "storage"
+  ],
+
+  "content_scripts": [
+    {
+      "css": [ "page/main.css" ],
+      "js": [ "page/main.js" ],
+      "all_frames": true,
+      "matches": [
+        "https://chat.newgrounds.com/*"
+      ]
+    }
+  ],
+
+  "icons": {
+    "64": "icon.png"
+  }
+}

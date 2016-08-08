@@ -1,0 +1,54 @@
+
+/* ************************************************************ */
+/* User List */
+/* ************************************************************ */
+	
+	.user-list li {
+		width: 270px !important;
+	}
+
+	.user-list li > * {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.user-list div {
+		line-height: 1;
+	}
+
+	.user-list li .user-list-status {
+		color: #757575;
+		transition: height 0.2s linear, opacity 0.3s linear;
+
+		height: 0;
+		opacity: 0;
+	}
+
+	.user-list.show-status li .user-list-status,
+	.user-list li:hover .user-list-status {
+		height: 1em;
+		opacity: 1;
+	}
+
+	/* Highlight users you have blocked. */
+	.user-list .client-block .user-list-username {
+		color: #ed4337 !important;
+	}
+	.user-list-username {
+		transition: color 0.3s linear;
+	}
+
+/* ************************************************************ */
+
+
+
+/* ************************************************************ */
+/* Messages List */
+/* ************************************************************ */
+
+	/* For hiding messages. */
+	.messages-list .client-block {
+		display: none !important;
+	}
+
+/* ************************************************************ */
