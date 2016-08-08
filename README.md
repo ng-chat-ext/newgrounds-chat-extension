@@ -1,0 +1,1 @@
+# newgrounds-chat-extension
