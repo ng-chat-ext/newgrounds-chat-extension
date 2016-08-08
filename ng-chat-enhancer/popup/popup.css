@@ -17,6 +17,10 @@ body {
 	width: 280px;
 }
 
+div {
+	box-sizing: border-box;
+}
+
 input[type="text"],
 input[type="password"] {
     background: #ea8d42;
@@ -39,7 +43,7 @@ input[type="button"] {
 
     font-weight: bold;
 
-	margin: 0.5em 0;
+	margin: 0.5em 0 0 0;
 	padding: 0.4em 0.7em;
     outline: 0;
 }
@@ -60,6 +64,11 @@ label {
 }
 
 
+
+
+.orange {
+	color: #eeb211
+}
 
 #status {
 	/* avoid an excessively wide status text */
@@ -82,8 +91,12 @@ label {
 }
 .settings > div {
 	width: 100%;
+	padding: 1em .5em;
+}
+.settings > div:nth-child(2n-1) {
+	background-color: #3D4144;
 }
 .settings > div > div {
-	vertical-align: middle;
+	vertical-align: top;
 	width: 50%;
 }

@@ -23,28 +23,6 @@
 
 	<h1>Settings</h1>
 
-
-	<div class="settings">
-
-		<div>
-			<label>
-				<div><b>Show all last seen timings</b></div>
-				<input id="chkSetLastSeen" type="checkbox" value="lastSeen" />
-			</label>
-		</div>
-
-		<!-- Font -->
-		<div>
-			<label>
-				<div><span><b>Font</b></span><span class="float-right">Arial</span></div>
-				<input id="txtSetFont" type="text" />
-			</label>
-			<input type="button" id="btnSetFont" value="Save Font" />
-			<input type="button" id="btnSetFont" value="Reset" />
-		</div>
-
-	</div>
-
 	
 	<div class="settings">
 
@@ -53,7 +31,7 @@
 			<div>
 				Show All Last Seen
 			</div><div>
-				<input id="chkSetLastSeen" type="checkbox" value="lastSeen" />
+				<input type="checkbox" id="chkSetLastSeen" value="lastSeen" />
 			</div>
 		</div>
 
@@ -61,8 +39,12 @@
 		<div>
 			<div>
 				Font
+				<br>
+				<span class="orange">Current: <div id="lblFontCurrent"></div></span>
 			</div><div>
-				<input id="txtSetFont" type="text" />
+				<input type="text" id="txtCustomFont" />
+				<input type="button" id="btnFontClear" value="Clear" />
+				<input type="button" id="btnFontSet" value="Set" />
 			</div>
 		</div>
 		

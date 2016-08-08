@@ -2,11 +2,19 @@
 // Variables
 //------------------------------------------------------------
 
+// Block List
 var txtUsername;
 var btnBlockUser;
 var olNameList;
+// Last Seen
 var chkSetLastSeen;
+// Font
+var txtCustomFont;
+var lblFontCurrent;
+var btnFontClear;
+var btnFontSet;
 
+// Data
 var blockList = [];
 var settings = {};
 var mentions = [];
@@ -21,10 +29,16 @@ function DOMLoaded() {
 	btnBlockUser = document.getElementById('btnBlockUser');
 	olNameList = document.getElementById('olNameList');
 	chkSetLastSeen = document.getElementById('chkSetLastSeen');
+	txtCustomFont = document.getElementById('txtCustomFont');
+	lblFontCurrent = document.getElementById('lblFontCurrent');
+	btnFontClear = document.getElementById('btnFontClear');
+	btnFontSet = document.getElementById('btnFontSet');
 	
 	// Add events.
 	btnBlockUser.addEventListener('click', btnBlockUserClick);
 	chkSetLastSeen.addEventListener('change', chkSetLastSeenChange);
+	btnFontClear.addEventListener('click', btnFontClearClick);
+	btnFontSet.addEventListener('click', btnFontSetClick);
 
 	// Initialize.
 	init();
@@ -54,6 +68,23 @@ function btnBlockUserClick() {
 
 function chkSetLastSeenChange() {
 	settings.lastSeen = chkSetLastSeen.checked;
+	saveSettings();
+};
+
+function btnFontClearClick() {
+	settings.customFont = '';
+	lblFontCurrent.innerText = 'Default';
+	saveSettings();
+};
+
+function btnFontSetClick() {
+	var val = txtCustomFont.value.trim();
+	if (!val)
+		return;
+
+	settings.customFont = val;
+	lblFontCurrent.innerText = val;
+	txtCustomFont.value = '';
 	saveSettings();
 };
 
@@ -128,6 +159,7 @@ function getSettings() {
 
 		// Update UI.
 		chkSetLastSeen.checked = settings.lastSeen;
+		lblFontCurrent.innerText = settings.customFont || 'Default';
 	});
 };
 

@@ -51,7 +51,11 @@ var onLoad = function() {
 
 
 
+
+
+
 //------------------------------------------------------------
+// Initialize
 //------------------------------------------------------------
 
 function init() {
@@ -221,6 +225,22 @@ function airhornSoundPlay() {
 };
 
 //------------------------------------------------------------
+
+
+
+
+
+
+//------------------------------------------------------------
+// Settings
+//------------------------------------------------------------
+
+function refreshSettings() {
+	refreshLastSeen();
+	refreshFont(settings.customFont);
+};
+
+//------------------------------------------------------------
 // Mentions
 //------------------------------------------------------------
 
@@ -271,7 +291,7 @@ function timeSinceTimer() {
 		if (statusNode)
 			statusNode.innerText = 'last seen: ' + lastSeenTime;
 	}
-}
+};
 
 function updateLastSeenTime(messageNode) {
 
@@ -294,7 +314,7 @@ function updateLastSeenTime(messageNode) {
 	// Insert new if user not found.
 	if (!found)
 		lastSeenTimes.push({ username: username, date: new Date() })
-}
+};
 
 function getTimeSinceText(dateNow, date) {
 
@@ -317,13 +337,22 @@ function getTimeSinceText(dateNow, date) {
 	if (interval >= 1)
 		return interval + " min" + (interval > 1 ? 's' : '');
 	return "just now";
-}
+};
 
 function refreshLastSeen() {
 	if (settings.lastSeen === true)
 		userList.classList.add('show-status');
 	else if (settings.lastSeen === false)
 		userList.classList.remove('show-status');
+};
+
+//------------------------------------------------------------
+// Font
+//------------------------------------------------------------
+
+function refreshFont(fontName) {
+
+	document.getElementsByTagName("body")[0].style.fontFamily = (fontName) ? fontName : null;
 }
 
 //------------------------------------------------------------
@@ -343,7 +372,7 @@ function getSettings() {
 		settings = result.settings || {};
 
 		// Update UI.
-		refreshLastSeen();
+		refreshSettings();
 	});
 };
 
@@ -352,7 +381,7 @@ function storageChange(changes, namespace) {
 	if (changes['settings']) {
 		settings = changes['settings'].newValue;
 
-		refreshLastSeen();
+		refreshSettings();
 	}
 
 	// Block List
