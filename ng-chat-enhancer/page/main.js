@@ -61,6 +61,8 @@ var onLoad = function() {
 function init() {
 	getSettings();
 	getBlockList();
+	emoteListener();
+	getChatCSS();
 
 	// Remove airhorn overlay.
 	var overlayShame = document.getElementById('overlay-shame');
@@ -400,3 +402,31 @@ function storageChange(changes, namespace) {
 
 //------------------------------------------------------------
 //------------------------------------------------------------
+
+
+//------------------------------------------------------------
+// Emoticons
+//------------------------------------------------------------
+
+
+function emoteListener(){
+
+	chrome.runtime.onMessage.addListener(
+	  function(request, sender, sendResponse) {
+	    	document.getElementById("chat-input-textarea").value += request.greeting;
+	  });
+}
+
+function getChatCSS(){
+	var css = document.querySelector('link[rel="stylesheet"][type="text/css"]');
+	
+
+	chrome.storage.sync.set({'css-url': css.getAttribute('href')}, function(){
+		console.log(css.getAttribute('href'));
+	});
+}
+
+
+
+
+

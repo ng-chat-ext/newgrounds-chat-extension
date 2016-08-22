@@ -5,8 +5,6 @@
 	src: url('../fonts/pakenham.woff') format('woff');
 }
 
-
-
 body {
 	background-color: #23272a;
 	color: #c9bebe;
@@ -15,6 +13,8 @@ body {
 
 	margin: 1.5em 1em;
 	width: 280px;
+
+	position: relative;
 }
 
 div {
@@ -63,6 +63,12 @@ label {
 	display: inline-block;
 }
 
+ul, li{
+	list-style-type: none;
+	padding:	0;
+	margin:	0;
+}
+
 
 
 
@@ -99,4 +105,140 @@ label {
 .settings > div > div {
 	vertical-align: top;
 	width: 50%;
+}
+
+#emoticons{
+	text-align: center;
+}
+
+#btnDropDown{
+	width: 100%;
+	
+}
+
+#emoticon-list{
+	margin: 0 auto;
+	display: inline-block;
+	vertical-align: top;
+}
+.emo-item{
+	float: left;
+	padding: 0 7px;
+	border-left: 1px solid #fff;
+}
+.emo-item:hover{
+	background-color: red;
+	cursor: pointer;
+}
+.emo-item:first-child{
+	border: none;
+}
+
+#slider{
+	display: flex;
+	flex-direction: column;
+	background-color: #23272a;
+	border: 1px solid white;
+	width: 100%;
+	height: 100%;
+	top: 0;
+	left: 0;
+	position: absolute;
+	visibility: hidden;
+}
+
+#emote-tabs{
+}
+
+#emote-container{
+	overflow-y: scroll;
+	background-color: grey;
+}
+
+.emote-list{
+	margin-bottom: 20px;
+}
+
+.emote-list:last-child{
+	margin-bottom: 0;
+}
+
+#dank-list, #fulp-list{
+	margin-left: 10px;
+}
+
+input[name="emoticon-menu"]{
+	float: right;
+	margin-top: 3px;
+}
+
+input[name="emoticon-back"]{
+}
+
+
+#tab-list{
+	padding: 5px 7px;
+	border-bottom: 1px solid white;
+}
+
+.emote-tab{
+	background-color: #34393e;
+	border: 0;
+	color: #eeb211;
+	cursor: pointer;
+	float: right;
+	font-weight: 500;
+	margin-left: 3px;
+	padding: 5px 5px;
+	margin-bottom: 10px;
+	font-size: 11pt;
+}
+
+.emote-tab:hover{
+	background-color: #eeb211;
+	color: #34393e;
+}
+
+#back-btn{
+	float: left;
+	margin-left: 0;
+}
+
+#pixel-tab{
+
+}
+
+#dank-tab{
+}
+
+.emote{
+	display: inline-block;
+	cursor: pointer;
+}
+
+.small-emote{
+	height: 25px;
+	width: 25px;
+	margin: 8px;
+}
+
+.big-emote{
+	width: 50px;
+	height: 50px;
+	margin: 5px;
+}
+
+::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1); 
+    border-radius: 10px;
+}
+ 
+::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #3D4144;
+    /*-webkit-box-shadow: inset 0 0 6px rgba(255,255,255,1); */
 }
