@@ -23,6 +23,11 @@ var faicList;
 var fulpList;
 var picoList;
 var pixelList;
+var dankTab;
+var fulpTab;
+var faicTab;
+var picoTab;
+var pixelTab;
 
 // Data
 var blockList = [];
@@ -44,14 +49,7 @@ function DOMLoaded() {
 	btnFontClear = document.getElementById('btnFontClear');
 	btnFontSet = document.getElementById('btnFontSet');
 
-	btnEmoMenu = document.querySelectorAll('[name="emoticon-menu"]')[0];
-	btnEmoBack = document.getElementById('back-btn');
-	menuContainer = document.getElementById("slider");
-	dankList = document.getElementById("dank-list");
-	faicList = document.getElementById("faic-list");
-	fulpList = document.getElementById("fulp-list");
-	picoList = document.getElementById("pico-list");
-	pixelList = document.getElementById("pixel-list");
+	
 	
 	// Add events.
 	btnBlockUser.addEventListener('click', btnBlockUserClick);
@@ -59,13 +57,7 @@ function DOMLoaded() {
 	btnFontClear.addEventListener('click', btnFontClearClick);
 	btnFontSet.addEventListener('click', btnFontSetClick);
 
-	btnEmoMenu.addEventListener('click', showEmoticonMenu);
-	btnEmoBack.addEventListener('click', hideEmoticonMenu);
-
-	//
-
-	//
-
+	setupEmotes();
 
 	// Initialize.
 	init();
@@ -80,10 +72,9 @@ function DOMLoaded() {
 //------------------------------------------------------------
 
 function init() {
-	getUrl();
-	// test();
 	getSettings();
 	getBlockList();
+	getStyleSheet();
 };
 
 //------------------------------------------------------------
@@ -115,6 +106,12 @@ function btnFontSetClick() {
 	lblFontCurrent.innerText = val;
 	txtCustomFont.value = '';
 	saveSettings();
+};
+
+function btnEmoteOnClick(name){
+	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
+	  chrome.tabs.sendMessage(tabs[0].id, {name: name+" "});
+	});
 };
 
 //------------------------------------------------------------
@@ -215,103 +212,17 @@ function saveBlockList(callback) {
 	chrome.storage.sync.set({ 'blockList': blockList }, callback);
 };
 
+function getStyleSheet(){
+	chrome.storage.sync.get('css-url', function(result){
+		getExternalCss("https://chat.newgrounds.com" + result['css-url']);
+	});
+};
+
 //------------------------------------------------------------
 
 //------------------------------------------------------------
 // Emoticons
 //------------------------------------------------------------
-
-function setupEmoticonList(){
-	$(emotiMenu).hide();
-}
-
-function showEmoticonMenu(){
-	// TODO - Makes menuContainer visible everytime which is a bit sloppy, 
-	// will fix later
-	menuContainer.style.visibility = "visible";
-	$(menuContainer).hide().slideDown();
-}
-
-function hideEmoticonMenu(){
-	$(menuContainer).slideUp();
-}
-
-function createEmote(background, name, spritePosition){
-	
-
-	var dank = document.createElement("div");
-
-	dank.className = "emote";
-
-	// dank.style.display = "inline-block";
-	dank.style.background = background;
-
-	if(spritePosition != null){
-		dank.style['background-position'] = spritePosition;
-		dank.className += " small-emote";
-	} else {
-		dank.className += " big-emote"
-	}
-
-	dank.addEventListener("click", function(){
-		chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-		  chrome.tabs.sendMessage(tabs[0].id, {greeting: name+" "}, function(response) {
-		    console.log(response.farewell);
-		  });
-		});
-	});
-
-	dank.setAttribute("data", name);
-	dank.setAttribute("title", name);
-
-	console.log(name);
-
-	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
-		case "ng":
-			if(spritePosition == null){
-				dank.className += " dank-emoji";
-				dankList.appendChild(dank);
-			}else{
-				dank.className += " faic-emoji";
-				faicList.appendChild(dank);
-			}
-			break;
-
-		case "tf":
-			dank.className += " fulp-emoji";
-			fulpList.appendChild(dank);
-		break;
-
-		case "ngp":
-		case "ngd":
-		case "ngn":
-			dank.className += " pico-emoji";
-			picoList.appendChild(dank);
-			break;
-		case "ngs":
-			dank.className += " pixel-emoji";
-			pixelList.appendChild(dank);
-			break;
-
-		case "nga":
-			// soon....
-			break;
-
-		default:
-			dank.className = "dank-emoji";
-			document.getElementById("dank-list").appendChild(dank);
-	}
-}
-
-function sortEmotes(name){
-
-}
-
-function getUrl(){
-	chrome.storage.sync.get('css-url', function(result){
-		getExternalCss("https://chat.newgrounds.com" + result['css-url']);
-	});
-}
 
 function getExternalCss(url){
 	$.ajax({
@@ -320,19 +231,60 @@ function getExternalCss(url){
 			parseCSS(result);
 		},
 		error: function(xhr){
-			console.log('Uh oh, Bren did something.');
+			console.log('This is obviously Bren\'s fault.');
 		}
 	});
 }
 
+function setupEmotes(){
+
+	// Assign elements
+	btnEmoMenu = document.querySelectorAll('[name="emoticon-menu"]')[0];
+	btnEmoBack = document.getElementById('back-btn');
+	menuContainer = document.getElementById("slider");
+	dankList = document.getElementById("dank-list");
+	faicList = document.getElementById("faic-list");
+	fulpList = document.getElementById("fulp-list");
+	picoList = document.getElementById("pico-list");
+	pixelList = document.getElementById("pixel-list");
+	dankTab = document.getElementById("dank-tab");
+	fulpTab = document.getElementById("fulp-tab");
+	faicTab = document.getElementById("faic-tab");
+	picoTab = document.getElementById("pico-tab");
+	pixelTab = document.getElementById("pixel-tab");
+
+
+
+	// Assign events
+	btnEmoMenu.addEventListener('click', function(){
+		menuContainer.style.visibility = "visible";
+		$(menuContainer).hide().slideDown();
+	});
+
+	btnEmoBack.addEventListener('click', function(){ $(menuContainer).slideUp(); });
+
+	dankTab.addEventListener('click',function(){ scrollTo(dankList); });
+
+	fulpTab.addEventListener('click', function(){ scrollTo(fulpList); });
+
+	faicTab.addEventListener('click', function(){ scrollTo(faicList); });
+
+	picoTab.addEventListener('click', function(){ scrollTo(picoList); });
+
+	pixelTab.addEventListener('click', function(){ scrollTo(pixelList); });
+}
+
 function parseCSS(styleSheet){
+	// Finds all emoticon related class selectors
 	var classSelectorRegEx = /\.ng-emoticon-([a-z]+)([A-Za-z0-9]+)[{\s]*([^b]*([^:]+)[^}]+)/g;
 	var classSelector;
 
+	// Finds the "original Faic's" sprite sheet
 	var ngSpriteCSSRegEx = /\.ng-emoticon[^-{]*{([^}]+)/g;
 	var ngSpriteCSS = ngSpriteCSSRegEx.exec(styleSheet);
 	console.log(ngSpriteCSS[0]);
 
+	// Finds emoticon class selectors that contain the sprite url
 	var attributeSelectorRegEx = /\[class\^=ng-emoticon-([^\]]+)]([^\{]+|{)([^\}]+)/g;
 	var attributeSelector;
 	var attributes = new Array();
@@ -347,17 +299,20 @@ function parseCSS(styleSheet){
 		} else if(classSelector[4] === "background-position"){
 			addEmote(classSelector, findSprite(attributes, classSelector[1]) || ngSpriteCSS);
 		} else {
-			console.error("Err: emoticon anomoly detected.");
+			console.error("Err: Unexpected background modifier");
 		}
 	}
 }
 
+// Returns the matching prefix array which also contains the sprite url,
+// else returns null.
 function findSprite(prefixList, prefix){
 	for(var i = 0; i < prefixList.length; i++){
 		if(prefixList[i][1] === prefix){
 			return prefixList[i];
 		}
 	}
+
 	return null;
 }
 
@@ -365,12 +320,8 @@ function addEmote(regEx, sprite){
 	// Name of the emoticon
 	var nameRegEx = /-((ng|tf)[^{]+){/g;
 	var name;
-
-	// if((name = nameRegEx.exec(regEx.toString())) !== null)	console.log(name[1]);
-	// else 	return;
 	
-
-	// Background CSS of the emoticon
+	// Gets the emote image
 	var bgRegEx = /background:.*(url\(([^)]+)\)[^;]+)/g;
 	var bg;
 
@@ -380,14 +331,73 @@ function addEmote(regEx, sprite){
 			createEmote(cachedUrl(bg[1]), regEx[1]+regEx[2], bp);
 		}
 	}else if((bg = bgRegEx.exec(regEx[3])) !== null){
-
-		
 		createEmote(cachedUrl(bg[1]), regEx[1]+regEx[2], null);
 	}
 
-	var bgRegEx = /background:.*(url\(([^)]+)\)[^;]+)/g;
-	var bg;
+}
 
+function createEmote(background, name, spritePosition){
+	var emote = document.createElement("div");
+
+	emote.className = "emote";
+	emote.style.background = background;
+
+	if(spritePosition != null){
+		emote.style['background-position'] = spritePosition;
+		emote.className += " small-emote";
+	} else {
+		emote.className += " big-emote";
+	}
+
+	emote.setAttribute("title", name);
+
+	emote.addEventListener("click", function(){
+		btnEmoteOnClick(name);
+	});
+
+	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
+		case "ng":
+			if(spritePosition == null){
+				emote.className += " dank-emoji";
+				dankList.appendChild(emote);
+			}else{
+				emote.className += " faic-emoji";
+				faicList.appendChild(emote);
+			}
+			break;
+
+		case "tf":
+			emote.className += " fulp-emoji";
+			fulpList.appendChild(emote);
+		break;
+
+		case "ngp":
+		case "ngd":
+		case "ngn":
+			emote.className += " pico-emoji";
+			picoList.appendChild(emote);
+			break;
+		case "ngs":
+			emote.className += " pixel-emoji";
+			pixelList.appendChild(emote);
+			break;
+
+		case "nga":
+			// soon....
+			break;
+
+		default:
+			emote.className = "dank-emoji";
+			document.getElementById("dank-list").appendChild(emote);
+	}
+}
+
+function scrollTo(node){
+	document.getElementById("emote-container").scrollTop = node.offsetTop-40;
+
+	//$("#emote-container").animate({
+	//	"scrollTop": $(node).position().top
+	//},500);
 }
 
 
@@ -407,4 +417,3 @@ function cachedUrl(url){
 	else
 		return url;
 }
-

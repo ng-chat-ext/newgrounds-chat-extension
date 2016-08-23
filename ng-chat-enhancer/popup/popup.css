@@ -91,7 +91,6 @@ ul, li{
 
 
 
-
 .settings div {
 	display: inline-block;
 }
@@ -107,35 +106,18 @@ ul, li{
 	width: 50%;
 }
 
-#emoticons{
-	text-align: center;
-}
 
-#btnDropDown{
-	width: 100%;
-	
-}
 
-#emoticon-list{
-	margin: 0 auto;
-	display: inline-block;
-	vertical-align: top;
-}
-.emo-item{
-	float: left;
-	padding: 0 7px;
-	border-left: 1px solid #fff;
-}
-.emo-item:hover{
-	background-color: red;
-	cursor: pointer;
-}
-.emo-item:first-child{
-	border: none;
+
+
+input[name="emoticon-menu"]{
+	float: right;
+	margin-top: 3px;
 }
 
 #slider{
 	display: flex;
+	box-sizing: content-box;
 	flex-direction: column;
 	background-color: #23272a;
 	border: 1px solid white;
@@ -147,50 +129,33 @@ ul, li{
 	visibility: hidden;
 }
 
-#emote-tabs{
-}
-
 #emote-container{
 	overflow-y: scroll;
-	background-color: grey;
+	background-color: #34393E;
 }
 
 .emote-list{
 	margin-bottom: 20px;
+	margin-left: 10px;
 }
 
 .emote-list:last-child{
 	margin-bottom: 0;
 }
 
-#dank-list, #fulp-list{
-	margin-left: 10px;
-}
-
-input[name="emoticon-menu"]{
-	float: right;
-	margin-top: 3px;
-}
-
-input[name="emoticon-back"]{
-}
-
-
 #tab-list{
 	padding: 5px 7px;
-	border-bottom: 1px solid white;
 }
 
 .emote-tab{
 	background-color: #34393e;
-	border: 0;
 	color: #eeb211;
 	cursor: pointer;
 	float: right;
 	font-weight: 500;
 	margin-left: 3px;
-	padding: 5px 5px;
 	margin-bottom: 10px;
+	padding: 5px 5px;
 	font-size: 11pt;
 }
 
@@ -202,13 +167,6 @@ input[name="emoticon-back"]{
 #back-btn{
 	float: left;
 	margin-left: 0;
-}
-
-#pixel-tab{
-
-}
-
-#dank-tab{
 }
 
 .emote{
@@ -239,6 +197,5 @@ input[name="emoticon-back"]{
  
 ::-webkit-scrollbar-thumb {
     border-radius: 10px;
-    background-color: #3D4144;
-    /*-webkit-box-shadow: inset 0 0 6px rgba(255,255,255,1); */
+    background-color: #C9BEBE;
 }

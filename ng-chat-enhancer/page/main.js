@@ -65,8 +65,8 @@ function init() {
 	getChatCSS();
 
 	// Remove airhorn overlay.
-	var overlayShame = document.getElementById('overlay-shame');
-	overlayShame.parentNode.removeChild(overlayShame);
+	// var overlayShame = document.getElementById('overlay-shame');
+	// overlayShame.parentNode.removeChild(overlayShame);
 
 	// Start clock timer.
 	setInterval(timeSinceTimer, 5000);
@@ -75,7 +75,7 @@ function init() {
 	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
 		// Find chat stylesheet.
 		if (document.styleSheets[i].href && document.styleSheets[i].href.substr(0, 38) === "https://chat.newgrounds.com/build/chat")
-			console.log('test');
+			console.log("test");
 	}
 };
 
@@ -410,20 +410,16 @@ function storageChange(changes, namespace) {
 
 
 function emoteListener(){
-
 	chrome.runtime.onMessage.addListener(
 	  function(request, sender, sendResponse) {
-	    	document.getElementById("chat-input-textarea").value += request.greeting;
+	    	document.getElementById("chat-input-textarea").value += request.name;
 	  });
 }
 
 function getChatCSS(){
 	var css = document.querySelector('link[rel="stylesheet"][type="text/css"]');
 	
-
-	chrome.storage.sync.set({'css-url': css.getAttribute('href')}, function(){
-		console.log(css.getAttribute('href'));
-	});
+	chrome.storage.sync.set({'css-url': css.getAttribute('href')});
 }
 
 
