@@ -19,7 +19,7 @@ NGCE.LastSeen = {
 //------------------------------------------------------------
 
 function timerTick() {
-	var nodes = document.querySelectorAll('ul.user-list > li[style*="display: inline-block;"]');
+	var nodes = document.querySelectorAll('#page .user-list > li[style*="display: inline-block;"]');
 	var username, statusNode;
 	var dateFound, dateNow = new Date();
 
@@ -82,14 +82,14 @@ function getDateByUsername(username) {
 
 	for (var j = lst.length - 1; j >= 0; j--) {
 		if (lst[j].username === username)
-			return lst.date;
+			return lst[j].date;
 	}
 
 	return null;
 };
 
 function getText(dateNow, date) {
-	if (date === null)
+	if (!date)
 		return '-';
 
 	var seconds = Math.floor((dateNow - date) / 1000);

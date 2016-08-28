@@ -80,8 +80,8 @@ function chatInputKeyPress(e) {
     var args = chatInputTextArea.value.split(' ').shift();
 
     // !!!
-	console.dir(NGCE);
 	return;
+	console.dir(NGCE);
 
 	// Check if command was found.
     if (!NGCE.KeyCommands.execute(command))
