@@ -4,7 +4,7 @@
 	"name": "Newgrounds Chat Enhancer",
 	"short_name": "NGCE",
 	"description": "Glorified blocker.",
-	"version": "1.0.3.0",
+	"version": "1.0.3.1",
 
 	"browser_action": {
 		"default_icon": {
@@ -25,8 +25,18 @@
 	"content_scripts": [
 		{
 			"css": [ "page/main.css" ],
-			"js": [ "page/main.js" ],
+			"js": [
+				"page/js/_ngce.js",
+				"page/js/chrome-sync.js",
+
+				"page/js/block.js",
+				"page/js/key-commands.js",
+				"page/js/last-seen.js",
+				"page/js/sounds.js",
+				"page/main.js"
+			],
 			"all_frames": true,
+			"run_at": "document_start",
 			"matches": [
 				"https://chat.newgrounds.com/*"
 			]
