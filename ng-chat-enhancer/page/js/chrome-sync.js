@@ -55,8 +55,48 @@ var Settings = {
 //------------------------------------------------------------
 NGCE.ChromeSync = {
 	BlockList: BlockList,
-	Settings: Settings
+	Settings: Settings,
+
+	init: init
 };
+//------------------------------------------------------------
+
+
+
+//------------------------------------------------------------
+// Public
+//------------------------------------------------------------
+
+function init() {
+	// chrome.storage.onChanged.addListener(storageChange);
+};
+
+//------------------------------------------------------------
+
+
+
+//------------------------------------------------------------
+// Private
+//------------------------------------------------------------
+
+// function storageChange(changes, namespace) {
+// 	var o = NGCE.ChromeSync;
+
+// 	// Settings
+// 	if (changes['settings']) {
+// 		o.Settings.Data = changes['settings'].newValue;
+
+// 		refreshSettings();
+// 	}
+
+// 	// Block List
+// 	if (changes['blockList']) {
+// 		o.BlockList.Data = changes['blockList'].newValue;
+// 		refreshUserList(NGCE.ChromeSync.BlockList.Data);
+// 		refreshMessagesList(NGCE.ChromeSync.BlockList.Data);
+// 	}
+// };
+
 //------------------------------------------------------------
 
 }());
