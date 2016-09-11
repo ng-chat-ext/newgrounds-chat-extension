@@ -30,24 +30,43 @@ function chatInputKeyPress(e) {
     if (e.keyCode !== 13) return;
 
     // Check if text is a command.
-    if (ta.value[0] !== '/') return;
-
-    // Get command and arguments.
-    var data = ta.value.split(' ');
-    var command = data[0].substr(1);
-    var args = data;
-    args.shift();
-
-	// Check if command was found.
-    if (!execute(command, args))
-    	return;
-
-    // Stop propagation if command is successfully executed.
-	e.stopImmediatePropagation();
-
-	// Also clear textarea.
-	setTimeout(function() { ta.value = ''; }, 10);
+    if (ta.value[0] === '/')
+    	handleCommand(e);
+    else
+    	handleNormal(e);
 };
+
+function handleCommand(e) {
+	try {
+	    // Get command and arguments.
+	    var data = ta.value.split(' ');
+	    var command = data[0].substr(1);
+	    var args = data;
+	    args.shift();
+
+		// Check if command was found.
+	    if (!execute(command, args))
+	    	return;
+
+	    // Some commands should not be prevented from sending (/dm).
+	    if (!NGCE.KeyCommands.MapLookup[command].preventSending)
+	    	return;
+
+	    // Stop propagation if command is successfully executed.
+		e.stopImmediatePropagation();
+
+		// Also clear textarea.
+		setTimeout(function() { ta.value = ''; }, 10);
+	} catch(err) {
+		console.error("Error in handleCommand: " + err);
+	}
+};
+
+function handleNormal(e) {
+	applyZornMode();
+};
+
+//------------------------------------------------------------
 
 function constructLookup() {
 	var o = NGCE.KeyCommands;
@@ -57,8 +76,12 @@ function constructLookup() {
 	}
 };
 
-function add(key, callback) {
-	NGCE.KeyCommands.Map.push({'key': key, 'callback': callback});
+function add(key, callback, preventSending) {
+	NGCE.KeyCommands.Map.push({
+		'key': key,
+		'callback': callback,
+		'preventSending': typeof preventSending === 'undefined' ? true : preventSending
+	});
 };
 
 function execute(key, args) {
@@ -71,12 +94,26 @@ function execute(key, args) {
 	return true;
 };
 
-
+//------------------------------------------------------------
 
 function cmdClear() {
 	var list = document.querySelector('ul.messages-list');
 	while (list.firstChild) {
 		list.removeChild(list.firstChild);
+	}
+};
+
+function cmdDirectMessage() {
+	applyZornMode();
+};
+
+//------------------------------------------------------------
+
+function applyZornMode() {
+	if (NGCE.ChromeSync.Settings.Data.zornMode === true) {
+		var c = ta.value[ta.value.length - 1];
+		if (c !== '?' && c !== '!')
+			ta.value += '...';
 	}
 };
 
@@ -92,7 +129,11 @@ function init() {
 	ta = document.getElementById('chat-input-textarea');
 	ta.addEventListener('keydown', chatInputKeyPress);
 
-	add('clear', cmdClear)
+	// Third parameter (preventSending) should be set to
+	// false if you want to let the command go through to the server.
+
+	add('clear', cmdClear);
+	add('dm', cmdDirectMessage, false);
 	constructLookup();
 };
 

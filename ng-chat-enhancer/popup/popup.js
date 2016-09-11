@@ -13,6 +13,8 @@ var txtCustomFont;
 var lblFontCurrent;
 var btnFontClear;
 var btnFontSet;
+// Zornuzkull mode
+var chkSetZornMode
 // Emoticon
 var btnEmoMenu;
 var btnEmoBack;
@@ -43,12 +45,15 @@ function DOMLoaded() {
 	txtUsername = document.getElementById('txtUsername');
 	btnBlockUser = document.getElementById('btnBlockUser');
 	olNameList = document.getElementById('olNameList');
+	//
 	chkSetLastSeen = document.getElementById('chkSetLastSeen');
+	//
 	txtCustomFont = document.getElementById('txtCustomFont');
 	lblFontCurrent = document.getElementById('lblFontCurrent');
 	btnFontClear = document.getElementById('btnFontClear');
 	btnFontSet = document.getElementById('btnFontSet');
-
+	//
+	chkSetZornMode = document.getElementById('chkSetZornMode');
 	
 	
 	// Add events.
@@ -56,6 +61,7 @@ function DOMLoaded() {
 	chkSetLastSeen.addEventListener('change', chkSetLastSeenChange);
 	btnFontClear.addEventListener('click', btnFontClearClick);
 	btnFontSet.addEventListener('click', btnFontSetClick);
+	chkSetZornMode.addEventListener('change', chkSetZornModeChange);
 
 	setupEmotes();
 
@@ -112,6 +118,11 @@ function btnEmoteOnClick(name){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
 	  chrome.tabs.sendMessage(tabs[0].id, {name: name+" "});
 	});
+};
+
+function chkSetZornModeChange() {
+	settings.zornMode = chkSetZornMode.checked;
+	saveSettings();
 };
 
 //------------------------------------------------------------
@@ -186,6 +197,7 @@ function getSettings() {
 		// Update UI.
 		chkSetLastSeen.checked = settings.lastSeen;
 		lblFontCurrent.innerText = settings.customFont || 'Default';
+		chkSetZornMode.checked = settings.zornMode;
 	});
 };
 

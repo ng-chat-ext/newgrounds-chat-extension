@@ -5,8 +5,6 @@
 var userListCtn, userListCtnObserver, userList, userListObserver;
 var messagesListCtn, messagesListCtnObserver, messagesList, messagesListObserver;
 
-var chatInputTextArea;
-
 //------------------------------------------------------------
 
 
@@ -20,9 +18,6 @@ function init() {
 	//------------------------------------------------------------
 	userListCtn = document.querySelector('user-list');
 	messagesListCtn = document.querySelector('messages-list');
-	dingdongSound = document.getElementById('alert-sound');
-	airhornSound = document.getElementById('airhorn-sound');
-	// chatInputTextArea = document.getElementById('chat-input-textarea');
 
 	// Add events.
 	//------------------------------------------------------------
@@ -32,8 +27,6 @@ function init() {
 	userListCtnObserver.observe(userListCtn, { childList: true });
 	messagesListCtnObserver = new WebKitMutationObserver(function(mutations) { mutations.forEach(messagesListCtnObserve); });
 	messagesListCtnObserver.observe(messagesListCtn, { childList: true });
-	// Textarea
-	// chatInputTextArea.addEventListener('keydown', chatInputKeyPress);
 
 	// Remove airhorn overlay.
 	var overlayShame = document.getElementById('overlay-shame');
@@ -50,37 +43,6 @@ function init() {
 
 	NGCE.ChromeSync.Settings.load(refreshSettings);
 	NGCE.ChromeSync.BlockList.load();
-};
-
-
-//------------------------------------------------------------
-// Input
-//------------------------------------------------------------
-
-function chatInputKeyPress(e) {
-    // Only accept enter key.
-    if (e.keyCode !== 13) return;
-
-    // Check if text is a command.
-    if (chatInputTextArea.value[0] !== '/') return;
-
-    // Get command text.
-    var command = chatInputTextArea.value.split(' ')[0].substr(1);
-    var args = chatInputTextArea.value.split(' ').shift();
-
-    // !!!
-	return;
-	console.dir(NGCE);
-
-	// Check if command was found.
-    if (!NGCE.KeyCommands.execute(command))
-    	return;
-
-    // Stop propagation if command is successfully executed.
-	e.stopImmediatePropagation();
-
-	// Also clear textarea.
-	chatInputTextArea.value = '';
 };
 
 //------------------------------------------------------------
