@@ -107,6 +107,20 @@ function cmdDirectMessage() {
 	applyZornMode();
 };
 
+function cmdMute(args) {
+	var name = processName(args.shift());
+	var duration = args.shift();
+	var reason = args.join(' ');
+
+	NGCE.ChromeSync.BlockList.add(name, true);
+};
+
+function cmdUnmute(args) {
+	var name = processName(args[0]);
+
+	NGCE.ChromeSync.BlockList.remove(name, true);
+};
+
 //------------------------------------------------------------
 
 function applyZornMode() {
@@ -115,6 +129,13 @@ function applyZornMode() {
 		if (c !== '?' && c !== '!')
 			ta.value += '...';
 	}
+};
+
+//------------------------------------------------------------
+
+function processName(name) {
+
+	return name[0] === '@' ? name.substring(1) : name;
 };
 
 //------------------------------------------------------------
@@ -133,7 +154,9 @@ function init() {
 	// false if you want to let the command go through to the server.
 
 	add('clear', cmdClear);
-	add('dm', cmdDirectMessage, false);
+	//add('dm', cmdDirectMessage, false); // Disabling DM command modification for publishing until furthur developer testing ensuring that it is bug-free.
+	add('mute', cmdMute);
+	add('unmute', cmdUnmute);
 	constructLookup();
 };
 
