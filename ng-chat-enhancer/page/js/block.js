@@ -65,14 +65,8 @@ function refreshUserList() {
 };
 
 function applyToUserNode(node) {
-	var o = NGCE.ChromeSync.BlockList.Data;
-
-	for (var i = o.length - 1; i >= 0; i--) {
-		if (node.innerHTML.indexOf(o[i]) === 80) {
-			node.classList.add('client-block');
-			break;
-		}
-	}
+	if (isUserBlocked(getUsernameFromUserNode(node)))
+		node.classList.add('client-block');
 };
 
 //------------------------------------------------------------
@@ -98,14 +92,13 @@ function refreshMessagesList() {
 };
 
 function applyToMessageNode(messageNode) {
-	var o = NGCE.ChromeSync.BlockList.Data;
 	var usernameNode = messageNode.querySelector('.msg-username');
 
 	if (!usernameNode)
 		return;
 
 	// Remove messages from user.
-	if (o.indexOf(usernameNode.innerText) !== -1) {
+	if (isUserBlocked(usernameNode.innerText)) {
 		messageNode.classList.add('client-block');
 		return;
 	}
@@ -113,6 +106,24 @@ function applyToMessageNode(messageNode) {
 	// Remove messages mentioning user.
 	if (isMessageContainsBlockedMention(messageNode))
 		messageNode.classList.add('client-block');
+};
+
+//------------------------------------------------------------
+
+function getUsernameFromUserNode(node) {
+
+	return node.querySelector('.user-list-username').getAttribute('ngce-name');
+};
+
+function isUserBlocked(username) {
+	var o = NGCE.ChromeSync.BlockList.Data;
+
+	for (var i = o.length - 1; i >= 0; i--) {
+		if (o[i] === username)
+			return true;
+	}
+
+	return false;
 };
 
 //------------------------------------------------------------
