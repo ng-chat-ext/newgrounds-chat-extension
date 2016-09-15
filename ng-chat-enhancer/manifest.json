@@ -46,6 +46,10 @@
 		}
 	],
 
+	"web_accessible_resources":[
+		"page/html/template.html"
+	],
+
 	"icons": {
 		"64": "icon.png"
 	}
