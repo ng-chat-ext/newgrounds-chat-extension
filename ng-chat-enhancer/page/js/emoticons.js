@@ -28,6 +28,26 @@ NGCE.Emoticons = {
 // Private
 //------------------------------------------------------------
 
+
+// Waits for the Page's opacity to be fully visibile,
+// otherwise, emote widget appears in the loading background
+function waitForPageShow(){
+	var page = document.getElementById("overlay-loading");
+
+	var pageObserver = new MutationObserver(function(mutations){
+		mutations.forEach(function(mutation){
+			//Setting time out because there is a slight delay between when the loading screen
+			//is fully invisible 
+			if(window.getComputedStyle(mutation.target, null).getPropertyValue('display') === "none")
+				setTimeout(function(){
+					document.getElementById('emote-popup').style.display = "flex";
+				}, 250);
+		});
+	});
+
+	pageObserver.observe(page, {attributes: true});
+}
+
 function addEmoteBtn(){
 	//Btn to call popup menu
 	var emoteBtn = document.createElement("div");
@@ -59,9 +79,6 @@ function addEmoteBtn(){
 var popupEmote = function(){
 
 	var page = document.getElementById('page');
-
-	//Grabs current menu heihgt
-	// var pageHeight = window.getComputedStyle(page, null).getPropertyValue("height");
 
 	if(page.className === "page-up")
 		page.className = "page-down";
@@ -264,6 +281,7 @@ function init() {
 	addEmoteBtn();
 	setupEmotes();
 	getExternalCss();
+	waitForPageShow();
 }
 
 //------------------------------------------------------------
