@@ -126,7 +126,7 @@ function cmdUnmute(args) {
 function applyZornMode() {
 	if (NGCE.ChromeSync.Settings.Data.zornMode === true) {
 		var c = ta.value[ta.value.length - 1];
-		if (c !== '?' && c !== '!')
+		if (ta.value.length > 0 && c !== '?' && c !== '!')
 			ta.value += '...';
 	}
 };
