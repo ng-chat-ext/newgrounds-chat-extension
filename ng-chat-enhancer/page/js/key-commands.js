@@ -29,6 +29,11 @@ function chatInputKeyPress(e) {
     // Only accept enter key.
     if (e.keyCode !== 13) return;
 
+    //Close Emote widget if open
+    var page = document.getElementById("page");
+    if(page.className =="page-up" &&
+     ta === document.activeElement)	page.className = "page-down";
+
     // Check if text is a command.
     if (ta.value[0] === '/')
     	handleCommand(e);
