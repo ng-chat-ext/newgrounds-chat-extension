@@ -29,8 +29,9 @@ function init() {
 	messagesListCtnObserver.observe(messagesListCtn, { childList: true });
 
 	// Remove airhorn overlay.
-	var overlayShame = document.getElementById('overlay-shame');
-	overlayShame.parentNode.removeChild(overlayShame);
+	var overlayShame = document.querySelector('.overlay-shame-message') || null;
+	if (overlayShame)
+		overlayShame.parentNode.parentNode.removeChild(overlayShame.parentNode);
 
 	// Initialize components.
 	NGCE.ChromeSync.init();
@@ -38,6 +39,7 @@ function init() {
 	NGCE.Emoticons.init();
 	NGCE.KeyCommands.init();
 	NGCE.LastSeen.init();
+	NGCE.LoveJin.init();
 	// NGCE.Mentions.init();
 	NGCE.Sounds.init();	
 

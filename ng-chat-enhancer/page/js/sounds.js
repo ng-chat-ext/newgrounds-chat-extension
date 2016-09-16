@@ -54,14 +54,16 @@ function airhornSoundPlay() {
 //------------------------------------------------------------
 
 function init() {
-	dingdongSound = document.getElementById('alert-sound');
-	airhornSound = document.getElementById('airhorn-sound');
+	dingdongSound = document.getElementById('alert-sound') || null;
+	if (dingdongSound) {
+		dingdongSound.volume = 0;
+		dingdongSound.addEventListener('play', dingdongSoundPlay);
+		dingdongSound.addEventListener('ended', dingdongSoundEnded);
+	}
 
-	dingdongSound.volume = 0;
-
-	dingdongSound.addEventListener('play', dingdongSoundPlay);
-	dingdongSound.addEventListener('ended', dingdongSoundEnded);
-	airhornSound.addEventListener('play', airhornSoundPlay);
+	airhornSound = document.getElementById('airhorn-sound') || document.getElementById('fujin-sound') || null;
+	if (airhornSound)
+		airhornSound.addEventListener('play', airhornSoundPlay);
 };
 
 //------------------------------------------------------------
