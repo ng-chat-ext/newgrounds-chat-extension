@@ -62,18 +62,22 @@ function addEmoteBtn(){
 	//Grabs opup menu from template to browse a fresh selection of dank memes.
 	//And some emoticons too, I guess.
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', chrome.extension.getURL("page/html/template.html"), false);
+	xhr.open('GET', chrome.extension.getURL("page/html/template.html"), true);
 	xhr.send(null);
-	
-	var menu = dParser.parseFromString(xhr.responseText, 'text/html');
-	document.body.appendChild(menu.body.children['emote-popup']);
-	var emotePopup = document.getElementById("emote-popup");
 
-	emoteBtn.addEventListener('click', popupEmote, false);
-	emotePopup.addEventListener('click', function(){
-		//Focus back to text area
-		document.getElementById("chat-input-textarea").focus();
-	}, false);
+	xhr.onload = function(){
+		var menu = dParser.parseFromString(xhr.responseText, 'text/html');
+		document.body.appendChild(menu.body.children['emote-popup']);
+		var emotePopup = document.getElementById("emote-popup");
+
+		emoteBtn.addEventListener('click', popupEmote, false);
+		emotePopup.addEventListener('click', function(){
+			//Focus back to text area
+			document.getElementById("chat-input-textarea").focus();
+		}, false);
+
+		setupEmotes();
+	}
 }
 
 var popupEmote = function(){
@@ -121,16 +125,21 @@ function setupEmotes(){
 	picoTab.addEventListener('click', function(){ scrollTo(picoList); });
 
 	pixelTab.addEventListener('click', function(){ scrollTo(pixelList); });
+
+
+	getExternalCss();
 }
 
 function getExternalCss(){
 	var css = document.querySelector('link[rel="stylesheet"][type="text/css"]');
 
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', "https://chat.newgrounds.com" + css.getAttribute("href"), false);
+	xhr.open('GET', "https://chat.newgrounds.com" + css.getAttribute("href"), true);
 	xhr.send(null);
-
-	parseCSS(xhr.responseText);
+	xhr.onload = function(){
+		parseCSS(xhr.responseText);
+	};
+	
 }
 
 function parseCSS(styleSheet){
@@ -279,8 +288,6 @@ function init() {
 	dParser = new DOMParser();
 
 	addEmoteBtn();
-	setupEmotes();
-	getExternalCss();
 	waitForPageShow();
 }
 
