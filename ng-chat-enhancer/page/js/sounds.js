@@ -15,6 +15,8 @@ var dingdongDefaultVolume = 0.5;
 var dingdongSound;
 
 var airhornSound;
+
+var slapSound;
 //------------------------------------------------------------
 
 
@@ -45,6 +47,25 @@ function airhornSoundPlay() {
 	chatInputTextArea.disabled = false;
 };
 
+function getElements() {
+	var audios = document.querySelectorAll('audio');
+	var src;
+
+	for (var i = audios.length - 1; i >= 0; i--) {
+		src = audios[i].getAttribute('src');
+		if (!src || src.indexOf('/alerts/') === -1) continue;
+
+		src = src.substring(8);
+
+		if (src.indexOf('alert') === 0)
+			dingdongSound = audios[i];
+		else if (src.indexOf('airhorn') === 0)
+			airhornSound = audios[i];
+		else if (src.indexOf('slap') === 0)
+			slapSound = audios[i];
+	}
+};
+
 //------------------------------------------------------------
 
 
@@ -54,14 +75,14 @@ function airhornSoundPlay() {
 //------------------------------------------------------------
 
 function init() {
-	dingdongSound = document.getElementById('alert-sound') || null;
+	getElements();
+
 	if (dingdongSound) {
 		dingdongSound.volume = 0;
 		dingdongSound.addEventListener('play', dingdongSoundPlay);
 		dingdongSound.addEventListener('ended', dingdongSoundEnded);
 	}
 
-	airhornSound = document.getElementById('airhorn-sound') || document.getElementById('fujin-sound') || null;
 	if (airhornSound)
 		airhornSound.addEventListener('play', airhornSoundPlay);
 };
