@@ -1,64 +1,118 @@
 <!doctype html>
 <html>
 <head>
-  <title>Newgrounds Chat Enhancer</title>
-  <link type="text/css" rel="stylesheet" href="popup.css" />
+	<title>Newgrounds Chat Enhancer</title>
+	<link type="text/css" rel="stylesheet" href="popup.css" />
 </head>
 <body>
 
 
-
-	<h1>Block List</h1>
-
-	<ol id="olNameList"></ol>
-
-	<input type="text" id="txtUsername" />
-	<input type="button" id="btnBlockUser" value="Block User" />
-	<div id="status"></div>
+	<div>
+		<input type="button" id="btnMenu1" value="Guide">
+		<input type="button" id="btnMenu2" value="Settings">
+		<input type="button" id="btnMenu3" value="Sounds">
+		<input type="button" id="btnMenu4" value="Block List">
+	</div>
 
 
 
+	<div class="menu">
 
+		<h1>Guide</h1>
 
+		<a href="http://24901miles.newgrounds.com/news/post/963481" target="_blank">Newgrounds Chat Emoticon and Command List</a>
 
-	<h1>Settings</h1>
+		<h2>Extension Commands:</h2>
+		<div class="table">
+			<div>
+				<div>/clear</div><div>Clears all messages</div>
+			</div>
+			<div>
+				<div>/mute @Name</div><div>Mutes user</div>
+			</div>
+			<div>
+				<div>/unmute @Name</div><div>Unmutes user</div>
+			</div>
+		</div>
+
+	</div>
+
 
 	
-	<div class="settings">
+	<div class="menu">
 
-		<!-- User Last Seen -->
-		<div>
-			<div>
-				Show All Last Seen
-			</div><div>
-				<input type="checkbox" id="chkSetLastSeen" value="lastSeen" />
-			</div>
-		</div>
+		<h1>Settings</h1>
 
-		<!-- Font -->
-		<div>
-			<div>
-				Font
-				<br>
-				<span class="orange">Current: <div id="lblFontCurrent"></div></span>
-			</div><div>
-				<input type="text" id="txtCustomFont" />
-				<input type="button" id="btnFontClear" value="Clear" />
-				<input type="button" id="btnFontSet" value="Set" />
-			</div>
-		</div>
 
-		<div>
+		<div class="table">
+
+			<!-- User Last Seen -->
 			<div>
-				zonuzkull Mode
-			</div><div>
-				<input type="checkbox" id="chkSetZornMode" value="zornMode" />
+				<div>
+					Show All Last Seen
+				</div><div>
+					<input type="checkbox" id="chkSetLastSeen" value="lastSeen" />
+				</div>
 			</div>
+
+			<!-- Font -->
+			<div>
+				<div>
+					Font
+					<br>
+					<span class="orange">Current: <div id="lblFontCurrent"></div></span>
+				</div><div>
+					<input type="text" id="txtCustomFont" />
+					<input type="button" id="btnFontClear" value="Clear" />
+					<input type="button" id="btnFontSet" value="Set" />
+				</div>
+			</div>
+
+			<!-- zornuzkull Mode -->
+			<div>
+				<div>
+					zonuzkull Mode
+				</div><div>
+					<input type="checkbox" id="chkSetZornMode" value="zornMode" />
+				</div>
+			</div>
+
 		</div>
 		
 	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Sounds</h1>
+
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Block List</h1>
+
+		<input type="text" id="txtUsername" />
+		<input type="button" id="btnBlockUser" value="Block User" />
+		<div id="txtBlockStatus"></div>
+
+		<ol id="olNameList"></ol>
+
+	</div>
+
+
 	
+	<!-- Imports -->
+	<script src="js/_ngce.js"></script>
+	<script src="js/chrome-sync.js"></script>
+
+	<script src="js/block.js"></script>
+
 	<script src="popup.js"></script>
+
 </body>
 </html>
 

@@ -2,10 +2,10 @@
 // Variables
 //------------------------------------------------------------
 
-// Block List
-var txtUsername;
-var btnBlockUser;
-var olNameList;
+// Menu
+var menuBtns = [];
+var menuCurr = -1;
+
 // Last Seen
 var chkSetLastSeen;
 // Font
@@ -17,20 +17,15 @@ var btnFontSet;
 var chkSetZornMode
 
 // Data
-var blockList = [];
 var settings = {};
 var mentions = [];
 
 //------------------------------------------------------------
 
-document.addEventListener('DOMContentLoaded', DOMLoaded);
+document.addEventListener('DOMContentLoaded', init);
 
-function DOMLoaded() {
+function init() {
 	// Get elements.
-	txtUsername = document.getElementById('txtUsername');
-	btnBlockUser = document.getElementById('btnBlockUser');
-	olNameList = document.getElementById('olNameList');
-	//
 	chkSetLastSeen = document.getElementById('chkSetLastSeen');
 	//
 	txtCustomFont = document.getElementById('txtCustomFont');
@@ -42,48 +37,46 @@ function DOMLoaded() {
 	
 	
 	// Add events.
-	btnBlockUser.addEventListener('click', btnBlockUserClick);
 	chkSetLastSeen.addEventListener('change', chkSetLastSeenChange);
 	btnFontClear.addEventListener('click', btnFontClearClick);
 	btnFontSet.addEventListener('click', btnFontSetClick);
 	chkSetZornMode.addEventListener('change', chkSetZornModeChange);
 
+	// Menu
+	var tmp;
+	for (var i = 4; i >= 1; i--) {
+		tmp = document.getElementById('btnMenu' + i);
+		(function(i) { tmp.addEventListener('click', function() { switchMenu(i-1) }); }(i));
+		menuBtns.unshift(tmp);
+	}
+	switchMenu(0);
 
 	// Initialize.
-	init();
+	NGCE.Block.init();
+	NGCE.ChromeSync.Settings.load(refreshSettings);
 };
 
 //------------------------------------------------------------
 //------------------------------------------------------------
 
 
-
-//------------------------------------------------------------
-//------------------------------------------------------------
-
-function init() {
-	getSettings();
-	getBlockList();
-};
 
 //------------------------------------------------------------
 // Event Handlers
 //------------------------------------------------------------
 
-function btnBlockUserClick() {
-	blockUser(txtUsername.value);
-	txtUsername.value = '';
-};
-
 function chkSetLastSeenChange() {
-	settings.lastSeen = chkSetLastSeen.checked;
-	saveSettings();
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.lastSeen = chkSetLastSeen.checked;
+	o.save();
 };
 
 function btnFontClearClick() {
-	settings.customFont = '';
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.customFont = '';
+	o.save();
+
 	lblFontCurrent.innerText = 'Default';
-	saveSettings();
 };
 
 function btnFontSetClick() {
@@ -91,120 +84,44 @@ function btnFontSetClick() {
 	if (!val)
 		return;
 
-	settings.customFont = val;
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.customFont = val;
+	o.save();
+
 	lblFontCurrent.innerText = val;
 	txtCustomFont.value = '';
-	saveSettings();
-};
-
-function btnEmoteOnClick(name){
-	chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
-	  chrome.tabs.sendMessage(tabs[0].id, {name: name+" "});
-	});
 };
 
 function chkSetZornModeChange() {
-	settings.zornMode = chkSetZornMode.checked;
-	saveSettings();
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.zornMode = chkSetZornMode.checked;
+	o.save();
 };
 
 //------------------------------------------------------------
-// Block List
+// Other
 //------------------------------------------------------------
 
-function blockUser(username) {
-	var tmp = username.trim();
+function switchMenu(index) {
+	console.log(index);
 
-	if (!tmp) {
-		showStatus('Please enter a username.');
-		return;
-	}
+	if (menuCurr != -1)
+		document.querySelector('.menu.show').classList.remove('show');
 
-	if (blockList.indexOf(tmp) !== -1) {
-		showStatus('User already blocked.');
-		return;
-	}
-
-	// Add name to list.
-	blockList.push(tmp);
-
-	// Save list.
-	saveBlockList(function() {
-		showStatus('User blocked: ' + tmp);
-		addListItem(tmp, tmp);
-	});
-};
-
-function unblockUser(username) {
-	// Remove name from list.
-	var index = blockList.indexOf(username);
-	if (index !== -1)
-		blockList.splice(index, 1);
-
-
-	saveBlockList(function() {
-		showStatus('User unblocked: ' + username);
-		removeListItem(username, username);
-	});
-};
-
-
-
-function addListItem(value, text) {
-	var li = document.createElement("li");
-	li.appendChild(document.createTextNode(text));
-	li.setAttribute("name", value);
-	li.addEventListener('click', function() { unblockUser(value); });
-	olNameList.appendChild(li);
-};
-
-function removeListItem(value) {
-	var li = document.querySelector('li[name="' + value + '"]');
-	olNameList.removeChild(li);
-};
-
-function showStatus(statusText) {
-	
-	document.getElementById('status').textContent = statusText;
+	menuCurr = index;
+	document.querySelectorAll('.menu')[menuCurr].classList.add('show');
 };
 
 //------------------------------------------------------------
 // Chrome Sync
 //------------------------------------------------------------
 
-function getSettings() {
-	chrome.storage.sync.get('settings', function(result) {
-		// Store in variable.
-		settings = result.settings || {};
+function refreshSettings() {
+	var o = NGCE.ChromeSync.Settings.Data;
 
-		// Update UI.
-		chkSetLastSeen.checked = settings.lastSeen;
-		lblFontCurrent.innerText = settings.customFont || 'Default';
-		chkSetZornMode.checked = settings.zornMode;
-	});
-};
-
-function saveSettings() {
-
-	chrome.storage.sync.set({ 'settings': settings });
-};
-
-
-function getBlockList() {
-	chrome.storage.sync.get('blockList', function(result) {
-		// Store in variable.
-		blockList = result.blockList || [];
-
-		// Update UI.
-		blockList.forEach(function(value) {
-			addListItem(value, value);
-		});
-	});
-};
-
-function saveBlockList(callback) {
-
-	chrome.storage.sync.set({ 'blockList': blockList }, callback);
+	chkSetLastSeen.checked = o.lastSeen;
+	lblFontCurrent.innerText = o.customFont || 'Default';
+	chkSetZornMode.checked = o.zornMode;
 };
 
 //------------------------------------------------------------
