@@ -2,6 +2,7 @@
 
 //------------------------------------------------------------
 NGCE.Sounds = {
+	refreshSounds: refreshSounds,
 	init: init
 };
 //------------------------------------------------------------
@@ -11,7 +12,7 @@ NGCE.Sounds = {
 //------------------------------------------------------------
 // Private variables
 //------------------------------------------------------------
-var dingdongDefaultVolume = 0.5;
+var DEFAULT_VOLUME = 0.5;
 var dingdongSound;
 
 var airhornSound;
@@ -26,6 +27,9 @@ var slapSound;
 //------------------------------------------------------------
 
 function dingdongSoundPlay() {
+	if (NGCE.ChromeSync.Sounds.Data['alert-sound'] === false)
+		return;
+
 	// Remove notification sound if @'d by a blocked user.
 	var usernameNode = document.querySelector('.messages-list li:last-child .msg-username');
 	if (!usernameNode) return;
@@ -36,7 +40,7 @@ function dingdongSoundPlay() {
 		dingdongSound.volume = 0;
 		dingdongSound.pause();
 	} else
-		dingdongSound.volume = dingdongDefaultVolume;
+		dingdongSound.volume = DEFAULT_VOLUME;
 };
 
 function dingdongSoundEnded() {
@@ -46,6 +50,8 @@ function dingdongSoundEnded() {
 function airhornSoundPlay() {
 	chatInputTextArea.disabled = false;
 };
+
+//------------------------------------------------------------
 
 function getElements() {
 	var audios = document.querySelectorAll('audio');
@@ -61,8 +67,8 @@ function getElements() {
 			dingdongSound = audios[i];
 		else if (src.indexOf('airhorn') === 0)
 			airhornSound = audios[i];
-		else if (src.indexOf('slap') === 0)
-			slapSound = audios[i];
+		// else if (src.indexOf('slap') === 0)
+		// 	slapSound = audios[i];
 	}
 };
 
@@ -73,6 +79,14 @@ function getElements() {
 //------------------------------------------------------------
 // Public
 //------------------------------------------------------------
+
+function refreshSounds() {
+	for (var property in NGCE.ChromeSync.Sounds.Data) {
+		var elem = document.getElementById(property);
+		if (elem)
+			elem.volume = (NGCE.ChromeSync.Sounds.Data[property] === false) ? 0 : DEFAULT_VOLUME;
+	}
+};
 
 function init() {
 	getElements();
@@ -85,6 +99,8 @@ function init() {
 
 	if (airhornSound)
 		airhornSound.addEventListener('play', airhornSoundPlay);
+
+	NGCE.ChromeSync.Sounds.load(refreshSounds);
 };
 
 //------------------------------------------------------------

@@ -102,6 +102,40 @@ var Settings = {
 	//------------------------------------------------------------
 };
 
+
+
+var Sounds = {
+	//------------------------------------------------------------
+	Data: {},
+	//------------------------------------------------------------
+
+
+
+	//------------------------------------------------------------
+	// Saves data.
+	//------------------------------------------------------------
+	save: function() {
+		chrome.storage.sync.set({ 'sounds': NGCE.ChromeSync.Sounds.Data });
+	},
+	//------------------------------------------------------------
+
+
+
+	//------------------------------------------------------------
+	// Loads data.
+	//------------------------------------------------------------
+	load: function(callback) {
+		chrome.storage.sync.get('sounds', function(result) {
+			// Store in variable.
+			NGCE.ChromeSync.Sounds.Data = result.sounds || {};
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	}
+	//------------------------------------------------------------
+};
+
 //------------------------------------------------------------
 
 
@@ -110,6 +144,7 @@ var Settings = {
 NGCE.ChromeSync = {
 	BlockList: BlockList,
 	Settings: Settings,
+	Sounds: Sounds,
 
 	init: init
 };
@@ -123,6 +158,7 @@ NGCE.ChromeSync = {
 
 function init() {
 	// chrome.storage.onChanged.addListener(storageChange);
+	
 };
 
 //------------------------------------------------------------

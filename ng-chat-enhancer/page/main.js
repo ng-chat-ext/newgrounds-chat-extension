@@ -21,6 +21,7 @@ function init() {
 
 	// Add events.
 	//------------------------------------------------------------
+	chrome.runtime.onMessage.addListener(runtimeMessage)
 	chrome.storage.onChanged.addListener(storageChange);
 	// These only watch for the actual lists to be generated.
 	userListCtnObserver = new WebKitMutationObserver(function(mutations) { mutations.forEach(userListCtnObserve); });
@@ -88,11 +89,16 @@ function userListObserve(mutation) {
 	usernameNode.setAttribute('ngce-name', usernameNode.getAttribute('alt').split("'")[0]);
 	statusNode.innerText = 'last seen: -';
 
-	node.replaceChild(wrapper, usernameNode);
-	wrapper.appendChild(firstLine);
-	wrapper.appendChild(statusNode);
-	firstLine.appendChild(actionToggleNode);
-	firstLine.appendChild(usernameNode);
+	try	{
+		node.replaceChild(wrapper, usernameNode);
+		wrapper.appendChild(firstLine);
+		wrapper.appendChild(statusNode);
+		firstLine.appendChild(actionToggleNode);
+		firstLine.appendChild(usernameNode);
+	}
+	catch (err) {
+		console.error(err, node, usernameNode);
+	}
 
 	// Apply block effect.
 	NGCE.Block.applyToUserNode(node);
@@ -171,6 +177,23 @@ function storageChange(changes, namespace) {
 		NGCE.ChromeSync.BlockList.Data = changes['blockList'].newValue;
 		NGCE.Block.refreshUserList();
 		NGCE.Block.refreshMessagesList();
+	}
+
+	// Sounds
+	if (changes['sounds']) {
+		NGCE.ChromeSync.Sounds.Data = changes['sounds'].newValue;
+		NGCE.Sounds.refreshSounds();
+	}
+};
+
+function runtimeMessage(msg, sender, response) {
+	if (msg.from === 'popup' && msg.subject === 'Sounds') {
+		var audioIDs = [];		
+		var audioElems = document.querySelectorAll('audio');
+		audioElems.forEach(function(e) {
+			audioIDs.push(e.id);
+		});
+		response(audioIDs);
 	}
 };
 

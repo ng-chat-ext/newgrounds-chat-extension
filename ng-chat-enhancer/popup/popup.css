@@ -147,6 +147,7 @@ label {
 .table > div > div {
 	vertical-align: top;
 	width: 50%;
+	word-wrap: break-word;
 }
 
 /*------------------------------------------------------------*/

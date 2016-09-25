@@ -53,6 +53,7 @@ function init() {
 
 	// Initialize.
 	NGCE.Block.init();
+	NGCE.Sounds.init();
 	NGCE.ChromeSync.Settings.load(refreshSettings);
 };
 
@@ -103,8 +104,6 @@ function chkSetZornModeChange() {
 //------------------------------------------------------------
 
 function switchMenu(index) {
-	console.log(index);
-
 	if (menuCurr != -1)
 		document.querySelector('.menu.show').classList.remove('show');
 
