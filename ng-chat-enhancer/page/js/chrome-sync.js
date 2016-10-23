@@ -5,15 +5,10 @@
 //------------------------------------------------------------
 
 var BlockList = {
-	//------------------------------------------------------------
 	Data: [],
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('blockList', function(result) {
 			// Store in variable.
@@ -23,23 +18,15 @@ var BlockList = {
 				callback();
 		});
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function() {
 		chrome.storage.sync.set({ 'blockList': NGCE.ChromeSync.BlockList.Data });
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Adds a user to the blocklist.
-	//------------------------------------------------------------
 	add: function(username, save) {
 		var o = NGCE.ChromeSync.BlockList;
 
@@ -48,13 +35,9 @@ var BlockList = {
 		if (save === true)
 			o.save();
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Remove a user from the blocklist.
-	//------------------------------------------------------------
 	remove: function(username, save) {
 		var o = NGCE.ChromeSync.BlockList;
 
@@ -65,55 +48,74 @@ var BlockList = {
 		if (save === true)
 			o.save();
 	}
-	//------------------------------------------------------------
+};
+
+
+
+var Mentions = {
+	Data: {},
+
+
+
+	load: function(callback) {
+		chrome.storage.sync.get('mentions', function(result) {
+			// Store in variable.
+			NGCE.ChromeSync.Mentions.Data = result.mentions || {};
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	},
+
+
+
+	save: function() {
+		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data });
+	},
+
+
+
+	add: function(mention, save) {
+		var o = NGCE.ChromeSync.Mentions;
+
+		o.Data.push(mention);
+
+		if (save === true)
+			o.save();
+	}
 };
 
 
 
 var Settings = {
-	//------------------------------------------------------------
 	Data: {},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('settings', function(result) {
 			// Store in variable.
 			NGCE.ChromeSync.Settings.Data = result.settings || {};
 			// Execute callback.
-			if (typeof callback === 'function')
+			if (typeof callback === 'function') 
 				callback();
 		});
 	}
-	//------------------------------------------------------------
 };
 
 
 
 var Sounds = {
-	//------------------------------------------------------------
 	Data: {},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function() {
 		chrome.storage.sync.set({ 'sounds': NGCE.ChromeSync.Sounds.Data });
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('sounds', function(result) {
 			// Store in variable.
@@ -123,7 +125,6 @@ var Sounds = {
 				callback();
 		});
 	}
-	//------------------------------------------------------------
 };
 
 //------------------------------------------------------------
@@ -133,6 +134,7 @@ var Sounds = {
 //------------------------------------------------------------
 NGCE.ChromeSync = {
 	BlockList: BlockList,
+	Mentions: Mentions,
 	Settings: Settings,
 	Sounds: Sounds,
 
@@ -147,7 +149,8 @@ NGCE.ChromeSync = {
 //------------------------------------------------------------
 
 function init() {
-	// chrome.storage.onChanged.addListener(storageChange);
+
+	chrome.storage.onChanged.addListener(storageChange);
 };
 
 //------------------------------------------------------------
@@ -158,23 +161,25 @@ function init() {
 // Private
 //------------------------------------------------------------
 
-// function storageChange(changes, namespace) {
-// 	var o = NGCE.ChromeSync;
+function storageChange(changes, namespace) {
+	// Settings
+	if (changes['settings']) {
+		NGCE.ChromeSync.Settings.Data = changes['settings'].newValue;
+		NGCE.Settings.refresh();
+	}
 
-// 	// Settings
-// 	if (changes['settings']) {
-// 		o.Settings.Data = changes['settings'].newValue;
+	// Block List
+	if (changes['blockList']) {
+		NGCE.ChromeSync.BlockList.Data = changes['blockList'].newValue;
+		NGCE.Block.refresh();
+	}
 
-// 		refreshSettings();
-// 	}
-
-// 	// Block List
-// 	if (changes['blockList']) {
-// 		o.BlockList.Data = changes['blockList'].newValue;
-// 		refreshUserList(NGCE.ChromeSync.BlockList.Data);
-// 		refreshMessagesList(NGCE.ChromeSync.BlockList.Data);
-// 	}
-// };
+	// Sounds
+	if (changes['sounds']) {
+		NGCE.ChromeSync.Sounds.Data = changes['sounds'].newValue;
+		NGCE.Sounds.refreshSounds();
+	}
+};
 
 //------------------------------------------------------------
 

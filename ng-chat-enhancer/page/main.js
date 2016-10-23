@@ -2,8 +2,8 @@
 // Variables
 //------------------------------------------------------------
 
-var userListCtn, userListCtnObserver, userList, userListObserver;
-var messagesListCtn, messagesListCtnObserver, messagesList, messagesListObserver;
+// Mutation observers.
+var obsULCtn, obsMLCtn;
 
 //------------------------------------------------------------
 
@@ -12,22 +12,14 @@ var messagesListCtn, messagesListCtnObserver, messagesList, messagesListObserver
 //------------------------------------------------------------
 // Initialize
 //------------------------------------------------------------
+
 document.addEventListener('DOMContentLoaded', init, false);
 function init() {
-	// Get elements.
-	//------------------------------------------------------------
-	userListCtn = document.querySelector('user-list');
-	messagesListCtn = document.querySelector('messages-list');
-
 	// Add events.
-	//------------------------------------------------------------
 	chrome.runtime.onMessage.addListener(runtimeMessage)
-	chrome.storage.onChanged.addListener(storageChange);
-	// These only watch for the actual lists to be generated.
-	userListCtnObserver = new WebKitMutationObserver(function(mutations) { mutations.forEach(userListCtnObserve); });
-	userListCtnObserver.observe(userListCtn, { childList: true });
-	messagesListCtnObserver = new WebKitMutationObserver(function(mutations) { mutations.forEach(messagesListCtnObserve); });
-	messagesListCtnObserver.observe(messagesListCtn, { childList: true });
+
+	// Initialize mutation observers.
+	initObserve();
 
 	// Remove airhorn overlay.
 	var overlayShame = document.querySelector('.overlay-shame-message') || null;
@@ -36,46 +28,97 @@ function init() {
 
 	// Initialize components.
 	NGCE.ChromeSync.init();
-	// NGCE.Block.init();
+	NGCE.Block.init();
 	NGCE.Emoticons.init();
 	NGCE.KeyCommands.init();
 	NGCE.LastSeen.init();
 	NGCE.LoveJin.init();
 	// NGCE.Mentions.init();
+	NGCE.Settings.init();	
 	NGCE.Sounds.init();	
-
-	NGCE.ChromeSync.Settings.load(refreshSettings);
-	NGCE.ChromeSync.BlockList.load();
 };
 
 //------------------------------------------------------------
-// User List
+
+
+
+//------------------------------------------------------------
+// Observe
 //------------------------------------------------------------
 
-function userListCtnObserve(mutation) {
-	var node = mutation.addedNodes[0];
+// Initializes mutation observers on the user-list and message-list.
+function initObserve() {
+	// Observe user-list.
+	//------------------------------------------------------------
+	var ULCtn = document.querySelector('user-list');
+	obsULCtn = new WebKitMutationObserver(function(mutations) { mutations.forEach(userListCtnObserve); });
+	obsULCtn.observe(ULCtn, { childList: true });
 
-	if (!node || node.nodeName !== "UL" || !node.classList.contains('user-list'))
-		return;
+	function userListCtnObserve(mutation) {
+		var node = mutation.addedNodes[0];
 
-	// Set user-list.
-	userList = node;
+		if (!node || node.nodeName !== "UL" || !node.classList.contains('user-list'))
+			return;
 
-	// Observe the generated class list.
-	userListObserver = new WebKitMutationObserver(function(mutations) { mutations.forEach(userListObserve); });
-	userListObserver.observe(userList, { childList: true });
+		// Observe the generated class list.
+		var obsUL = new WebKitMutationObserver(function(mutations) { mutations.forEach(userListObserve); });
+		obsUL.observe(node, { childList: true });
 
-	// Clean up.
-	userListCtnObserver.disconnect();
-	userListCtnObserver = null;
+		// Clean up.
+		obsULCtn.disconnect();
+		obsULCtn = null;
+	};
+	//------------------------------------------------------------
+
+
+
+	// Observe message-list.
+	//------------------------------------------------------------
+	var MLCtn = document.querySelector('messages-list');
+	obsMLCtn = new WebKitMutationObserver(function(mutations) { mutations.forEach(messagesListCtnObserve); });
+	obsMLCtn.observe(MLCtn, { childList: true });
+
+	function messagesListCtnObserve(mutation) {
+		var node = mutation.addedNodes[0];
+
+		if (!node || node.nodeName !== "UL" || !node.classList.contains('messages-list'))
+			return;
+
+		// Observe the generated class list.
+		var obsML = new WebKitMutationObserver(function(mutations) { mutations.forEach(messagesListObserve); });
+		obsML.observe(node, { childList: true });
+
+		// Clean up.
+		obsMLCtn.disconnect();
+		obsMLCtn = null;
+	};
+	//------------------------------------------------------------
 };
 
 function userListObserve(mutation) {
-	// Get Node
 	var node = mutation.addedNodes[0];
 	if (!node || node.nodeName !== "LI")
 		return;
 
+	// Change node structure.
+	changeUserListNodeStructure(node);
+
+	NGCE.Block.applyToUserNode(node);
+};
+
+function messagesListObserve(mutation) {
+	var node = mutation.addedNodes[0];
+	if (!node || node.nodeName !== "LI")
+		return;
+
+	NGCE.Block.applyToMessageNode(node);
+	NGCE.LastSeen.update(node);
+	NGCE.Mentions.isMentioned(node);
+};
+
+
+
+function changeUserListNodeStructure(node) {
 	// Change element structure.
 	var wrapper = document.createElement('div');
 	var firstLine = document.createElement('div');
@@ -99,92 +142,15 @@ function userListObserve(mutation) {
 	catch (err) {
 		console.error(err, node, usernameNode);
 	}
-
-	// Apply block effect.
-	NGCE.Block.applyToUserNode(node);
-};
-
-//------------------------------------------------------------
-// Messages List
-//------------------------------------------------------------
-
-function messagesListCtnObserve(mutation) {
-	var node = mutation.addedNodes[0];
-
-	if (!node || node.nodeName !== "UL" || !node.classList.contains('messages-list'))
-		return;
-
-	// Set user-list.
-	messagesList = node;
-
-	// Observe the generated class list.
-	messagesListObserver = new WebKitMutationObserver(function(mutations) { mutations.forEach(messagesListObserve); });
-	messagesListObserver.observe(messagesList, { childList: true });
-
-	// Clean up.
-	messagesListCtnObserver.disconnect();
-	messagesListCtnObserver = null;
-};
-
-function messagesListObserve(mutation) {
-	var node = mutation.addedNodes[0];
-	if (!node || node.nodeName !== "LI")
-		return;
-
-	NGCE.Block.applyToMessageNode(node);
-	NGCE.LastSeen.update(node);
 };
 
 //------------------------------------------------------------
 
 
 
-
-
-
 //------------------------------------------------------------
-// Settings
+// 
 //------------------------------------------------------------
-
-function refreshSettings() {
-	NGCE.LastSeen.showAll(NGCE.ChromeSync.Settings.Data.lastSeen);
-	refreshFont(NGCE.ChromeSync.Settings.Data.customFont);
-};
-
-//------------------------------------------------------------
-// Font
-//------------------------------------------------------------
-
-function refreshFont(fontName) {
-
-	document.getElementsByTagName("body")[0].style.fontFamily = (fontName) ? fontName : null;
-}
-
-//------------------------------------------------------------
-// Data
-//------------------------------------------------------------
-
-function storageChange(changes, namespace) {
-	// Settings
-	if (changes['settings']) {
-		NGCE.ChromeSync.Settings.Data = changes['settings'].newValue;
-
-		refreshSettings();
-	}
-
-	// Block List
-	if (changes['blockList']) {
-		NGCE.ChromeSync.BlockList.Data = changes['blockList'].newValue;
-		NGCE.Block.refreshUserList();
-		NGCE.Block.refreshMessagesList();
-	}
-
-	// Sounds
-	if (changes['sounds']) {
-		NGCE.ChromeSync.Sounds.Data = changes['sounds'].newValue;
-		NGCE.Sounds.refreshSounds();
-	}
-};
 
 function runtimeMessage(msg, sender, response) {
 	if (msg.from === 'popup' && msg.subject === 'Sounds') {

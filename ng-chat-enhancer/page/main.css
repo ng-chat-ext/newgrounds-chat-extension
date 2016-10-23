@@ -54,6 +54,49 @@
 /* ************************************************************ */
 
 
+
+/* ************************************************************ */
+/* Display Density */
+/* ************************************************************ */
+	
+	.ngce-density-cozy .msg-table-cell-icon {
+		width: 54px;
+	}
+	.ngce-density-cozy .msg-user-icon {
+		width: 36px;
+	}
+	
+	.ngce-density-compact .msg-table-cell-icon {
+		width: 54px;
+	}
+	.ngce-density-compact .msg-user-icon {
+		width: 36px;
+		margin-bottom: 4px;
+	}
+	.ngce-density-compact .msg-text-area {
+		margin-bottom: 0;
+	}
+	.ngce-density-compact .me-message-contents,
+	.ngce-density-compact .server-message-contents {
+		margin-bottom: 5px;
+	}
+
+/* ************************************************************ */
+
+
+
+/* ************************************************************ */
+/* Full Width */
+/* ************************************************************ */
+	
+	.ngce-fullwidth .row {
+		max-width: none;
+	}
+
+/* ************************************************************ */
+
+
+
 /* ************************************************************ */
 /* Chat Input */
 /* ************************************************************ */

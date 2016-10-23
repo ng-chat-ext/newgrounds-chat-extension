@@ -21,8 +21,10 @@ var btnFontClear;
 var btnFontSet;
 // Zornuzkull mode
 var chkSetZornMode;
-
-// var o = NGCE.ChromeSync.BlockList;
+// Density
+var ddlDensity;
+// Full Width
+var chkFullWidth;
 
 //------------------------------------------------------------
 
@@ -65,6 +67,18 @@ function chkSetZornModeChange() {
 	o.save();
 };
 
+function ddlDensityChange() {
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.density = ddlDensity.value;
+	o.save();
+};
+
+function chkFullWidthChange() {
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.fullWidth = chkFullWidth.checked;
+	o.save();
+};
+
 //------------------------------------------------------------
 
 function refreshSettings() {
@@ -73,6 +87,8 @@ function refreshSettings() {
 	chkSetLastSeen.checked = o.lastSeen;
 	lblFontCurrent.innerText = o.customFont || 'Default';
 	chkSetZornMode.checked = o.zornMode;
+	ddlDensity.value = o.density;
+	chkFullWidth.checked = o.fullWidth;
 };
 
 //------------------------------------------------------------
@@ -93,12 +109,18 @@ function init() {
 	btnFontSet = document.getElementById('btnFontSet');
 	//
 	chkSetZornMode = document.getElementById('chkSetZornMode');
+	//
+	ddlDensity = document.getElementById('ddlDensity');
+	//
+	chkFullWidth = document.getElementById('chkFullWidth');
 
 	// Add events.
 	chkSetLastSeen.addEventListener('change', chkSetLastSeenChange);
 	btnFontClear.addEventListener('click', btnFontClearClick);
 	btnFontSet.addEventListener('click', btnFontSetClick);
 	chkSetZornMode.addEventListener('change', chkSetZornModeChange);
+	ddlDensity.addEventListener('change', ddlDensityChange);
+	chkFullWidth.addEventListener('change', chkFullWidthChange);
 
 	NGCE.ChromeSync.Settings.load(refreshSettings);
 };

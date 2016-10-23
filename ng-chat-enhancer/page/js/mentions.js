@@ -2,7 +2,8 @@
 
 //------------------------------------------------------------
 NGCE.Mentions = {
-	init: init
+	init: init,
+	isMentioned: isMentioned
 };
 //------------------------------------------------------------
 
@@ -28,7 +29,15 @@ function init() {
 function storeIfMention(messageNode) {
 };
 
-function isWatchedMention(messageNode) {
+function isMentioned(msgNode) {
+	// console.log(msgNode);
+
+	if (msgNode.querySelector('.msg-text-area.mention') != null || msgNode.querySelector('.msg-text-area.mention')) {
+		// console.log('mentioned');
+	}
+	return;
+
+
 	var links = messageNode.querySelectorAll('.msg-text a');
 	if (links.length === 0)
 		return false;
