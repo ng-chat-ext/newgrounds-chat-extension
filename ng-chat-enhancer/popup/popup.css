@@ -31,6 +31,9 @@ a {
 	font-weight: bold;
 	text-decoration: none;
 }
+a:hover {
+	color: #fff;
+}
 
 div {
 	box-sizing: border-box;
@@ -116,12 +119,26 @@ label {
 }
 
 /*------------------------------------------------------------*/
-/* Menu buttons */
+/* Header */
+/*------------------------------------------------------------*/
+
+.header-btns div {
+	display: inline-block;
+	padding: 0 3px;
+	width: 33%;
+}
+
+.header-btns div input {
+	width: 100%;
+}
+
+/*------------------------------------------------------------*/
+/* Menu */
 /*------------------------------------------------------------*/
 
 .menu {
 	display: none;
-	max-height: 320px;
+	max-height: 350px;
 	overflow-y: scroll;
 	padding: 5px;
 }
@@ -129,6 +146,56 @@ label {
 .menu.show {
 	display: block;
 }
+
+/*------------------------------------------------------------*/
+/* Mentions */
+/*------------------------------------------------------------*/
+
+#tblMentions {
+	max-height: 230px;
+	overflow-y: scroll;
+	word-wrap: break-word;
+}
+
+#tblMentions > div {
+	border-bottom: solid 1px #eeb211;
+	margin-right: 10px;
+	padding: 6px 0;
+}
+
+#tblMentions .row1 {
+	margin-bottom: 2px;
+}
+
+#tblMentions .username.supporter,
+#tblMentions .username.mod {
+	color: #eeb211;
+}
+#tblMentions .username.mod {
+	font-weight: bold;
+}
+
+#tblMentions .channel {
+	color: gray;
+	float: right;
+	font-size: 75%;
+}
+
+/*------------------------------------------------------------*/
+
+#tblMentions .normal .time {
+	color: gray;
+	font-size: 75%;
+	margin-left: 5px;
+}
+
+#tblMentions .me .text {
+	color: white;
+}
+
+/*------------------------------------------------------------*/
+
+
 
 /*------------------------------------------------------------*/
 /* Settings */

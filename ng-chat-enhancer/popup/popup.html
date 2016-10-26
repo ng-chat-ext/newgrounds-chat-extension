@@ -7,11 +7,26 @@
 <body>
 
 
-	<div>
-		<input type="button" id="btnMenu1" value="Guide">
-		<input type="button" id="btnMenu2" value="Settings">
-		<input type="button" id="btnMenu3" value="Sounds">
-		<input type="button" id="btnMenu4" value="Block List">
+	<div class="header-btns">
+		<div><input type="button" id="btnMenu1" value="Mentions">
+		</div><div><input type="button" id="btnMenu2" value="Guide">
+		</div><div><input type="button" id="btnMenu3" value="Settings">
+		</div><div><input type="button" id="btnMenu4" value="Sounds">
+		</div><div><input type="button" id="btnMenu5" value="Block List">
+		</div><div><input type="button" id="btnMenu6" value="Stats">
+		</div>
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Mentions</h1>
+
+		<div id="tblMentions">
+
+		</div>
+
 	</div>
 
 
@@ -20,7 +35,13 @@
 
 		<h1>Guide</h1>
 
-		<a href="http://24901miles.newgrounds.com/news/post/963481" target="_blank">Newgrounds Chat Emoticon and Command List</a>
+		<a target="_blank" href="http://jin.newgrounds.com/news/post/965492">Extension News Page</a>
+		<br>
+		<a target="_blank" href="http://24901miles.newgrounds.com/news/post/963481">Newgrounds Chat Emoticon and Command List</a>
+		<br>
+		<a target="_blank" href="https://www.newgrounds.com/account/blocked">Block Users via Newgrounds</a>
+
+		
 
 		<h2>Extension Commands:</h2>
 		<div class="table">
@@ -36,9 +57,9 @@
 		</div>
 
 	</div>
-
-
 	
+
+
 	<div class="menu">
 
 		<h1>Settings</h1>
@@ -129,12 +150,31 @@
 	</div>
 
 
+
+	<div class="menu">
+
+		<h1>Stats</h1>
+
+		<div>
+		To be implemented. This will track:
+		<br>
+		<ul>
+			<li>Number of messages sent.</li>
+			<li>Number of mentions received.</li>
+		</ul>
+		If you have more ideas or want this feature sooner please tell me(Jin).
+		</div>
+
+	</div>
+
+
 	
 	<!-- Imports -->
 	<script src="js/_ngce.js"></script>
 	<script src="js/chrome-sync.js"></script>
 
 	<script src="js/block.js"></script>
+	<script src="js/mentions.js"></script>
 	<script src="js/settings.js"></script>
 	<script src="js/sounds.js"></script>
 

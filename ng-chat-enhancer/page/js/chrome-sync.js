@@ -53,7 +53,7 @@ var BlockList = {
 
 
 var Mentions = {
-	Data: {},
+	Data: [],
 
 
 
@@ -78,10 +78,13 @@ var Mentions = {
 	add: function(mention, save) {
 		var o = NGCE.ChromeSync.Mentions;
 
-		o.Data.push(mention);
+		// Always fetch the updated list before adding to mentions.
+		o.load(function() {
+			o.Data.push(mention);
 
-		if (save === true)
-			o.save();
+			if (save === true)
+				o.save();
+		});
 	}
 };
 

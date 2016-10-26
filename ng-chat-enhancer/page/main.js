@@ -4,6 +4,8 @@
 
 // Mutation observers.
 var obsULCtn, obsMLCtn;
+// Mention tracking.
+var trackMentions = false;
 
 //------------------------------------------------------------
 
@@ -16,7 +18,7 @@ var obsULCtn, obsMLCtn;
 document.addEventListener('DOMContentLoaded', init, false);
 function init() {
 	// Add events.
-	chrome.runtime.onMessage.addListener(runtimeMessage)
+	chrome.runtime.onMessage.addListener(runtimeMessage);
 
 	// Initialize mutation observers.
 	initObserve();
@@ -35,7 +37,7 @@ function init() {
 	NGCE.LoveJin.init();
 	// NGCE.Mentions.init();
 	NGCE.Settings.init();	
-	NGCE.Sounds.init();	
+	NGCE.Sounds.init();
 };
 
 //------------------------------------------------------------
@@ -113,7 +115,12 @@ function messagesListObserve(mutation) {
 
 	NGCE.Block.applyToMessageNode(node);
 	NGCE.LastSeen.update(node);
-	NGCE.Mentions.isMentioned(node);
+
+	// Only start tracking mentions after the server welcome message.
+	if (trackMentions)
+		NGCE.Mentions.storeIfMentioned(node);
+	else
+		trackMentions = node.querySelector(".server-message-text") !== null;
 };
 
 

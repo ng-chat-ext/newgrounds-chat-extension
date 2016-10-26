@@ -5,15 +5,10 @@
 //------------------------------------------------------------
 
 var BlockList = {
-	//------------------------------------------------------------
 	Data: [],
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('blockList', function(result) {
 			// Store in variable.
@@ -23,23 +18,15 @@ var BlockList = {
 				callback();
 		});
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function(callback) {
 		chrome.storage.sync.set({ 'blockList': NGCE.ChromeSync.BlockList.Data }, callback);
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Adds a user to the blocklist.
-	//------------------------------------------------------------
 	add: function(username, save) {
 		var o = NGCE.ChromeSync.BlockList;
 
@@ -48,13 +35,9 @@ var BlockList = {
 		if (save === true)
 			o.save();
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Remove a user from the blocklist.
-	//------------------------------------------------------------
 	remove: function(username, save) {
 		var o = NGCE.ChromeSync.BlockList;
 
@@ -65,31 +48,45 @@ var BlockList = {
 		if (save === true)
 			o.save();
 	}
-	//------------------------------------------------------------
+};
+
+
+
+var Mentions = {
+	Data: [],
+
+
+
+	load: function(callback) {
+		chrome.storage.sync.get('mentions', function(result) {
+			// Store in variable.
+			NGCE.ChromeSync.Mentions.Data = result.mentions || {};
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	},
+
+
+
+	save: function() {
+		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data });
+	}
 };
 
 
 
 var Settings = {
-	//------------------------------------------------------------
 	Data: {},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function() {
 		chrome.storage.sync.set({ 'settings': NGCE.ChromeSync.Settings.Data });
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('settings', function(result) {
 			// Store in variable.
@@ -99,31 +96,21 @@ var Settings = {
 				callback();
 		});
 	}
-	//------------------------------------------------------------
 };
 
 
 
 var Sounds = {
-	//------------------------------------------------------------
 	Data: {},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function() {
 		chrome.storage.sync.set({ 'sounds': NGCE.ChromeSync.Sounds.Data });
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('sounds', function(result) {
 			// Store in variable.
@@ -133,7 +120,6 @@ var Sounds = {
 				callback();
 		});
 	}
-	//------------------------------------------------------------
 };
 
 //------------------------------------------------------------
@@ -143,6 +129,7 @@ var Sounds = {
 //------------------------------------------------------------
 NGCE.ChromeSync = {
 	BlockList: BlockList,
+	Mentions: Mentions,
 	Settings: Settings,
 	Sounds: Sounds,
 

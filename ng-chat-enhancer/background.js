@@ -1,32 +1,30 @@
-//------------------------------------------------------------
-// Variables
-//------------------------------------------------------------
-
-var mentions = [];
+(function() {
 
 //------------------------------------------------------------
 
-function onLoad() {
+function init() {
+	chrome.storage.onChanged.addListener(storageChange);
+
 	// Set badge background color.
-	chrome.browserAction.setBadgeBackgroundColor({color: [255, 255, 255, 1]});
+	chrome.browserAction.setBadgeBackgroundColor({color: "#eeb211"});
+};
+init();
 
-	getMentions(function(mentions) {
+//------------------------------------------------------------
+
+function storageChange(changes, namespace) {
+	console.log(changes);
+	// Mentions
+	if (changes['mentions']) {
+		var mentions = changes['mentions'].newValue;
+		
 		var count = mentions.length;
 		var badgeText = (count > 99) ? '99+' : count.toString();
 
 		chrome.browserAction.setBadgeText({text: badgeText});
-	});
-}();
-
-//------------------------------------------------------------
-
-function getMentions(callback) {
-	chrome.storage.sync.get('mentions', function(result) {
-		// Execute callback.
-		callback(result.mentions || []);
-	});
+	}
 };
 
 //------------------------------------------------------------
 
-
+}());
