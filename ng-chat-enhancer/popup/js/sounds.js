@@ -26,7 +26,8 @@ var checkboxes = {};
 
 function refreshSoundsTable() {
 	for (var property in NGCE.ChromeSync.Sounds.Data) {
-		checkboxes[property].checked = NGCE.ChromeSync.Sounds.Data[property];
+		if (!!checkboxes[property])
+			checkboxes[property].checked = NGCE.ChromeSync.Sounds.Data[property];
 	}
 };
 
