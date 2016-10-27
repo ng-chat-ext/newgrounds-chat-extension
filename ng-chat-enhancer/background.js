@@ -13,12 +13,11 @@ init();
 //------------------------------------------------------------
 
 function storageChange(changes, namespace) {
-	console.log(changes);
 	// Mentions
 	if (changes['mentions']) {
-		var mentions = changes['mentions'].newValue;
+		var data = changes['mentions'].newValue;
 		
-		var count = mentions.length;
+		var count = data.count;
 		var badgeText = (count > 99) ? '99+' : count.toString();
 
 		chrome.browserAction.setBadgeText({text: badgeText});

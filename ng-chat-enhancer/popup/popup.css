@@ -168,10 +168,12 @@ label {
 }
 
 #tblMentions .username.supporter,
-#tblMentions .username.mod {
+#tblMentions .username.mod,
+#tblMentions .username.admin {
 	color: #eeb211;
 }
-#tblMentions .username.mod {
+#tblMentions .username.mod,
+#tblMentions .username.admin {
 	font-weight: bold;
 }
 

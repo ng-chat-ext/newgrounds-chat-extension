@@ -53,14 +53,14 @@ var BlockList = {
 
 
 var Mentions = {
-	Data: [],
+	Data: {},
 
 
 
 	load: function(callback) {
 		chrome.storage.sync.get('mentions', function(result) {
 			// Store in variable.
-			NGCE.ChromeSync.Mentions.Data = result.mentions || {};
+			NGCE.ChromeSync.Mentions.Data = !!result.mentions.mentions ? result.mentions : { count: 0, mentions: LZString.compressToUTF16('[]') };
 			// Execute callback.
 			if (typeof callback === 'function')
 				callback();
@@ -71,6 +71,13 @@ var Mentions = {
 
 	save: function() {
 		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data });
+		// chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data }, getBytesInUse);
+
+		// function getBytesInUse() {
+		// 	chrome.storage.sync.getBytesInUse('mentions', function (bytesInUse) {
+		// 		console.log('bytes in use: ' + bytesInUse);
+		// 	});
+		// }
 	},
 
 
@@ -80,7 +87,11 @@ var Mentions = {
 
 		// Always fetch the updated list before adding to mentions.
 		o.load(function() {
-			o.Data.push(mention);
+			o.Data.count++;
+
+			var obj = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
+			obj.push(mention);
+			o.Data.mentions = LZString.compressToUTF16(JSON.stringify(obj));
 
 			if (save === true)
 				o.save();

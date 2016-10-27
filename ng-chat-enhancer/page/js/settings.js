@@ -41,10 +41,8 @@ function setDensity(density) {
 };
 
 function setFullWidth(isFull) {
-	if (typeof isFull !== 'boolean') {
-		console.error('Must use boolean for setFullWidth');
+	if (typeof isFull !== 'boolean')
 		return;
-	}
 
 	var body = document.getElementsByTagName('body')[0];
 

@@ -17,6 +17,24 @@ function isMentioned(msgNode) {
 	return (msgNode.querySelector('.msg-text-area.mention') != null || msgNode.querySelector('.me-message-text.mention') != null);
 };
 
+function getRawText(node) {
+	var full = '';
+	node.childNodes.forEach(function(v) {
+		console.dir(v);
+		if (v.nodeName === 'IMG') {
+			full += v.alt;
+		} else if (v.nodeName === '#text') {
+			full += v.nodeValue;
+		} else if (v.nodeName === 'SPAN') {
+			full += v.getAttribute('title');
+			console.log(v.getAttribute('title'));
+		} else {
+	        full += v.innerText;
+	    }
+	})
+	return full;
+}
+
 //------------------------------------------------------------
 
 
@@ -45,16 +63,17 @@ function storeIfMentioned(msgNode) {
 		var userNode = msgNode.querySelector('.msg-username');
 		obj.username = userNode.innerText;
 		obj.userType = userNode.classList.contains('supporter') ? 'supporter' :
-					   userNode.classList.contains('mod') ? 'mod' : '';
+					   userNode.classList.contains('mod') ? 'mod' :
+					   userNode.classList.contains('admin') ? 'admin' : '';
 		obj.time = msgNode.querySelector('.msg-time').innerText;
-		obj.text = msgNode.querySelector('.msg-text-area').innerText;
+		obj.text = msgNode.querySelector('.msg-text-dmtext').innerText + getRawText(msgNode.querySelector('.msg-text'));
 	} else if (msgNode.querySelector('.me-message-text') != null) {
 		obj.type = 2;
-		obj.text = msgNode.querySelector('.me-message-text').innerText;
+		obj.text = getRawText(msgNode.querySelector('.me-message-text'));
 	}
 
 	// Add object to sync.
-	NGCE.ChromeSync.Mentions.add(obj, true);
+	NGCE.ChromeSync.Mentions.add(JSON.stringify(obj), true);
 };
 
 //------------------------------------------------------------

@@ -25,9 +25,10 @@ var o = NGCE.ChromeSync.Mentions;
 //------------------------------------------------------------
 
 function refreshTable() {
-	for (var i = o.Data.length - 1; i >= 0; i--) {
-		console.log(o.Data[i]);
-		tblMentions.appendChild(createEntry(o.Data[i]));
+	var obj = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions)).map(JSON.parse);
+
+	for (var i = obj.length - 1; i >= 0; i--) {
+		tblMentions.appendChild(createEntry(obj[i]));
 	}
 }
 
@@ -49,7 +50,8 @@ function createEntry(data) {
 		row1.appendChild(channel);
 
 		var username = document.createElement('span');
-		username.classList.add('username', data.userType);
+		if (!!data.userType)
+			username.classList.add('username', data.userType);
 		username.innerText = data.username;
 		row1.appendChild(username);
 
