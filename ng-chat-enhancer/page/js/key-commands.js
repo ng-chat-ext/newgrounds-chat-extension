@@ -69,6 +69,8 @@ function handleCommand(e) {
 
 function handleNormal(e) {
 	applyZornMode();
+	
+	NGCE.Stats.messageSent();
 };
 
 //------------------------------------------------------------

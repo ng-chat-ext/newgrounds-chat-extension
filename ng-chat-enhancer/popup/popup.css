@@ -114,6 +114,10 @@ label {
 	color: #eeb211
 }
 
+.gray {
+	color: gray;
+}
+
 .float-right {
 	float: right;
 }

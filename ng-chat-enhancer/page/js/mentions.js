@@ -3,7 +3,8 @@
 //------------------------------------------------------------
 NGCE.Mentions = {
 	init: init,
-	storeIfMentioned: storeIfMentioned
+	isMentioned: isMentioned,
+	store: store
 };
 //------------------------------------------------------------
 
@@ -13,24 +14,17 @@ NGCE.Mentions = {
 // Private
 //------------------------------------------------------------
 
-function isMentioned(msgNode) {
-	return (msgNode.querySelector('.msg-text-area.mention') != null || msgNode.querySelector('.me-message-text.mention') != null);
-};
-
 function getRawText(node) {
 	var full = '';
 	node.childNodes.forEach(function(v) {
-		console.dir(v);
-		if (v.nodeName === 'IMG') {
+		if (v.nodeName === 'IMG')
 			full += v.alt;
-		} else if (v.nodeName === '#text') {
+		else if (v.nodeName === '#text')
 			full += v.nodeValue;
-		} else if (v.nodeName === 'SPAN') {
+		else if (v.nodeName === 'SPAN')
 			full += v.getAttribute('title');
-			console.log(v.getAttribute('title'));
-		} else {
+		else
 	        full += v.innerText;
-	    }
 	})
 	return full;
 }
@@ -47,10 +41,11 @@ function init() {
 	NGCE.ChromeSync.Mentions.load();
 };
 
-function storeIfMentioned(msgNode) {
-	if (isMentioned(msgNode) !== true)
-		return;
+function isMentioned(msgNode) {
+	return (msgNode.querySelector('.msg-text-area.mention') != null || msgNode.querySelector('.me-message-text.mention') != null);
+};
 
+function store(msgNode) {
 	// Create object for storage.
 	var obj = {
 		read: false, // Flag to indicate whether this mention has been marked as read/unread.

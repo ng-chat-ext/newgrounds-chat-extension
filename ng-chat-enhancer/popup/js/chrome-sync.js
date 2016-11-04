@@ -122,6 +122,37 @@ var Sounds = {
 	}
 };
 
+
+
+var Stats = {
+	Data: {},
+	Watchers: [],
+
+
+
+	save: function() {
+		chrome.storage.sync.set({ 'stats': NGCE.ChromeSync.Stats.Data });
+	},
+
+
+
+	load: function(callback) {
+		chrome.storage.sync.get('stats', function(result) {
+			// Store in variable.
+			NGCE.ChromeSync.Stats.Data = result.stats || {};
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	},
+
+
+
+	addWatch: function(callback) {
+		NGCE.ChromeSync.Stats.Watchers.push(callback);
+	}
+};
+
 //------------------------------------------------------------
 
 
@@ -132,6 +163,7 @@ NGCE.ChromeSync = {
 	Mentions: Mentions,
 	Settings: Settings,
 	Sounds: Sounds,
+	Stats: Stats,
 
 	init: init
 };
@@ -144,8 +176,7 @@ NGCE.ChromeSync = {
 //------------------------------------------------------------
 
 function init() {
-	// chrome.storage.onChanged.addListener(storageChange);
-	
+	chrome.storage.onChanged.addListener(storageChange);
 };
 
 //------------------------------------------------------------
@@ -156,23 +187,16 @@ function init() {
 // Private
 //------------------------------------------------------------
 
-// function storageChange(changes, namespace) {
-// 	var o = NGCE.ChromeSync;
+function storageChange(changes, namespace) {
+	var o = NGCE.ChromeSync;
 
-// 	// Settings
-// 	if (changes['settings']) {
-// 		o.Settings.Data = changes['settings'].newValue;
+	// Settings
+	if (changes['stats']) {
+		o.Stats.Data = changes['stats'].newValue;
+		o.Stats.Watchers.forEach(function(f) { f(); });
+	}
 
-// 		refreshSettings();
-// 	}
-
-// 	// Block List
-// 	if (changes['blockList']) {
-// 		o.BlockList.Data = changes['blockList'].newValue;
-// 		refreshUserList(NGCE.ChromeSync.BlockList.Data);
-// 		refreshMessagesList(NGCE.ChromeSync.BlockList.Data);
-// 	}
-// };
+};
 
 //------------------------------------------------------------
 

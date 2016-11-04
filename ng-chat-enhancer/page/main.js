@@ -4,8 +4,8 @@
 
 // Mutation observers.
 var obsULCtn, obsMLCtn;
-// Mention tracking.
-var trackMentions = false;
+// After welcome
+var afterWelcome = false;
 
 //------------------------------------------------------------
 
@@ -38,6 +38,7 @@ function init() {
 	// NGCE.Mentions.init();
 	NGCE.Settings.init();	
 	NGCE.Sounds.init();
+	NGCE.Stats.init();
 };
 
 //------------------------------------------------------------
@@ -102,8 +103,9 @@ function userListObserve(mutation) {
 	if (!node || node.nodeName !== "LI")
 		return;
 
-	// Change node structure.
+	// Modify node.
 	changeUserListNodeStructure(node);
+	removeHref(node);
 
 	NGCE.Block.applyToUserNode(node);
 };
@@ -113,14 +115,20 @@ function messagesListObserve(mutation) {
 	if (!node || node.nodeName !== "LI")
 		return;
 
+	// Modify node.
+	removeHref(node);
+
 	NGCE.Block.applyToMessageNode(node);
 	NGCE.LastSeen.update(node);
 
-	// Only start tracking mentions after the server welcome message.
-	if (trackMentions)
-		NGCE.Mentions.storeIfMentioned(node);
-	else
-		trackMentions = node.querySelector(".server-message-text") !== null;
+	// Actions that should only be performed after the server welcome message.
+	if (afterWelcome) {
+		if (NGCE.Mentions.isMentioned(node)) {
+			NGCE.Mentions.store(node);
+			NGCE.Stats.mentioned();
+		}
+	} else
+		afterWelcome = node.querySelector(".server-message-text") !== null;
 };
 
 
@@ -149,6 +157,12 @@ function changeUserListNodeStructure(node) {
 	catch (err) {
 		console.error(err, node, usernameNode);
 	}
+};
+
+function removeHref(node) {
+	var usernameNode = node.querySelector('.msg-username, .user-list-username');
+	if (usernameNode)
+		usernameNode.removeAttribute('href');
 };
 
 //------------------------------------------------------------

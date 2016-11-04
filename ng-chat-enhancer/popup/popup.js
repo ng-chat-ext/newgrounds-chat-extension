@@ -30,10 +30,12 @@ function init() {
 	switchMenu(0);
 
 	// Initialize components.
+	NGCE.ChromeSync.init();
 	NGCE.Block.init();
 	NGCE.Mentions.init();
 	NGCE.Sounds.init();
 	NGCE.Settings.init();
+	NGCE.Stats.init();
 };
 
 //------------------------------------------------------------

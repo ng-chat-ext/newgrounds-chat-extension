@@ -70,7 +70,9 @@ var Mentions = {
 
 
 	save: function() {
-		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data });
+		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data }, function() {
+			console.log('error detected', chrome.runtime.lastError);
+		});
 		// chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data }, getBytesInUse);
 
 		// function getBytesInUse() {
@@ -141,6 +143,30 @@ var Sounds = {
 	}
 };
 
+
+
+var Stats = {
+	Data: {},
+
+
+
+	save: function() {
+		chrome.storage.sync.set({ 'stats': NGCE.ChromeSync.Stats.Data });
+	},
+
+
+
+	load: function(callback) {
+		chrome.storage.sync.get('stats', function(result) {
+			// Store in variable.
+			NGCE.ChromeSync.Stats.Data = result.stats || {};
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	}
+};
+
 //------------------------------------------------------------
 
 
@@ -151,6 +177,7 @@ NGCE.ChromeSync = {
 	Mentions: Mentions,
 	Settings: Settings,
 	Sounds: Sounds,
+	Stats: Stats,
 
 	init: init
 };
