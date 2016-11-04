@@ -63,7 +63,7 @@ input[type="button"] {
 
 	margin: 0.5em 0 0 0;
 	padding: 0.4em 0.7em;
-    outline: 0;
+    outline: none;
 }
 
 input[type="button"]:hover {
@@ -79,6 +79,40 @@ h1, h2, h3 {
 
 label {
 	display: inline-block;
+}
+
+select {
+    -webkit-appearance: none;
+    background: none!important;
+    background-color: rgba(0,0,0,0.5)!important;
+    border: 0;
+    border-radius: 2px;
+    color: #EEB211;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    height: 26px;
+    line-height: 26px;
+    outline: none;
+    padding: 0 26px 0 6px;
+    vertical-align: middle;
+}
+.select-wrapper {
+	display: inline-block;
+    position: relative;
+    align-items: center;
+}
+.select-wrapper::after {
+    content: '';
+    position: absolute;
+    right: 8px;
+    top: calc(50% - 2px);
+    display: block;
+    width: 0;
+    height: 0;
+    border: 5px solid;
+    pointer-events: none;
+    border-color: #EEB211 transparent transparent;
 }
 
 ::-webkit-scrollbar {
@@ -120,6 +154,10 @@ label {
 
 .float-right {
 	float: right;
+}
+
+[uncopyable]::before {
+	content: attr(uncopyable);
 }
 
 /*------------------------------------------------------------*/
@@ -221,16 +259,6 @@ label {
 	vertical-align: top;
 	width: 50%;
 	word-wrap: break-word;
-}
-
-/*------------------------------------------------------------*/
-
-#status {
-	/* avoid an excessively wide status text */
-	white-space: pre;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	max-width: 400px;
 }
 
 /*------------------------------------------------------------*/

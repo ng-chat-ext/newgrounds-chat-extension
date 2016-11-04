@@ -73,7 +73,7 @@ function createEntry(data) {
 
 		var channel = document.createElement('div');
 		channel.classList.add('channel');
-		channel.innerText = data.channel;
+		channel.setAttribute('uncopyable', data.channel);
 		row1.appendChild(channel);
 
 		var text = document.createElement('div');
