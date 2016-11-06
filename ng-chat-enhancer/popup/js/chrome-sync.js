@@ -53,14 +53,17 @@ var BlockList = {
 
 
 var Mentions = {
-	Data: [],
+	Data: {},
 
 
 
 	load: function(callback) {
 		chrome.storage.sync.get('mentions', function(result) {
+			var o = NGCE.ChromeSync.Mentions;
 			// Store in variable.
-			NGCE.ChromeSync.Mentions.Data = result.mentions || {};
+			o.Data = result.mentions || {};
+			o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
+
 			// Execute callback.
 			if (typeof callback === 'function')
 				callback();
@@ -70,7 +73,10 @@ var Mentions = {
 
 
 	save: function() {
-		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data });
+		var o = NGCE.ChromeSync.Mentions;
+		
+		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
+		chrome.storage.sync.set({ 'mentions': o.Data });
 	}
 };
 

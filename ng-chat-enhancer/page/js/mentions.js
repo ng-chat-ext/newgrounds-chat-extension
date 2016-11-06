@@ -68,7 +68,7 @@ function store(msgNode) {
 	}
 
 	// Add object to sync.
-	NGCE.ChromeSync.Mentions.add(JSON.stringify(obj), true);
+	NGCE.ChromeSync.Mentions.add(obj, true);
 };
 
 //------------------------------------------------------------

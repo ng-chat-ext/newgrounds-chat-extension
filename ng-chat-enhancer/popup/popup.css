@@ -219,9 +219,42 @@ select {
 	font-weight: bold;
 }
 
+/*------------------------------------------------------------*/
+
+#tblMentions .right {
+	float: right;
+}
+
+#tblMentions .right * {
+	display: inline-block;
+	margin-left: 4px !important;
+	vertical-align: middle;
+}
+
+#tblMentions .right > div[class^="btn-"] {
+	background-color: initial;
+	cursor: pointer;
+	margin: 1px;
+	padding: 0;
+	height: 10px;
+	width: 10px;
+}
+
+#tblMentions .right > .btn-read.read {
+	background: url('img/read.png');
+}
+
+#tblMentions .right > .btn-read.unread {
+	background: url('img/unread.png');
+}
+
+#tblMentions .right > .btn-del {
+	background: url('img/cross.svg');
+	background-size: contain;
+}
+
 #tblMentions .channel {
 	color: gray;
-	float: right;
 	font-size: 75%;
 }
 

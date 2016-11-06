@@ -59,8 +59,13 @@ var Mentions = {
 
 	load: function(callback) {
 		chrome.storage.sync.get('mentions', function(result) {
+			var o = NGCE.ChromeSync.Mentions;
+
 			// Store in variable.
-			NGCE.ChromeSync.Mentions.Data = !!result.mentions.mentions ? result.mentions : { count: 0, mentions: LZString.compressToUTF16('[]') };
+			o.Data = (result.mentions.v === '1') ? result.mentions : { v: '1', unread: 0, mentions: LZString.compressToUTF16('[]') };
+			// Decompress and parse data into object.
+			o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
+			
 			// Execute callback.
 			if (typeof callback === 'function')
 				callback();
@@ -70,7 +75,12 @@ var Mentions = {
 
 
 	save: function() {
-		chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data }, function() {
+		var o = NGCE.ChromeSync.Mentions;
+
+		// Convert data into string and compress.
+		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
+
+		chrome.storage.sync.set({ 'mentions': o.Data }, function() {
 			console.log('error detected', chrome.runtime.lastError);
 		});
 		// chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data }, getBytesInUse);
@@ -89,11 +99,14 @@ var Mentions = {
 
 		// Always fetch the updated list before adding to mentions.
 		o.load(function() {
-			o.Data.count++;
+			o.Data.unread++;
 
-			var obj = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
-			obj.push(mention);
-			o.Data.mentions = LZString.compressToUTF16(JSON.stringify(obj));
+			if (o.Data.mentions.length === 0)
+				mention.id = 1;
+			else
+				mention.id = (o.Data.mentions[o.Data.mentions.length - 1].id || 0) + 1;
+
+			o.Data.mentions.push(mention);
 
 			if (save === true)
 				o.save();
