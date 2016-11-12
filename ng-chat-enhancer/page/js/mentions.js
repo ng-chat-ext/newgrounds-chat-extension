@@ -2,7 +2,6 @@
 
 //------------------------------------------------------------
 NGCE.Mentions = {
-	init: init,
 	isMentioned: isMentioned,
 	store: store
 };
@@ -36,10 +35,6 @@ function getRawText(node) {
 //------------------------------------------------------------
 // Public
 //------------------------------------------------------------
-
-function init() {
-	NGCE.ChromeSync.Mentions.load();
-};
 
 function isMentioned(msgNode) {
 	return (msgNode.querySelector('.msg-text-area.mention') != null || msgNode.querySelector('.me-message-text.mention') != null);

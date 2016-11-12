@@ -13,6 +13,9 @@ NGCE.Mentions = {
 //------------------------------------------------------------
 
 var tblMentions;
+var ddlMentions;
+var btnMentionsGo;
+var lblMentionsEmpty;
 
 var o = NGCE.ChromeSync.Mentions;
 
@@ -34,11 +37,11 @@ function refreshTable() {
 	for (var i = obj.length - 1; i >= 0; i--) {
 		tblMentions.appendChild(createEntry(obj[i]));
 	}
+
+	showMessageIfEmpty();
 };
 
 function createEntry(data) {
-
-	console.log(data);
 
 	// Container
 	var ctn = document.createElement('div');
@@ -126,6 +129,24 @@ function toggleRead(e) {
 	});
 };
 
+function setAllReadStatus(readStatus) {
+	o.load(function() {
+		// Update view.
+		var elems = tblMentions.querySelectorAll('.btn-read');
+		for (var i = elems.length - 1; i >= 0; i--) {
+			elems[i].classList.toggle('read', readStatus);
+			elems[i].classList.toggle('unread', !readStatus);
+		}
+
+		// Update data.
+		o.Data.unread = readStatus ? 0 : o.Data.mentions.length;
+		for (var i = o.Data.mentions.length - 1; i >= 0; i--) {
+			o.Data.mentions[i].read = readStatus;
+		}
+		o.save();
+	});
+};
+
 function deleteMention(e) {
 	o.load(function() {
 		var elem = e.srcElement;
@@ -140,7 +161,46 @@ function deleteMention(e) {
 
 		o.Data.mentions.splice(index, 1);
 		o.save();
+
+		showMessageIfEmpty();
 	});
+};
+
+function deleteAll() {
+	o.load(function() {
+		// Update view.
+		while (tblMentions.firstChild) {
+			tblMentions.removeChild(tblMentions.firstChild);
+		}
+
+		// Update data.
+		o.Data.unread = 0;
+		o.Data.mentions = [];
+		o.save();
+
+		showMessageIfEmpty();
+	});
+};
+
+function btnMentionsGoClick(e) {
+	switch (ddlMentions.value) {
+		case '1':
+			setAllReadStatus(true);
+			break;
+		case '2':
+			setAllReadStatus(false);
+			break;
+		case '3':
+			deleteAll();
+			break;
+	}
+
+	ddlMentions.selectedIndex = 0;
+};
+
+function showMessageIfEmpty() {
+	console.log(o.Data.mentions.length, o.Data.mentions);
+	lblMentionsEmpty.style.display = (o.Data.mentions.length === 0) ? 'block' : 'none';
 };
 
 //------------------------------------------------------------
@@ -172,7 +232,11 @@ function getFirstAncestorByClass(elem, className) {
 
 function init() {
 	tblMentions = document.getElementById('tblMentions');
+	ddlMentions = document.getElementById('ddlMentions');
+	btnMentionsGo = document.getElementById('btnMentionsGo');
+	lblMentionsEmpty = document.getElementById('lblMentionsEmpty');
 
+	btnMentionsGo.addEventListener('click', btnMentionsGoClick);
 	o.load(refreshTable);
 };
 

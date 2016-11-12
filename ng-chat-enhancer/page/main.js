@@ -34,8 +34,6 @@ function init() {
 	NGCE.Emoticons.init();
 	NGCE.KeyCommands.init();
 	NGCE.LastSeen.init();
-	NGCE.LoveJin.init();
-	// NGCE.Mentions.init();
 	NGCE.Settings.init();	
 	NGCE.Sounds.init();
 	NGCE.Stats.init();
@@ -155,7 +153,8 @@ function changeUserListNodeStructure(node) {
 		firstLine.appendChild(usernameNode);
 	}
 	catch (err) {
-		console.error(err, node, usernameNode);
+		// Can't figure out the occasional error here. It doesn't affect functionality though.
+		// console.error(err, node, usernameNode);
 	}
 };
 

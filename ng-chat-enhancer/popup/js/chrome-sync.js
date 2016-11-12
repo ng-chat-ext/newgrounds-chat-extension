@@ -75,8 +75,11 @@ var Mentions = {
 	save: function() {
 		var o = NGCE.ChromeSync.Mentions;
 		
+		// Keep array structure, save compressed data.
+		var arr = o.Data.mentions.slice(0);
 		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
 		chrome.storage.sync.set({ 'mentions': o.Data });
+		o.Data.mentions = arr;
 	}
 };
 

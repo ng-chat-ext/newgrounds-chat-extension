@@ -61,7 +61,6 @@ input[type="button"] {
 
     font-weight: bold;
 
-	margin: 0.5em 0 0 0;
 	padding: 0.4em 0.7em;
     outline: none;
 }
@@ -160,6 +159,20 @@ select {
 	content: attr(uncopyable);
 }
 
+/* vertical middle container */
+.vmc > * {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.mar-top-sm {
+	margin-top: .5em;
+}
+
+.mar-left-md {
+	margin-left: 1em;
+}
+
 /*------------------------------------------------------------*/
 /* Header */
 /*------------------------------------------------------------*/
@@ -183,6 +196,7 @@ select {
 	max-height: 350px;
 	overflow-y: scroll;
 	padding: 5px;
+	position: relative;
 }
 
 .menu.show {
