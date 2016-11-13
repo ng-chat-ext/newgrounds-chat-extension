@@ -62,7 +62,7 @@ var Mentions = {
 			var o = NGCE.ChromeSync.Mentions;
 
 			// Store in variable.
-			o.Data = (result.mentions.v === '1') ? result.mentions : { v: '1', unread: 0, mentions: LZString.compressToUTF16('[]') };
+			o.Data = (!!result.mentions && result.mentions.v === '1') ? result.mentions : { v: '1', unread: 0, mentions: LZString.compressToUTF16('[]') };
 			// Decompress and parse data into object.
 			o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
 			
@@ -81,15 +81,9 @@ var Mentions = {
 		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
 
 		chrome.storage.sync.set({ 'mentions': o.Data }, function() {
-			console.log('error detected', chrome.runtime.lastError);
+			if (chrome.runtime.lastError)
+				console.log('Error detected', chrome.runtime.lastError);
 		});
-		// chrome.storage.sync.set({ 'mentions': NGCE.ChromeSync.Mentions.Data }, getBytesInUse);
-
-		// function getBytesInUse() {
-		// 	chrome.storage.sync.getBytesInUse('mentions', function (bytesInUse) {
-		// 		console.log('bytes in use: ' + bytesInUse);
-		// 	});
-		// }
 	},
 
 
@@ -110,6 +104,14 @@ var Mentions = {
 
 			if (save === true)
 				o.save();
+		});
+	},
+
+
+
+	getBytesInUse: function() {
+		chrome.storage.sync.getBytesInUse('mentions', function (bytesInUse) {
+			console.log('bytes in use: ' + bytesInUse);
 		});
 	}
 };
