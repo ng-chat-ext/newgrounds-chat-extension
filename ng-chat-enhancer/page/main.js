@@ -31,7 +31,7 @@ function init() {
 	// Initialize components.
 	NGCE.ChromeSync.init();
 	NGCE.Block.init();
-	NGCE.Emoticons.init();
+	// NGCE.Emoticons.init(); // Initialized in messagesListCtnObserve.
 	NGCE.KeyCommands.init();
 	NGCE.LastSeen.init();
 	NGCE.Settings.init();	
@@ -84,6 +84,9 @@ function initObserve() {
 
 		if (!node || node.nodeName !== "UL" || !node.classList.contains('messages-list'))
 			return;
+
+		// Init features dependent on messages-list.
+		NGCE.Emoticons.init();
 
 		// Observe the generated class list.
 		var obsML = new WebKitMutationObserver(function(mutations) { mutations.forEach(messagesListObserve); });

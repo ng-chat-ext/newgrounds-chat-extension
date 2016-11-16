@@ -1,21 +1,5 @@
 (function() {
 
-var 
-	chatInputArea,
-	chat_input,
-	dParser,
-	dankList,
-	faicList,
-	fulpList,
-	picoList,
-	pixelList,
-	dankTab,
-	fulpTab,
-	faicTab,
-	picoTab,
-	pixelTab
-	;
-
 //------------------------------------------------------------
 NGCE.Emoticons = {
 	init: init
@@ -25,256 +9,202 @@ NGCE.Emoticons = {
 
 
 //------------------------------------------------------------
-// Private
+// Private variables
+//------------------------------------------------------------
+
+var 
+	chatInputArea,
+	chatInputTextArea,
+	messagesArea,
+	messagesList,
+	moreMessagesArea,
+	diffScroll,
+	timerScroll,
+
+	dankList,
+	faicList,
+	fulpList,
+	picoList,
+	pixelList,
+	animList,
+
+	dankTab,
+	fulpTab,
+	faicTab,
+	picoTab,
+	pixelTab,
+	animTab
+	;
+
 //------------------------------------------------------------
 
 
-// Waits for the Page's opacity to be fully visibile,
-// otherwise, emote widget appears in the loading background
-function waitForPageShow(){
-	var page = document.getElementById("overlay-loading");
 
-	var pageObserver = new MutationObserver(function(mutations){
-		mutations.forEach(function(mutation){
-			//Setting time out because there is a slight delay between when the loading screen
-			//is fully invisible 
-			if(window.getComputedStyle(mutation.target, null).getPropertyValue('display') === "none")
-				setTimeout(function(){
-					document.getElementById('emote-popup').style.display = "flex";
-				}, 250);
-		});
-	});
-
-	pageObserver.observe(page, {attributes: true});
-}
+//------------------------------------------------------------
+// Private
+//------------------------------------------------------------
 
 function addEmoteBtn(){
 	//Btn to call popup menu
 	var emoteBtn = document.createElement("div");
 	emoteBtn.id = "emote-btn";
+	emoteBtn.style.backgroundImage = "url(" + chrome.extension.getURL("page/img/smile.svg") + ")";
+	emoteBtn.addEventListener('click', emoteBtnClick, false);
 	chatInputArea.appendChild(emoteBtn);
+};
 
-	//Neet lil' arrow
-	var arrow = document.createElement("div");
-	arrow.id = "arrow";
-	emoteBtn.appendChild(arrow);
-
-	//Grabs opup menu from template to browse a fresh selection of dank memes.
-	//And some emoticons too, I guess.
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', chrome.extension.getURL("page/html/template.html"), true);
-	xhr.send(null);
-
-	xhr.onload = function(){
-		var menu = dParser.parseFromString(xhr.responseText, 'text/html');
-		document.body.appendChild(menu.body.children['emote-popup']);
-		var emotePopup = document.getElementById("emote-popup");
-
-		emoteBtn.addEventListener('click', popupEmote, false);
-		emotePopup.addEventListener('click', function(){
-			//Focus back to text area
-			document.getElementById("chat-input-textarea").focus();
-		}, false);
-
-		setupEmotes();
-	}
-}
-
-var popupEmote = function(){
-
-	var page = document.getElementById('page');
-
-	if(page.className === "page-up")
-		page.className = "page-down";
-	else
-		page.className = "page-up";
-
+function emoteBtnClick() {
+	var body = document.querySelector('body');
+	body.classList.toggle('ngce-emote-open');
 
 	//Autofocus on textarea
-	document.getElementById("chat-input-textarea").focus();
-}
+	chatInputTextArea.focus();
 
-function setupEmotes(){
+	scrollAtEnd = moreMessagesArea.classList.contains('hidden');
+	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;
+	clearInterval(timerScroll);
+	timerScroll = setInterval(updateScroll, 10);
+};
 
-	// Assign elements
-	var menuContainer = document.getElementById("emote-popup");
+function initExternal(){
+	var menu = new DOMParser().parseFromString(e.target.responseText, 'text/html');
+	document.querySelector('.chat-area').appendChild(menu.body.children['emote-popup']);
 
+	var emotePopup = document.getElementById("emote-popup");
+	emotePopup.classList.add('emote-container');
+	emotePopup.addEventListener('click', function(){ chatInputTextArea.focus(); }, false);
+
+	// Get elements.
 	dankList = document.getElementById("dank-list");
 	faicList = document.getElementById("faic-list");
 	fulpList = document.getElementById("fulp-list");
 	picoList = document.getElementById("pico-list");
 	pixelList = document.getElementById("pixel-list");
+	animList = document.getElementById("anim-list");
 	dankTab = document.getElementById("dank-tab");
 	fulpTab = document.getElementById("fulp-tab");
 	faicTab = document.getElementById("faic-tab");
 	picoTab = document.getElementById("pico-tab");
 	pixelTab = document.getElementById("pixel-tab");
-
-	chat_input = document.getElementById("chat-input-textarea");
-
-
+	animTab = document.getElementById("anim-tab");
 
 	// Assign events
-
 	dankTab.addEventListener('click',function(){ scrollTo(dankList); });
-
 	fulpTab.addEventListener('click', function(){ scrollTo(fulpList); });
-
 	faicTab.addEventListener('click', function(){ scrollTo(faicList); });
-
 	picoTab.addEventListener('click', function(){ scrollTo(picoList); });
-
 	pixelTab.addEventListener('click', function(){ scrollTo(pixelList); });
+	animTab.addEventListener('click', function(){ scrollTo(animList); });
+};
 
+function continueInit() {
+	var ss = getStyleSheet();
 
-	getExternalCss();
-}
+	var started = false;
+	var isEmot; // Flag if rule is an emoticon rule.
+	var r; // Holds current rule in loop.
 
-function getExternalCss(){
-	var css = document.querySelector('link[rel="stylesheet"][type="text/css"]');
+	// Loop through all emoticon rules.
+	for (var i = ss.rules.length - 1; i >= 0; i--) {
+		r = ss.rules[i];
 
-	var xhr = new XMLHttpRequest();
-	xhr.open('GET', "https://chat.newgrounds.com" + css.getAttribute("href"), true);
-	xhr.send(null);
-	xhr.onload = function(){
-		parseCSS(xhr.responseText);
-	};
-	
-}
+		// Optimization for skipping all rules after emoticons.
+		isEmot = r.selectorText && r.selectorText.indexOf('ng-emoticon-') !== -1;
+		if (!started && !isEmot) continue;
+		else if (!started && isEmot) started = true;
+		else if (started && !isEmot) break;
+		// Skip all ineligible selectors.
+		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
 
-function parseCSS(styleSheet){
-	// Finds all emoticon related class selectors
-	var classSelectorRegEx = /\.ng-emoticon-([a-z]+)([A-Za-z0-9]+)[{\s]*([^b]*([^:]+)[^}]+)/g;
-	var classSelector;
-
-	// Finds the "original Faic's" sprite sheet
-	var ngSpriteCSSRegEx = /\.ng-emoticon[^-{]*{([^}]+)/g;
-	var ngSpriteCSS = ngSpriteCSSRegEx.exec(styleSheet);
-
-	// Finds emoticon class selectors that contain the sprite url
-	var attributeSelectorRegEx = /\[class\^=ng-emoticon-([^\]]+)]([^\{]+|{)([^\}]+)/g;
-	var attributeSelector;
-	var attributes = new Array();
-
-	while((attributeSelector = attributeSelectorRegEx.exec(styleSheet)) != null){
-		attributes.push(attributeSelector);
+		createEmote(r.selectorText);
 	}
-	
-	while((classSelector = classSelectorRegEx.exec(styleSheet)) != null){
-		if(classSelector[4] === "background"){
-			addEmote(classSelector, null);
-		} else if(classSelector[4] === "background-position"){
-			addEmote(classSelector, findSprite(attributes, classSelector[1]) || ngSpriteCSS);
-		} else {
-			console.error("Err: Unexpected background modifier " + classSelector[1]);
-		}
+};
+
+function getStyleSheet() {
+	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
+		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
+			return document.styleSheets[i];
 	}
-}
+};
 
-// Returns the matching prefix array which also contains the sprite url,
-// else returns null.
-function findSprite(prefixList, prefix){
-	for(var i = 0; i < prefixList.length; i++){
-		if(prefixList[i][1] === prefix){
-			return prefixList[i];
-		}
-	}
+function createEmote(selectorText){
+	var className = selectorText.substring(1);
+	var name = className.split('-')[2];
 
-	return null;
-}
-
-function addEmote(regEx, sprite){
-	// Name of the emoticon
-	var nameRegEx = /-((ng|tf)[^{]+){/g;
-	var name;
-	
-	// Gets the emote image
-	var bgRegEx = /background:.*(url\(([^)]+)\)[^;]+)/g;
-	var bg;
-
-	if(sprite != null){
-		var bp = regEx[3].substring(regEx[3].indexOf(":")+1, regEx[3].length);
-		if((bg = bgRegEx.exec(sprite[0])) !== null){
-			createEmote(cachedUrl(bg[1]), regEx[1]+regEx[2], bp);
-		}
-	}else if((bg = bgRegEx.exec(regEx[3])) !== null){
-		createEmote(cachedUrl(bg[1]), regEx[1]+regEx[2], null);
-	}
-
-}
-
-function createEmote(background, name, spritePosition){
 	var emote = document.createElement("div");
-
-	emote.className = "emote";
-	emote.style.background = background;
-
-	if(spritePosition != null){
-		emote.style['background-position'] = spritePosition;
-		emote.className += " small-emote";
-	} else {
-		emote.className += " big-emote";
-	}
-
 	emote.setAttribute("title", name);
-
-	emote.addEventListener("click", function(){
-		chat_input.value += name + " ";
-	});
+	emote.addEventListener("click", emoteClick);
+	emote.classList.add(className, 'ng-emoticon', 'emote', 'small-emote');
 
 	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
 		case "ng":
-			if(spritePosition == null){
-				emote.className += " dank-emoji";
-				dankList.appendChild(emote);
-			}else{
-				emote.className += " faic-emoji";
-				faicList.appendChild(emote);
-			}
+			faicList.appendChild(emote);
 			break;
-
 		case "tf":
-			emote.className += " fulp-emoji";
 			fulpList.appendChild(emote);
-		break;
-
+			break;
 		case "ngp":
 		case "ngd":
 		case "ngn":
-			emote.className += " pico-emoji";
 			picoList.appendChild(emote);
 			break;
 		case "ngs":
-			emote.className += " pixel-emoji";
 			pixelList.appendChild(emote);
 			break;
-
 		case "nga":
-			// soon....
+			animList.appendChild(emote);
 			break;
-
 		default:
-			emote.className = "dank-emoji";
-			document.getElementById("dank-list").appendChild(emote);
+			dankList.appendChild(emote);
 	}
-}
+};
+
+function emoteClick(e) {
+	var name = e.srcElement.getAttribute('title');
+	var v = chatInputTextArea.value;
+	var p = chatInputTextArea.selectionStart;
+	var end = p;
+	var val = '';
+
+	// Add space padding to the front and back of the inserted text if there isn't any.
+	// I believe this might improve user experience because emoticons are sent as text.
+	if (p !== 0 && v[p-1] !== ' ') { val += ' '; end++; }
+	val += name;
+	if (v[p] !== ' ') 	{ val += ' '; end++; }
+
+	// Insert text at caret position.
+	chatInputTextArea.value = v.substr(0, p) + val + v.substr(p);
+
+	// Move caret back to where it should be.
+	chatInputTextArea.selectionStart = end + name.length;
+	chatInputTextArea.selectionEnd = end + name.length;
+};
+
+//------------------------------------------------------------
+
+function messagesAreaTransitionEnd(e) {
+	if (e.propertyName !== 'height' || e.srcElement !== messagesArea)
+		return;
+	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
+	clearInterval(timerScroll);
+};
+
+function updateScroll() {
+	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
+};
 
 function scrollTo(node){
-	document.getElementById("emote-list").scrollTop = node.offsetTop;
-}
+	var list = document.getElementById("emote-list");
+	list.scrollTop = node.offsetTop - list.offsetTop;
+};
 
-// Injects a substring into a string
-function splice(index, str, subStr){
-	return str.slice(0, index) + subStr + str.slice(index);
-}
+function sendXHR(url, callback) {
+	var xhr = new XMLHttpRequest();
+	xhr.onload = callback;
+	xhr.open('GET', url, true);
+	xhr.send(null);
+};
 
-// If the image is not cached, use the given url, else, use cached url.
-function cachedUrl(url){
-	if(url.indexOf("/build") !== -1)	
-		return splice(url.indexOf('/'), url, "https://chat.newgrounds.com");
-	else
-		return url;
-}
 //------------------------------------------------------------
 
 
@@ -284,11 +214,21 @@ function cachedUrl(url){
 //------------------------------------------------------------
 
 function init() {
-	chatInputArea = document.getElementsByClassName("chat-input-area")[0];
-	dParser = new DOMParser();
+	chatInputArea = document.querySelector(".chat-input-area");
+	chatInputTextArea = document.getElementById("chat-input-textarea");
+	messagesArea = document.querySelector(".messages-area");
+	messagesList = document.querySelector(".messages-list");
+	moreMessagesArea = document.querySelector(".more-messages-area");
+
+
+	messagesArea.addEventListener('webkitTransitionEnd', messagesAreaTransitionEnd);
 
 	addEmoteBtn();
-	waitForPageShow();
+
+	sendXHR(chrome.extension.getURL("page/html/template.html"), function (e) {
+		initExternal();
+		continueInit();
+	});
 }
 
 //------------------------------------------------------------

@@ -4,7 +4,7 @@
 	"name": "Newgrounds Chat Enhancer",
 	"short_name": "NGCE",
 	"description": "Glorified blocker.",
-	"version": "1.0.11.2",
+	"version": "1.0.11.6",
 
 	"browser_action": {
 		"default_icon": {
@@ -51,7 +51,8 @@
 	],
 
 	"web_accessible_resources":[
-		"page/html/template.html"
+		"page/html/template.html",
+		"page/img/smile.svg"
 	],
 
 	"icons": {
