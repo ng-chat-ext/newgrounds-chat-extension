@@ -44,7 +44,7 @@ var
 // Private
 //------------------------------------------------------------
 
-function addEmoteBtn(){
+function addEmoteBtn() {
 	//Btn to call popup menu
 	var emoteBtn = document.createElement("div");
 	emoteBtn.id = "emote-btn";
@@ -66,7 +66,7 @@ function emoteBtnClick() {
 	timerScroll = setInterval(updateScroll, 10);
 };
 
-function initExternal(){
+function initExternal(e) {
 	var menu = new DOMParser().parseFromString(e.target.responseText, 'text/html');
 	document.querySelector('.chat-area').appendChild(menu.body.children['emote-popup']);
 
@@ -226,7 +226,7 @@ function init() {
 	addEmoteBtn();
 
 	sendXHR(chrome.extension.getURL("page/html/template.html"), function (e) {
-		initExternal();
+		initExternal(e);
 		continueInit();
 	});
 }
