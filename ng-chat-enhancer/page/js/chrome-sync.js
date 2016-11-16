@@ -82,7 +82,7 @@ var Mentions = {
 
 		chrome.storage.sync.set({ 'mentions': o.Data }, function() {
 			if (chrome.runtime.lastError)
-				console.log('Error detected', chrome.runtime.lastError);
+				console.log('Error detected:', chrome.runtime.lastError.message);
 		});
 	},
 
@@ -104,14 +104,6 @@ var Mentions = {
 
 			if (save === true)
 				o.save();
-		});
-	},
-
-
-
-	getBytesInUse: function() {
-		chrome.storage.sync.getBytesInUse('mentions', function (bytesInUse) {
-			console.log('bytes in use: ' + bytesInUse);
 		});
 	}
 };

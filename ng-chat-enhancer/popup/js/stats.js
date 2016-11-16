@@ -26,8 +26,8 @@ var o = NGCE.ChromeSync.Stats;
 //------------------------------------------------------------
 
 function updateStats() {
-	txtStatMsgSent.innerText = o.Data.messageSent;
-	txtStatMentioned.innerText = o.Data.mentioned;
+	txtStatMsgSent.innerText = o.Data.messageSent || 0;
+	txtStatMentioned.innerText = o.Data.mentioned || 0;
 }
 
 //------------------------------------------------------------

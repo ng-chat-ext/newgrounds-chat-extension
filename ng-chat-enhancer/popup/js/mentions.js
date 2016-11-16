@@ -2,7 +2,8 @@
 
 //------------------------------------------------------------
 NGCE.Mentions = {
-	init: init
+	init: init,
+	updateSpaceInUse: updateSpaceInUse
 };
 //------------------------------------------------------------
 
@@ -15,7 +16,7 @@ NGCE.Mentions = {
 var tblMentions;
 var ddlMentions;
 var btnMentionsGo;
-var lblMentionsEmpty;
+var lblMentionsMessage;
 
 var o = NGCE.ChromeSync.Mentions;
 
@@ -37,8 +38,6 @@ function refreshTable() {
 	for (var i = obj.length - 1; i >= 0; i--) {
 		tblMentions.appendChild(createEntry(obj[i]));
 	}
-
-	showMessageIfEmpty();
 };
 
 function createEntry(data) {
@@ -161,8 +160,6 @@ function deleteMention(e) {
 
 		o.Data.mentions.splice(index, 1);
 		o.save();
-
-		showMessageIfEmpty();
 	});
 };
 
@@ -177,8 +174,6 @@ function deleteAll() {
 		o.Data.unread = 0;
 		o.Data.mentions = [];
 		o.save();
-
-		showMessageIfEmpty();
 	});
 };
 
@@ -196,11 +191,6 @@ function btnMentionsGoClick(e) {
 	}
 
 	ddlMentions.selectedIndex = 0;
-};
-
-function showMessageIfEmpty() {
-	console.log(o.Data.mentions.length, o.Data.mentions);
-	lblMentionsEmpty.style.display = (o.Data.mentions.length === 0) ? 'block' : 'none';
 };
 
 //------------------------------------------------------------
@@ -234,10 +224,26 @@ function init() {
 	tblMentions = document.getElementById('tblMentions');
 	ddlMentions = document.getElementById('ddlMentions');
 	btnMentionsGo = document.getElementById('btnMentionsGo');
-	lblMentionsEmpty = document.getElementById('lblMentionsEmpty');
+	lblMentionsMessage = document.getElementById('lblMentionsMessage');
 
 	btnMentionsGo.addEventListener('click', btnMentionsGoClick);
 	o.load(refreshTable);
+	o.getBytesInUse(updateSpaceInUse);
+};
+
+function updateSpaceInUse(bytesInUse) {
+	if (o.Data.mentions.length === 0) {
+		lblMentionsMessage.classList.remove('red', 'yellow', 'gray');
+		lblMentionsMessage.innerText = 'Your inbox is empty!';
+		return;
+	}
+
+	var percentUsed = Math.ceil(bytesInUse / 8192 * 100);
+	lblMentionsMessage.innerText = 'Storage: ' + percentUsed + '%';
+
+	lblMentionsMessage.classList.toggle('red', (percentUsed >= 90));
+	lblMentionsMessage.classList.toggle('yellow', (percentUsed >= 75));
+	lblMentionsMessage.classList.toggle('gray', (percentUsed < 75));
 };
 
 //------------------------------------------------------------

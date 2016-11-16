@@ -78,8 +78,19 @@ var Mentions = {
 		// Keep array structure, save compressed data.
 		var arr = o.Data.mentions.slice(0);
 		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
-		chrome.storage.sync.set({ 'mentions': o.Data });
+		chrome.storage.sync.set({ 'mentions': o.Data }, function() {
+			NGCE.ChromeSync.Mentions.getBytesInUse(NGCE.Mentions.updateSpaceInUse);
+		});
 		o.Data.mentions = arr;
+	},
+
+
+
+	getBytesInUse: function(callback) {
+		chrome.storage.sync.getBytesInUse('mentions', function (bytesInUse) {
+			if (callback)
+				callback(bytesInUse);
+		});
 	}
 };
 

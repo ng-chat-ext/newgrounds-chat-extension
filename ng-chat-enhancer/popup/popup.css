@@ -139,21 +139,17 @@ select {
 /* Generic styles */
 /*------------------------------------------------------------*/
 
-.hidden {
-	display: none;
-}
+.hidden 		{ display: none; }
 
-.orange {
-	color: #eeb211
-}
+.yellow 		{ color: #f2e313; }
+.orange 		{ color: #eeb211; }
+.red 			{ color: #ed4337; }
+.gray 			{ color: gray; }
 
-.gray {
-	color: gray;
-}
+.float-right 	{ float: right; }
 
-.float-right {
-	float: right;
-}
+.mar-top-sm 	{ margin-top: .5em; }
+.mar-left-md	{ margin-left: 1em; }
 
 [uncopyable]::before {
 	content: attr(uncopyable);
@@ -163,14 +159,6 @@ select {
 .vmc > * {
 	display: inline-block;
 	vertical-align: middle;
-}
-
-.mar-top-sm {
-	margin-top: .5em;
-}
-
-.mar-left-md {
-	margin-left: 1em;
 }
 
 /*------------------------------------------------------------*/
@@ -206,6 +194,11 @@ select {
 /*------------------------------------------------------------*/
 /* Mentions */
 /*------------------------------------------------------------*/
+
+#lblMentionsMessage {
+    position: relative;
+	top: -.75em;
+}
 
 #tblMentions {
 	max-height: 230px;
