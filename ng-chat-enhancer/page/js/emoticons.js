@@ -16,6 +16,8 @@ var
 	pixelTab
 	;
 
+	var isOpen;
+
 //------------------------------------------------------------
 NGCE.Emoticons = {
 	init: init
@@ -49,6 +51,10 @@ function waitForPageShow(){
 }
 
 function addEmoteBtn(){
+	// This is only a test
+
+	// delete this test
+
 	//Btn to call popup menu
 	var emoteBtn = document.createElement("div");
 	emoteBtn.id = "emote-btn";
@@ -67,7 +73,9 @@ function addEmoteBtn(){
 
 	xhr.onload = function(){
 		var menu = dParser.parseFromString(xhr.responseText, 'text/html');
-		document.body.appendChild(menu.body.children['emote-popup']);
+		var chat_row = document.getElementsByClassName("chat-input-row")[0];
+
+		chat_row.insertBefore(menu.body.children['emote-popup'], chat_row.children[0]);
 		var emotePopup = document.getElementById("emote-popup");
 
 		emoteBtn.addEventListener('click', popupEmote, false);
@@ -78,20 +86,46 @@ function addEmoteBtn(){
 
 		setupEmotes();
 	}
+
+
+	var temp = document.createElement("div");
+	temp.className = "temp";
+	temp.innerHTML = "lmao";
+	var msgArea = document.getElementsByClassName("chat-area")[0];
+	msgArea.appendChild(temp);
+	console.log(msgArea);
+
+	// var msgsArea = document.getElementsByClassName("messages-area");
+	// msgsArea.style.height = "20%";
 }
 
+/*
+	Fucntion is called whenever emote-btn is pushed which will toggle the open/close status
+	of the popup menu.
+*/
 var popupEmote = function(){
 
-	var page = document.getElementById('page');
+	var page = document.getElementById('padding');
+	var moreMsgsArea = document.getElementsByClassName("more-messages-area")[0]; 	// Need to change message area postition,
+																	  				// else it will hover over emote area
+	var statusRow = document.getElementsByClassName("status-row")[0];	//	Status row (users online) goes up with
+																		//	the message area, need to manipulate this
+																		//	element to keep it at it's orginal position
+	var userListArea = document.getElementsByClassName("user-list-area")[0];
+	console.log(page.clientHeight);	// AUDIT_FOR_PRODUCTION - testing
+	if(page.clientHeight === 200){
+		page.style.display = "none";	//	Clap off
+		moreMsgsArea.style.top = "-55px";	//	Place more-messages-area over the text-area
+	}
+	else{
+		page.style.display = "block";	//	Clap on
+		moreMsgsArea.style.top = "-255px";	// Place more-messages-area over the emote-popup
+	}
 
-	if(page.className === "page-up")
-		page.className = "page-down";
-	else
-		page.className = "page-up";
-
+	window.dispatchEvent(new Event('resize'));	// Thx a lot Brent
 
 	//Autofocus on textarea
-	document.getElementById("chat-input-textarea").focus();
+	document.getElementById("chat-input-textarea").focus();	// Aaaaaaand we're back
 }
 
 function setupEmotes(){
@@ -131,10 +165,10 @@ function setupEmotes(){
 }
 
 function getExternalCss(){
-	var css = document.querySelector('link[rel="stylesheet"][type="text/css"]');
-
+	var css = document.querySelectorAll('link[rel="stylesheet"][type="text/css"]');
+	console.log(css[1].getAttribute("href"));
 	var xhr = new XMLHttpRequest();
-	xhr.open('GET', "https://chat.newgrounds.com" + css.getAttribute("href"), true);
+	xhr.open('GET', "https://chat.newgrounds.com" + css[1].getAttribute("href"), true);
 	xhr.send(null);
 	xhr.onload = function(){
 		parseCSS(xhr.responseText);
@@ -152,7 +186,7 @@ function parseCSS(styleSheet){
 	var ngSpriteCSS = ngSpriteCSSRegEx.exec(styleSheet);
 
 	// Finds emoticon class selectors that contain the sprite url
-	var attributeSelectorRegEx = /\[class\^=ng-emoticon-([^\]]+)]([^\{]+|{)([^\}]+)/g;
+	var attributeSelectorRegEx = /\[class\^=ng-emoticon-([^\]]+)]([^\{]+|{)([^\}]+)/g;	//	TODO - I should write down these patterns in english later
 	var attributeSelector;
 	var attributes = new Array();
 
@@ -284,6 +318,7 @@ function cachedUrl(url){
 //------------------------------------------------------------
 
 function init() {
+	isOpen = false;
 	chatInputArea = document.getElementsByClassName("chat-input-area")[0];
 	dParser = new DOMParser();
 
