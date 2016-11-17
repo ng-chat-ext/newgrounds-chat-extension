@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', init);
 function init() {
 	// Menu
 	var tmp;
-	for (var i = 4; i >= 1; i--) {
+	for (var i = 6; i >= 1; i--) {
 		tmp = document.getElementById('btnMenu' + i);
 		(function(i) { tmp.addEventListener('click', function() { switchMenu(i-1) }); }(i));
 		menuBtns.unshift(tmp);
@@ -30,9 +30,12 @@ function init() {
 	switchMenu(0);
 
 	// Initialize components.
+	NGCE.ChromeSync.init();
 	NGCE.Block.init();
+	NGCE.Mentions.init();
 	NGCE.Sounds.init();
 	NGCE.Settings.init();
+	NGCE.Stats.init();
 };
 
 //------------------------------------------------------------

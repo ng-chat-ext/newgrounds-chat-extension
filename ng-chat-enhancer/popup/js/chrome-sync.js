@@ -5,15 +5,10 @@
 //------------------------------------------------------------
 
 var BlockList = {
-	//------------------------------------------------------------
 	Data: [],
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('blockList', function(result) {
 			// Store in variable.
@@ -23,23 +18,15 @@ var BlockList = {
 				callback();
 		});
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function(callback) {
 		chrome.storage.sync.set({ 'blockList': NGCE.ChromeSync.BlockList.Data }, callback);
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Adds a user to the blocklist.
-	//------------------------------------------------------------
 	add: function(username, save) {
 		var o = NGCE.ChromeSync.BlockList;
 
@@ -48,13 +35,9 @@ var BlockList = {
 		if (save === true)
 			o.save();
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Remove a user from the blocklist.
-	//------------------------------------------------------------
 	remove: function(username, save) {
 		var o = NGCE.ChromeSync.BlockList;
 
@@ -65,31 +48,65 @@ var BlockList = {
 		if (save === true)
 			o.save();
 	}
-	//------------------------------------------------------------
+};
+
+
+
+var Mentions = {
+	Data: {},
+
+
+
+	load: function(callback) {
+		chrome.storage.sync.get('mentions', function(result) {
+			var o = NGCE.ChromeSync.Mentions;
+			// Store in variable.
+			o.Data = result.mentions || {};
+			o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
+
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	},
+
+
+
+	save: function() {
+		var o = NGCE.ChromeSync.Mentions;
+		
+		// Keep array structure, save compressed data.
+		var arr = o.Data.mentions.slice(0);
+		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
+		chrome.storage.sync.set({ 'mentions': o.Data }, function() {
+			NGCE.ChromeSync.Mentions.getBytesInUse(NGCE.Mentions.updateSpaceInUse);
+		});
+		o.Data.mentions = arr;
+	},
+
+
+
+	getBytesInUse: function(callback) {
+		chrome.storage.sync.getBytesInUse('mentions', function (bytesInUse) {
+			if (callback)
+				callback(bytesInUse);
+		});
+	}
 };
 
 
 
 var Settings = {
-	//------------------------------------------------------------
 	Data: {},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function() {
 		chrome.storage.sync.set({ 'settings': NGCE.ChromeSync.Settings.Data });
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('settings', function(result) {
 			// Store in variable.
@@ -99,31 +116,21 @@ var Settings = {
 				callback();
 		});
 	}
-	//------------------------------------------------------------
 };
 
 
 
 var Sounds = {
-	//------------------------------------------------------------
 	Data: {},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Saves data.
-	//------------------------------------------------------------
 	save: function() {
 		chrome.storage.sync.set({ 'sounds': NGCE.ChromeSync.Sounds.Data });
 	},
-	//------------------------------------------------------------
 
 
 
-	//------------------------------------------------------------
-	// Loads data.
-	//------------------------------------------------------------
 	load: function(callback) {
 		chrome.storage.sync.get('sounds', function(result) {
 			// Store in variable.
@@ -133,7 +140,37 @@ var Sounds = {
 				callback();
 		});
 	}
-	//------------------------------------------------------------
+};
+
+
+
+var Stats = {
+	Data: {},
+	Watchers: [],
+
+
+
+	save: function() {
+		chrome.storage.sync.set({ 'stats': NGCE.ChromeSync.Stats.Data });
+	},
+
+
+
+	load: function(callback) {
+		chrome.storage.sync.get('stats', function(result) {
+			// Store in variable.
+			NGCE.ChromeSync.Stats.Data = result.stats || {};
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
+		});
+	},
+
+
+
+	addWatch: function(callback) {
+		NGCE.ChromeSync.Stats.Watchers.push(callback);
+	}
 };
 
 //------------------------------------------------------------
@@ -143,8 +180,10 @@ var Sounds = {
 //------------------------------------------------------------
 NGCE.ChromeSync = {
 	BlockList: BlockList,
+	Mentions: Mentions,
 	Settings: Settings,
 	Sounds: Sounds,
+	Stats: Stats,
 
 	init: init
 };
@@ -157,8 +196,7 @@ NGCE.ChromeSync = {
 //------------------------------------------------------------
 
 function init() {
-	// chrome.storage.onChanged.addListener(storageChange);
-	
+	chrome.storage.onChanged.addListener(storageChange);
 };
 
 //------------------------------------------------------------
@@ -169,23 +207,16 @@ function init() {
 // Private
 //------------------------------------------------------------
 
-// function storageChange(changes, namespace) {
-// 	var o = NGCE.ChromeSync;
+function storageChange(changes, namespace) {
+	var o = NGCE.ChromeSync;
 
-// 	// Settings
-// 	if (changes['settings']) {
-// 		o.Settings.Data = changes['settings'].newValue;
+	// Settings
+	if (changes['stats']) {
+		o.Stats.Data = changes['stats'].newValue;
+		o.Stats.Watchers.forEach(function(f) { f(); });
+	}
 
-// 		refreshSettings();
-// 	}
-
-// 	// Block List
-// 	if (changes['blockList']) {
-// 		o.BlockList.Data = changes['blockList'].newValue;
-// 		refreshUserList(NGCE.ChromeSync.BlockList.Data);
-// 		refreshMessagesList(NGCE.ChromeSync.BlockList.Data);
-// 	}
-// };
+};
 
 //------------------------------------------------------------
 

@@ -2,8 +2,8 @@
 
 //------------------------------------------------------------
 NGCE.Sounds = {
-	refreshSounds: refreshSounds,
-	init: init
+	init: init,
+	refresh: refresh
 };
 //------------------------------------------------------------
 
@@ -80,14 +80,6 @@ function getElements() {
 // Public
 //------------------------------------------------------------
 
-function refreshSounds() {
-	for (var property in NGCE.ChromeSync.Sounds.Data) {
-		var elem = document.getElementById(property);
-		if (elem)
-			elem.volume = (NGCE.ChromeSync.Sounds.Data[property] === false) ? 0 : DEFAULT_VOLUME;
-	}
-};
-
 function init() {
 	getElements();
 
@@ -100,7 +92,15 @@ function init() {
 	if (airhornSound)
 		airhornSound.addEventListener('play', airhornSoundPlay);
 
-	NGCE.ChromeSync.Sounds.load(refreshSounds);
+	NGCE.ChromeSync.Sounds.load(refresh);
+};
+
+function refresh() {
+	for (var property in NGCE.ChromeSync.Sounds.Data) {
+		var elem = document.getElementById(property);
+		if (elem)
+			elem.volume = (NGCE.ChromeSync.Sounds.Data[property] === false) ? 0 : DEFAULT_VOLUME;
+	}
 };
 
 //------------------------------------------------------------

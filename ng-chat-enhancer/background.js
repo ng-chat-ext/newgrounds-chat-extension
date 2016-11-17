@@ -1,32 +1,44 @@
-//------------------------------------------------------------
-// Variables
-//------------------------------------------------------------
-
-var mentions = [];
+(function() {
 
 //------------------------------------------------------------
 
-function onLoad() {
+function init() {
 	// Set badge background color.
-	chrome.browserAction.setBadgeBackgroundColor({color: [255, 255, 255, 1]});
+	chrome.browserAction.setBadgeBackgroundColor({color: "#eeb211"});
 
-	getMentions(function(mentions) {
-		var count = mentions.length;
-		var badgeText = (count > 99) ? '99+' : count.toString();
+	loadInitialCount();
+
+	chrome.storage.onChanged.addListener(storageChange);
+};
+init();
+
+//------------------------------------------------------------
+
+function loadInitialCount() {
+	chrome.storage.sync.get('mentions', function(result) {
+		// Store in variable.
+		if (!result.mentions)
+			return;
+
+		var count = result.mentions.unread;
+		var badgeText = (count === 0) ? '' : count.toString();
 
 		chrome.browserAction.setBadgeText({text: badgeText});
 	});
-}();
+};
 
-//------------------------------------------------------------
+function storageChange(changes, namespace) {
+	// Mentions
+	if (changes['mentions']) {
+		var data = changes['mentions'].newValue;
+		
+		var count = data.unread;
+		var badgeText = (count === 0) ? '' : count.toString();
 
-function getMentions(callback) {
-	chrome.storage.sync.get('mentions', function(result) {
-		// Execute callback.
-		callback(result.mentions || []);
-	});
+		chrome.browserAction.setBadgeText({text: badgeText});
+	}
 };
 
 //------------------------------------------------------------
 
-
+}());

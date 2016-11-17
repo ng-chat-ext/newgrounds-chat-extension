@@ -4,9 +4,7 @@
 NGCE.Block = {
 	init: init,
 	refresh: refresh,
-	refreshUserList: refreshUserList,
 	applyToUserNode: applyToUserNode,
-	refreshMessagesList: refreshMessagesList,
 	applyToMessageNode: applyToMessageNode
 };
 //------------------------------------------------------------
@@ -43,11 +41,16 @@ function isMessageContainsBlockedMention(messageNode) {
 //------------------------------------------------------------
 
 function init() {
+	
+	NGCE.ChromeSync.BlockList.load(refresh);
 };
 
 function refresh() {
 	refreshUserList();
+	refreshMessagesList();
 };
+
+//------------------------------------------------------------
 
 function refreshUserList() {
 	var o = NGCE.ChromeSync.BlockList.Data;
