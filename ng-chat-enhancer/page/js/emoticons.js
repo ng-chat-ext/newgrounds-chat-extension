@@ -33,7 +33,10 @@ var
 	faicTab,
 	picoTab,
 	pixelTab,
-	animTab
+	animTab,
+
+	animArr = [],
+	dankArr = []
 	;
 
 //------------------------------------------------------------
@@ -60,7 +63,6 @@ function emoteBtnClick() {
 	//Autofocus on textarea
 	chatInputTextArea.focus();
 
-	scrollAtEnd = moreMessagesArea.classList.contains('hidden');
 	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;
 	clearInterval(timerScroll);
 	timerScroll = setInterval(updateScroll, 10);
@@ -97,15 +99,20 @@ function initExternal(e) {
 	animTab.addEventListener('click', function(){ scrollTo(animList); });
 };
 
-function continueInit() {
-	var ss = getStyleSheet();
+function getStyleSheet() {
+	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
+		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
+			return document.styleSheets[i];
+	}
+};
 
+function processStyleSheet(ss) {
 	var started = false;
 	var isEmot; // Flag if rule is an emoticon rule.
 	var r; // Holds current rule in loop.
 
 	// Loop through all emoticon rules.
-	for (var i = ss.rules.length - 1; i >= 0; i--) {
+	for (var i = 0; i <= ss.rules.length; i++) {
 		r = ss.rules[i];
 
 		// Optimization for skipping all rules after emoticons.
@@ -116,46 +123,64 @@ function continueInit() {
 		// Skip all ineligible selectors.
 		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
 
-		createEmote(r.selectorText);
+		createEmote(r);
 	}
 };
 
-function getStyleSheet() {
-	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
-		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
-			return document.styleSheets[i];
-	}
-};
-
-function createEmote(selectorText){
-	var className = selectorText.substring(1);
+function createEmote(r){
+	var className = r.selectorText.substring(1);
 	var name = className.split('-')[2];
 
 	var emote = document.createElement("div");
 	emote.setAttribute("title", name);
 	emote.addEventListener("click", emoteClick);
-	emote.classList.add(className, 'ng-emoticon', 'emote', 'small-emote');
+	emote.classList.add(className, 'ng-emoticon', 'emote');
 
 	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
 		case "ng":
-			faicList.appendChild(emote);
+			if (r.style.background !== '') {
+				emote.classList.add('big-emote');
+				dankArr.push({ 'name': name, 'elem': emote });
+			} else {
+				faicList.appendChild(emote);
+				emote.classList.add('small-emote');
+			}
 			break;
 		case "tf":
 			fulpList.appendChild(emote);
+			emote.classList.add('small-emote');
 			break;
 		case "ngp":
 		case "ngd":
 		case "ngn":
 			picoList.appendChild(emote);
+			emote.classList.add('small-emote');
 			break;
 		case "ngs":
 			pixelList.appendChild(emote);
+			emote.classList.add('small-emote');
 			break;
 		case "nga":
-			animList.appendChild(emote);
+			emote.classList.add('big-emote');
+			animArr.push({ 'name': name, 'elem': emote });
+			// animList.appendChild(emote);
 			break;
 		default:
 			dankList.appendChild(emote);
+			emote.classList.add('small-emote');
+	}
+};
+
+function processEmoteArrays() {
+	animArr.sort(sortByProperty('name'));
+	dankArr.sort(sortByProperty('name'));
+
+	for (var i = 0; i < animArr.length; i++) {
+		animList.appendChild(animArr[i].elem);
+	}
+
+	for (var i = 0; i < dankArr.length; i++) {
+		dankList.appendChild(dankArr[i].elem);
 	}
 };
 
@@ -198,6 +223,18 @@ function scrollTo(node){
 	list.scrollTop = node.offsetTop - list.offsetTop;
 };
 
+function sortByProperty(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+}
+
 function sendXHR(url, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.onload = callback;
@@ -227,7 +264,8 @@ function init() {
 
 	sendXHR(chrome.extension.getURL("page/html/template.html"), function (e) {
 		initExternal(e);
-		continueInit();
+		processStyleSheet(getStyleSheet());
+		processEmoteArrays();
 	});
 }
 
