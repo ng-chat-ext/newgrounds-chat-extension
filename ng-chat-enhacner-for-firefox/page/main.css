@@ -1,0 +1,238 @@
+/*------------------------------------------------------------*/
+/* User List */
+/*------------------------------------------------------------*/
+	
+	.user-list li {
+		width: 270px !important;
+	}
+
+	.user-list li > * {
+		display: inline-block;
+		vertical-align: middle;
+	}
+
+	.user-list div {
+		line-height: 1;
+	}
+
+	.user-list li .user-list-status {
+		color: #757575;
+		transition: height 0.2s linear, opacity 0.3s linear;
+
+		height: 0;
+		opacity: 0;
+	}
+
+	.user-list.show-status li .user-list-status,
+	.user-list li:hover .user-list-status {
+		height: 1em;
+		opacity: 1;
+	}
+
+	/* Highlight users you have blocked. */
+	.user-list .client-block .user-list-username {
+		color: #ed4337 !important;
+	}
+	.user-list-username {
+		transition: color 0.3s linear;
+	}
+
+/*------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------*/
+/* Messages List */
+/*------------------------------------------------------------*/
+
+	/* For hiding messages. */
+	.messages-list .client-block {
+		display: none !important;
+	}
+
+/*------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------*/
+/* Display Density */
+/*------------------------------------------------------------*/
+	
+	.ngce-density-cozy .msg-table-cell-icon {
+		width: 54px;
+	}
+	.ngce-density-cozy .msg-user-icon {
+		width: 36px;
+	}
+	
+	.ngce-density-compact .msg-table-cell-icon {
+		width: 54px;
+	}
+	.ngce-density-compact .msg-user-icon {
+		width: 36px;
+		margin-bottom: 4px;
+	}
+	.ngce-density-compact .msg-text-area {
+		margin-bottom: 0;
+	}
+	.ngce-density-compact .me-message-contents,
+	.ngce-density-compact .server-message-contents {
+		margin-bottom: 5px;
+	}
+
+/*------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------*/
+/* Full Width */
+/*------------------------------------------------------------*/
+	
+	.ngce-fullwidth .row {
+		max-width: none;
+	}
+
+/*------------------------------------------------------------*/
+
+
+
+/*------------------------------------------------------------*/
+/* Chat Input */
+/*------------------------------------------------------------*/
+
+.chat-area {
+	position: relative;
+}
+
+#chat-input-textarea {
+	left: 50px;
+	position: relative;
+	width: calc(100% - 50px) !important;
+}
+
+/*------------------------------------------------------------*/
+/* Emote Widget */
+/*------------------------------------------------------------*/
+
+#emote-btn{
+	background: 50%/45% no-repeat;
+	cursor: pointer;
+	display: inline-block;
+	height: 35px;
+	position: absolute;
+	top: 0;
+	width: 50px;
+}
+
+/*------------------------------------------------------------*/
+.messages-area {
+	transition: height 0.3s ease;
+}
+.ngce-emote-open .messages-area {
+	height: calc(100% - 280px);
+}
+/*------------------------------------------------------------*/
+.more-messages-area {
+	transition: top 0.3s ease;
+}
+.ngce-emote-open .more-messages-area {
+	top: -335px;
+}
+/*------------------------------------------------------------*/
+
+
+.emote-container {
+	bottom: 0;
+	height: 0;
+	overflow: hidden;
+	position: absolute;
+	right: 0;
+	transition: height 0.3s ease;
+	width: 75%;
+}
+
+@media (max-width: 639px) {
+	.emote-container {
+		width: 100%;
+	}
+}
+
+.ngce-emote-open .emote-container {
+	height: 280px;
+}
+
+/*------------------------------------------------------------*/
+
+#tab-list{
+	width: 100%;
+	height: 30px;
+	background-color: #23272a;
+	display: inline-block;
+	flex-direction: column;
+	justify-content: space-between;
+	overflow-y: auto;
+	position: absolute;
+	top: 0;
+	left: 0;
+}
+
+#tab-list .tab{
+	background-color: #34393E;
+	cursor: pointer;
+	display: inline-block;
+	width: 15%;
+	padding: 0 5px;
+	font-weight: 700;
+
+}
+
+#dank-tab:hover { background-color: #FF8247; }
+#fulp-tab:hover { background-color: #E83449; }
+#faic-tab:hover { background-color: #DC45FF; }
+#pico-tab:hover { background-color: #4D33E8; }
+#pixel-tab:hover { background-color: #389DFF; }
+
+/*------------------------------------------------------------*/
+
+#emote-list{
+	display: inline-block;
+	width: 100%;
+	height: 242px;
+	background-color: #23272a;
+	overflow-y: auto;
+}
+
+.fancy-scrollbar::-webkit-scrollbar {
+    width: 12px;
+}
+ 
+.fancy-scrollbar::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,1); 
+    border-radius: 10px;
+}
+ 
+.fancy-scrollbar::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    background-color: #23272A;
+}
+
+.emote{
+	display: inline-block;	cursor: pointer;
+	background-size: cover !important;
+}
+
+.small-emote {
+	height: 25px !important;
+	width: 25px !important;
+	margin: 5px !important;
+}
+
+.big-emote{
+	width: 50px;
+	height: 50px;
+	margin: 5px;
+	background-position: 50% !important;
+}
+
+
+/*------------------------------------------------------------*/
