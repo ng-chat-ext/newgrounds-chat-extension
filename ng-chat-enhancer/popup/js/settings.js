@@ -25,6 +25,8 @@ var chkSetZornMode;
 var ddlDensity;
 // Full Width
 var chkFullWidth;
+// "More Messages" Button
+var ddlMoreMessages;
 
 //------------------------------------------------------------
 
@@ -37,6 +39,18 @@ var chkFullWidth;
 function chkSetLastSeenChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.lastSeen = chkSetLastSeen.checked;
+	o.save();
+};
+
+function chkSetZornModeChange() {
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.zornMode = chkSetZornMode.checked;
+	o.save();
+};
+
+function chkFullWidthChange() {
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.fullWidth = chkFullWidth.checked;
 	o.save();
 };
 
@@ -61,23 +75,19 @@ function btnFontSetClick() {
 	txtCustomFont.value = '';
 };
 
-function chkSetZornModeChange() {
-	var o = NGCE.ChromeSync.Settings;
-	o.Data.zornMode = chkSetZornMode.checked;
-	o.save();
-};
-
 function ddlDensityChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.density = ddlDensity.value;
 	o.save();
 };
 
-function chkFullWidthChange() {
+function ddlMoreMessagesChange() {
 	var o = NGCE.ChromeSync.Settings;
-	o.Data.fullWidth = chkFullWidth.checked;
+	o.Data.moreMessages = ddlMoreMessages.value;
 	o.save();
 };
+
+
 
 //------------------------------------------------------------
 
@@ -85,10 +95,11 @@ function refreshSettings() {
 	var o = NGCE.ChromeSync.Settings.Data;
 
 	chkSetLastSeen.checked = o.lastSeen;
-	lblFontCurrent.innerText = o.customFont || 'Default';
 	chkSetZornMode.checked = o.zornMode;
-	ddlDensity.value = o.density;
 	chkFullWidth.checked = o.fullWidth;
+	lblFontCurrent.innerText = o.customFont || 'Default';
+	ddlDensity.value = o.density || 0;
+	ddlMoreMessages.value = o.moreMessages || 0;
 };
 
 //------------------------------------------------------------
@@ -103,24 +114,27 @@ function init() {
 	// Get elements.
 	chkSetLastSeen = document.getElementById('chkSetLastSeen');
 	//
+	chkSetZornMode = document.getElementById('chkSetZornMode');
+	//
+	chkFullWidth = document.getElementById('chkFullWidth');
+	//
 	txtCustomFont = document.getElementById('txtCustomFont');
 	lblFontCurrent = document.getElementById('lblFontCurrent');
 	btnFontClear = document.getElementById('btnFontClear');
 	btnFontSet = document.getElementById('btnFontSet');
 	//
-	chkSetZornMode = document.getElementById('chkSetZornMode');
-	//
 	ddlDensity = document.getElementById('ddlDensity');
 	//
-	chkFullWidth = document.getElementById('chkFullWidth');
+	ddlMoreMessages = document.getElementById('ddlMoreMessages');
 
 	// Add events.
 	chkSetLastSeen.addEventListener('change', chkSetLastSeenChange);
+	chkSetZornMode.addEventListener('change', chkSetZornModeChange);
+	chkFullWidth.addEventListener('change', chkFullWidthChange);
 	btnFontClear.addEventListener('click', btnFontClearClick);
 	btnFontSet.addEventListener('click', btnFontSetClick);
-	chkSetZornMode.addEventListener('change', chkSetZornModeChange);
 	ddlDensity.addEventListener('change', ddlDensityChange);
-	chkFullWidth.addEventListener('change', chkFullWidthChange);
+	ddlMoreMessages.addEventListener('change', ddlMoreMessagesChange);
 
 	NGCE.ChromeSync.Settings.load(refreshSettings);
 };

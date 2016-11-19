@@ -10,22 +10,40 @@ NGCE.Settings = {
 
 
 //------------------------------------------------------------
+// Private variables
+//------------------------------------------------------------
+
+var body; // <body> element.
+var arrowDownURL; // URL for arrow-down.svg.
+
+//------------------------------------------------------------
+
+
+
+//------------------------------------------------------------
 // Private
 //------------------------------------------------------------
 
+function setFullWidth(isFull) {
+	if (typeof isFull !== 'boolean')
+		return;
+
+	body.classList.toggle('ngce-fullwidth', isFull);
+};
+
 function setFont(fontName) {
 
-	document.getElementsByTagName("body")[0].style.fontFamily = (fontName) ? fontName : null;
+	body.style.fontFamily = (fontName) ? fontName : null;
 };
 
 function setDensity(density) {
-	var body = document.getElementsByTagName('body')[0];
-
+	// Reset
 	body.classList.remove(
 		'ngce-density-cozy',
 		'ngce-density-compact'
 		);
 
+	// Apply
 	switch (density) {
 		case '0': // Default density.
 			break;
@@ -40,13 +58,28 @@ function setDensity(density) {
 	}
 };
 
-function setFullWidth(isFull) {
-	if (typeof isFull !== 'boolean')
-		return;
+function setMoreMessages(moreMessages) {
+	var link = document.querySelector('.more-messages-area a');
 
-	var body = document.getElementsByTagName('body')[0];
+	// Reset
+	body.classList.remove(
+		'ngce-more-small'
+		);
+	link.innerText = 'More messages below.';
+	link.style.backgroundImage = "";
 
-	body.classList.toggle('ngce-fullwidth', isFull);
+	// Apply
+	switch (moreMessages) {
+		case '0': // Default
+			break;
+		case '1': // Small
+			link.innerText = '';
+			link.style.backgroundImage = "url(" + arrowDownURL + ")";
+			body.classList.add('ngce-more-small');
+			break;
+		default:
+			break;
+	}
 };
 
 //------------------------------------------------------------
@@ -65,10 +98,14 @@ function init() {
 function refresh() {
 	var o = NGCE.ChromeSync.Settings;
 
+	body = document.getElementsByTagName('body')[0];
+	arrowDownURL = chrome.extension.getURL("page/img/arrow-down.svg");
+
 	NGCE.LastSeen.showAll(o.Data.lastSeen);
+	setFullWidth(o.Data.fullWidth);
 	setFont(o.Data.customFont);
 	setDensity(o.Data.density);
-	setFullWidth(o.Data.fullWidth);
+	setMoreMessages(o.Data.moreMessages);
 };
 
 //------------------------------------------------------------
