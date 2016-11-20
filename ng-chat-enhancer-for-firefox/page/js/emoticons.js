@@ -6,6 +6,10 @@
 	Adds a panel to the main page where the user can browse (dank memes)
 	and select emoticons from a selection that has been created by the
 	admins.
+
+	Cross-Browser Incompatibilities:
+		chrome: 	e.srcElement
+		firefox: 	e.target
 */
 
 (function() {
@@ -57,7 +61,10 @@ var
 	faicTab,
 	picoTab,
 	pixelTab,
-	animTab
+	animTab,
+
+	animArr = [],
+	dankArr = []
 	;
 
 	var isOpen;	//	TODO - Is this still being used?
@@ -88,7 +95,7 @@ function emoteBtnClick() {
 	//Autofocus on textarea
 	chatInputTextArea.focus();
 
-	scrollAtEnd = moreMessagesArea.classList.contains('hidden');									//	Searches for hidden field in 
+	//scrollAtEnd = moreMessagesArea.classList.contains('hidden');									//	Searches for hidden field in 
 																									//	.more-messages-area.
 	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;	//	TODO - Logic seems solid at a glance.
 																									//	Find a way to explain in wurdz.
@@ -128,18 +135,48 @@ function initExternal(e) {
 	pixelTab.addEventListener('click', function(){ scrollTo(pixelList); });
 	animTab.addEventListener('click', function(){ scrollTo(animList); });
 };
+//	@@@ Redacted @@@
+// function continueInit() {
+// 	var ss = getStyleSheet();
 
-function continueInit() {
-	var ss = getStyleSheet();
 
+// 	var started = false;
+// 	var isEmot; // Flag if rule is an emoticon rule.
+// 	var r; // Holds current rule in loop.
 
+// 	// Loop through all emoticon rules.
+// 	// Note: Changed ss.rules to ss.cssRules cuz i think that what the problemo wuz
+// 	for (var i = ss.cssRules.length - 1; i >= 0; i--) {
+// 		r = ss.cssRules[i];
+
+// 		// Optimization for skipping all rules after emoticons.
+// 		isEmot = r.selectorText && r.selectorText.indexOf('ng-emoticon-') !== -1;
+// 		if (!started && !isEmot) continue;
+// 		else if (!started && isEmot) started = true;
+// 		else if (started && !isEmot) break;
+// 		// Skip all ineligible selectors.
+// 		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
+
+// 		createEmote(r.selectorText);
+// 	}
+// };
+
+function getStyleSheet() {
+	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
+		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
+			return document.styleSheets[i];
+	}
+};
+
+//	@@@ Indacted @@@
+function processStyleSheet(ss) {
 	var started = false;
 	var isEmot; // Flag if rule is an emoticon rule.
 	var r; // Holds current rule in loop.
 
 	// Loop through all emoticon rules.
 	// Note: Changed ss.rules to ss.cssRules cuz i think that what the problemo wuz
-	for (var i = ss.cssRules.length - 1; i >= 0; i--) {
+	for (var i = 0; i <= ss.cssRules.length; i++) {
 		r = ss.cssRules[i];
 
 		// Optimization for skipping all rules after emoticons.
@@ -150,53 +187,75 @@ function continueInit() {
 		// Skip all ineligible selectors.
 		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
 
-		createEmote(r.selectorText);
+
+
+		createEmote(r);																//	Note: Changed r to r.selectorText, not sure if I 
+																									//	messed this up, or was some X-Browser issue
 	}
 };
 
-function getStyleSheet() {
-	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
-		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
-			return document.styleSheets[i];
-	}
-};
-
-function createEmote(selectorText){
-	var className = selectorText.substring(1);
+function createEmote(r){
+	//	TODO - Two selectorTexts.  Did I do this?
+	var className = r.selectorText.substring(1);
 	var name = className.split('-')[2];
 
 	var emote = document.createElement("div");
 	emote.setAttribute("title", name);
 	emote.addEventListener("click", emoteClick);
-	emote.classList.add(className, 'ng-emoticon', 'emote', 'small-emote');	//	Use of class list, adds classes
+	emote.classList.add(className, 'ng-emoticon', 'emote');					//	Use of class list, adds classes
 																			//	as if it were an array.  Efficient ^^
 
 	//	TODO - Comment all regex in english for ease.
 	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
 		case "ng":
-			faicList.appendChild(emote);
+			if (r.style.background !== '') {
+				emote.classList.add('big-emote');
+				dankArr.push({ 'name': name, 'elem': emote });
+			} else {
+				faicList.appendChild(emote);
+				emote.classList.add('small-emote');
+			}
 			break;
 		case "tf":
 			fulpList.appendChild(emote);
+			emote.classList.add('small-emote');
 			break;
 		case "ngp":
 		case "ngd":
 		case "ngn":
 			picoList.appendChild(emote);
+			emote.classList.add('small-emote');
 			break;
 		case "ngs":
 			pixelList.appendChild(emote);
+			emote.classList.add('small-emote');
 			break;
 		case "nga":
-			animList.appendChild(emote);
+			emote.classList.add('big-emote');
+			animArr.push({ 'name': name, 'elem': emote });
+			// animList.appendChild(emote);
 			break;
 		default:
 			dankList.appendChild(emote);
+			emote.classList.add('small-emote');
+	}
+};
+
+function processEmoteArrays() {
+	animArr.sort(sortByProperty('name'));
+	dankArr.sort(sortByProperty('name'));
+
+	for (var i = 0; i < animArr.length; i++) {
+		animList.appendChild(animArr[i].elem);
+	}
+
+	for (var i = 0; i < dankArr.length; i++) {
+		dankList.appendChild(dankArr[i].elem);
 	}
 };
 
 function emoteClick(e) {
-	var name = e.target.getAttribute('title');					//	Name of the emoticon.  Note: Changed e.srcElement
+	var name = e.target.getAttribute('title');						//	Name of the emoticon.  Note: Changed e.srcElement
 																	//	to e.target cuz fifo.
 	var v = chatInputTextArea.value;
 	var p = chatInputTextArea.selectionStart;
@@ -240,6 +299,18 @@ function scrollTo(node){
 	list.scrollTop = node.offsetTop - list.offsetTop;
 };
 
+function sortByProperty(property) {
+    var sortOrder = 1;
+    if(property[0] === "-") {
+        sortOrder = -1;
+        property = property.substr(1);
+    }
+    return function (a,b) {
+        var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+        return result * sortOrder;
+    }
+}
+
 function sendXHR(url, callback) {
 	var xhr = new XMLHttpRequest();
 	xhr.onload = callback;
@@ -275,7 +346,8 @@ function init() {
 	//	Grabs template html to store the emoticons, the divs that hold them, and their buttons.
 	sendXHR(browser.extension.getURL("page/html/template.html"), function (e) {
 		initExternal(e);	
-		continueInit();		
+		processStyleSheet(getStyleSheet());
+		processEmoteArrays();	
 	});
 }
 

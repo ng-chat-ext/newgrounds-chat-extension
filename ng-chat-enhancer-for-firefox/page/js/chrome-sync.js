@@ -236,9 +236,10 @@ var Settings = {
 		var settings = browser.storage.local.get("settings");
 
 		settings.then(
-			function(result){
+			function(results){
 				// Store in variable.
-				NGCE.ChromeSync.Settings.Data = result.settings || {};
+				//	Note: For FF, result is an array
+				NGCE.ChromeSync.Settings.Data = results[0].settings || {};
 				// Execute callback.
 				if (typeof callback === 'function') 
 					callback();
@@ -379,13 +380,13 @@ var Stats = {
 
 //------------------------------------------------------------
 NGCE.ChromeSync = {
-	BlockList: BlockList,
-	Mentions: Mentions,
-	Settings: Settings,
-	Sounds: Sounds,
-	Stats: Stats,
+	BlockList: 	BlockList,
+	Mentions: 	Mentions,
+	Settings: 	Settings,
+	Sounds: 	Sounds,
+	Stats: 		Stats,
 
-	init: init
+	init: 		init
 };
 //------------------------------------------------------------
 

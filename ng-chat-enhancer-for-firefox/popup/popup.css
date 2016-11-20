@@ -82,7 +82,7 @@ label {
 }
 
 select {
-    -webkit-appearance: none;
+    -moz-appearance: none;
     background: none!important;
     background-color: rgba(0,0,0,0.5)!important;
     border: 0;
@@ -115,7 +115,15 @@ select {
     border-color: #EEB211 transparent transparent;
 }
 
-::-webkit-scrollbar {
+
+/*	
+	No custom scrollbar instructions exist for firefox
+	via css... *SIIIIIIIIIGH*
+
+	TODO -  Sources suggest the use of JQuery, but I'll try my 
+			darndest to use vanilla if I can.
+*/
+/*::-webkit-scrollbar {
     width: 6px;
 }
  
@@ -127,7 +135,7 @@ select {
 ::-webkit-scrollbar-thumb {
     border-radius: 6px;
     background-color: #aaa;
-}
+}*/
 
 /*------------------------------------------------------------*/
 
@@ -151,6 +159,7 @@ select {
 
 .mar-top-sm 	{ margin-top: .5em; }
 .mar-left-md	{ margin-left: 1em; }
+
 
 [uncopyable]::before {
 	content: attr(uncopyable);
@@ -183,7 +192,7 @@ select {
 .menu {
 	display: none;
 	max-height: 350px;
-	overflow-y: scroll;
+	/*overflow-y: hidden;*/
 	padding: 5px;
 	position: relative;
 }
