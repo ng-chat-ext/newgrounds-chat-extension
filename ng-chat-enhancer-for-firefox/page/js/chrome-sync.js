@@ -50,7 +50,7 @@ var BlockList = {
 			function(result){
 
 			// Store in variable.
-			NGCE.ChromeSync.BlockList.Data = result.blockList || [];
+			NGCE.ChromeSync.BlockList.Data = result[0].blocklist || [];
 			// Execute callback.
 			if (typeof callback === 'function')
 				callback();	//	TODO - WHAT IS YOUR FUNCTION NUMBUTZ?!?
@@ -141,8 +141,8 @@ var Mentions = {
 				var o = NGCE.ChromeSync.Mentions;
 
 				// Store in variable.
-				//	TODO - Ask author what "v" is...  also !!?
-				o.Data = (!!result.mentions && result.mentions.v === '1') ? result.mentions : { v: '1', unread: 0, mentions: LZString.compressToUTF16('[]') };
+				//	TODO - Ask author what "v" is...
+				o.Data = (!!result[0].mentions && result[0].mentions.v === '1') ? result[0].mentions : { v: '1', unread: 0, mentions: LZString.compressToUTF16('[]') };
 				// Decompress and parse data into object.
 				o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
 				
@@ -238,7 +238,8 @@ var Settings = {
 		settings.then(
 			function(results){
 				// Store in variable.
-				//	Note: For FF, result is an array
+				//	Note: For FF, result is an array... no wait that's not write, Data was an obj
+				//	TODO - Debug this debacle
 				NGCE.ChromeSync.Settings.Data = results[0].settings || {};
 				// Execute callback.
 				if (typeof callback === 'function') 
@@ -296,7 +297,7 @@ var Sounds = {
 		settings.then(
 			function(result){
 				// Store in variable.
-				NGCE.ChromeSync.Sounds.Data = result.sounds || {};
+				NGCE.ChromeSync.Sounds.Data = result[0].sounds || {};
 				// Execute callback.
 				if (typeof callback === 'function') 
 					callback();
@@ -352,7 +353,7 @@ var Stats = {
 		stats.then(
 			function(result){
 				// Store in variable.
-				NGCE.ChromeSync.Stats.Data = result.stats || {};
+				NGCE.ChromeSync.Stats.Data = result[0].stats || {};
 				// Execute callback.
 				if (typeof callback === 'function')
 					callback();
@@ -421,21 +422,23 @@ function init() {
 */
 function storageChange(changes, namespace) {
 	// Settings
-	if (changes['settings']) {
+	if (changes['settings'] !== undefined) {
 		NGCE.ChromeSync.Settings.Data = changes['settings'].newValue;
 		NGCE.Settings.refresh();
 	}
 
 	// Block List
-	if (changes['blockList']) {
-		NGCE.ChromeSync.BlockList.Data = changes['blockList'].newValue;
+	// Notice: changed 'blockList' to 'blocklist'.  Does chrome not care for casing?
+	// Did i fuk dis up yet again?  The world may never know.
+	if (changes['blocklist'] !== undefined) {
+		NGCE.ChromeSync.BlockList.Data = changes['blocklist'].newValue;
 		NGCE.Block.refresh();
 	}
 
 	// Sounds
-	if (changes['sounds']) {
+	if (changes['sounds'] !== undefined) {
 		NGCE.ChromeSync.Sounds.Data = changes['sounds'].newValue;
-		NGCE.Sounds.refreshSounds();
+		NGCE.Sounds.refresh();
 	}
 };
 

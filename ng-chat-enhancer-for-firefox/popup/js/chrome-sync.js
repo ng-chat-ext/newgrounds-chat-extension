@@ -4,6 +4,12 @@
 	Co-Author - Mykei
 
 	TODO - Think of a thorough and witty description
+
+	<N1>  Note: When debugging, never set a breakpoint when calling data from or
+		  to storage, as Promise is asynchronus, and if delayed it will 
+		  return a rejection.  This probably applies to chrome as well.  A good
+		  idea would be to use an empty function, like nop, before and/or after
+		  Promise is called.
 */
 
 (function() {
@@ -28,7 +34,7 @@ var BlockList = {
 			function(result){
 
 			// Store in variable.
-			NGCE.ChromeSync.BlockList.Data = result.blockList || [];
+			NGCE.ChromeSync.BlockList.Data = result.blocklist || [];
 			// Execute callback.
 			if (typeof callback === 'function')
 				callback();	//	TODO - WHAT IS YOUR FUNCTION MAGGOT?!?
@@ -61,7 +67,9 @@ var BlockList = {
 	save: function(callback) {
 		var blockSync = browser.storage.local.set({"blocklist": NGCE.ChromeSync.BlockList.Data});	//
 
-		blockSync.then(callback, function(err){
+		blockSync.then(function(result){
+			callback();
+		}, function(err){
 			console.log("Error: " + err);	// Anomoly has been detected, abandon all hope.
 		});
 
@@ -200,8 +208,9 @@ var Settings = {
 		Saves recently configured settings.  To be or not to be, that's my choice not yours.
 	*/
 	save: function() {
-		var saveSettings = browser.storage.local.set({ 'settings': NGCE.ChromeSync.Settings.Data });
-
+		
+		var saveSettings = browser.storage.local.set({ "settings": NGCE.ChromeSync.Settings.Data });
+		breakpoint();
 
 		//	!!! Keeping this as a reference for now !!!
 		//	chrome.storage.sync.set({ 'settings': NGCE.ChromeSync.Settings.Data });
@@ -223,7 +232,9 @@ var Settings = {
 			function(err){
 				console.log("Error: " + err);
 			}
-		);
+		).catch(function(reason){
+			console.log("Rejected: " + reason);
+		});
 
 
 		//	!!! Keeping this as a reference for now !!!
@@ -408,6 +419,14 @@ function storageChange(changes, namespace) {
 	}
 
 };
+
+/*
+	Because of Promise's asynchronus behavior (find <N1>), this empty
+	function will be used for debugging and serve as a breakpoint place 
+	holder whenver I need to read data before and after Promise has been 
+	used.
+*/
+function breakpoint(){};
 
 //------------------------------------------------------------
 
