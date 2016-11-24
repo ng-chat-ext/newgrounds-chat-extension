@@ -126,16 +126,13 @@ var Mentions = {
 		mentionList.then(
 			function(result){
 				var o = NGCE.ChromeSync.Mentions;
+			// Store in variable.
+			o.Data = result.mentions || {};
+			o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
 
-				// Store in variable.
-				//	TODO - Ask author what "v" is...  also !!?
-				o.Data = (!!result.mentions && result.mentions.v === '1') ? result.mentions : { v: '1', unread: 0, mentions: LZString.compressToUTF16('[]') };
-				// Decompress and parse data into object.
-				o.Data.mentions = JSON.parse(LZString.decompressFromUTF16(o.Data.mentions));
-				
-				// Execute callback.
-				if (typeof callback === 'function')
-					callback();
+			// Execute callback.
+			if (typeof callback === 'function')
+				callback();
 			},
 			function(err){
 				console.log("Error: " + err);
@@ -168,11 +165,13 @@ var Mentions = {
 		// Keep array structure, save compressed data.
 		var arr = o.Data.mentions.slice(0);
 		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
-
-		var saveMentions = browser.storage.local.set({ 'mentions': o.Data });
+		breakpoint();
+		var saveMentions = browser.storage.local.set({ "mentions": o.Data });
 
 		saveMentions.then(null, function(err){
 			console.log("Error: " + err);
+		}).catch(function(rejected){
+			console.log("ERR_EXT_REJECTION: " + rejected);
 		});
 
 		//	!!! Keeping this as a reference for now !!!
@@ -193,6 +192,21 @@ var Mentions = {
 		// 	if (callback)
 		// 		callback(bytesInUse);
 		// });
+
+		var mentionsStorage = browser.storage.local.get("mentions");
+
+		mentionsStorage.then(
+			function(result){
+				var bytesInUse = roughSizeOfObject(result);
+				breakpoint();
+
+				if(callback){
+					callback(bytesInUse);
+				}
+			},
+			function(err){
+				console.log("ERR : " + err );
+			})
 	}
 };
 
@@ -358,7 +372,7 @@ var Stats = {
 
 
 	/*
-		TODO -  what does this do?
+		TODO -  what does this do?  What is watchers.
 	*/
 	addWatch: function(callback) {
 		NGCE.ChromeSync.Stats.Watchers.push(callback);	
@@ -414,19 +428,54 @@ function storageChange(changes, namespace) {
 	// Settings
 	if (changes['stats']) {
 		o.Stats.Data = changes['stats'].newValue;
-		//	f
 		o.Stats.Watchers.forEach(function(f) { f(); });
 	}
 
 };
 
 /*
-	Because of Promise's asynchronus behavior (find <N1>), this empty
+	Because of Promise's asynchronus behavior (lookup comment <N1>), this empty
 	function will be used for debugging and serve as a breakpoint place 
 	holder whenver I need to read data before and after Promise has been 
 	used.
 */
 function breakpoint(){};
+
+/*
+	Reads any object and returns a rough estamite of how many bytes
+	it is using.  Adding this becuase of Firefox doesn't support storage.getBytesInUse.
+	@obj -	
+			The object whose data will be measured.
+	@return -	An estimate of total bytes in use for obj.
+*/
+function roughSizeOfObject(obj){
+	var objectList = [];	//	Stores the object and all instances of its children.
+	var stack = [ obj ];
+	var bytes = 0;
+
+	while(stack.length){
+		var val = stack.pop();
+
+		if(typeof val === 'boolean'){
+			bytes += 4;
+		} 
+		else if (typeof val === 'string'){
+			bytes += val.length * 2;
+		} 
+		else if (typeof val === 'number'){
+			bytes += 8;
+		} 
+		else if (typeof val === 'object' && objectList.indexOf(val) === -1){
+			objectList.push( val );
+
+			for(var i in val){
+				stack.push( val[i] );
+			}
+		}
+	}
+
+	return bytes;
+}
 
 //------------------------------------------------------------
 

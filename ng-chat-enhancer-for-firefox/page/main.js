@@ -123,13 +123,14 @@ function messagesListObserve(mutation) {
 	NGCE.LastSeen.update(node);
 
 	// Actions that should only be performed after the server welcome message.
-	if (afterWelcome) {
-		if (NGCE.Mentions.isMentioned(node)) {
-			NGCE.Mentions.store(node);
-			NGCE.Stats.mentioned();
-		}
-	} else
-		afterWelcome = node.querySelector(".server-message-text") !== null;
+	//	TODO - When mentions bug is fixed, revive this.
+	// if (afterWelcome) {
+	// 	if (NGCE.Mentions.isMentioned(node)) {
+	// 		NGCE.Mentions.store(node);
+	// 		NGCE.Stats.mentioned();
+	// 	}
+	// } else
+	// 	afterWelcome = node.querySelector(".server-message-text") !== null;
 };
 
 

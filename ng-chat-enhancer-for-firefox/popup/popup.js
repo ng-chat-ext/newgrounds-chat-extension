@@ -33,7 +33,7 @@ function init() {
 	// Initialize components.
 	NGCE.ChromeSync.init();
 	NGCE.Block.init();
-	NGCE.Mentions.init();
+	// NGCE.Mentions.init();	TODO - 'll just have to find an alternative l8r
 	NGCE.Sounds.init();
 	NGCE.Settings.init();
 	NGCE.Stats.init();

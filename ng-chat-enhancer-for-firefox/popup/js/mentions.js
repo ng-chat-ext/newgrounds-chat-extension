@@ -1,3 +1,13 @@
+/*
+	Mentions.js
+
+	Author: Jin
+	Co-author(s): MykeiXWolfe
+
+	The mentions script lets you know how popular your are, by saving all the
+	instances you were mentioned.
+*/
+
 (function() {
 
 //------------------------------------------------------------
@@ -110,7 +120,7 @@ function createEntry(data) {
 
 function toggleRead(e) {
 	o.load(function() {
-		var elem = e.srcElement;
+		var elem = e.target;
 		var id = elem.getAttribute('data-id');
 		var index = findIndexById(o.Data.mentions, id);
 
@@ -148,7 +158,7 @@ function setAllReadStatus(readStatus) {
 
 function deleteMention(e) {
 	o.load(function() {
-		var elem = e.srcElement;
+		var elem = e.target;
 		var id = elem.getAttribute('data-id');
 		var index = findIndexById(o.Data.mentions, id);
 
@@ -177,6 +187,11 @@ function deleteAll() {
 	});
 };
 
+/*
+	Event fired function - Whenever an item from ddlMentions is selected
+	all of the listed mentions will either have their readStatus toggled
+	or be deleted.  Cuz no one got time for all that gobbledy gook.
+*/
 function btnMentionsGoClick(e) {
 	switch (ddlMentions.value) {
 		case '1':
@@ -234,11 +249,13 @@ function init() {
 function updateSpaceInUse(bytesInUse) {
 	if (o.Data.mentions.length === 0) {
 		lblMentionsMessage.classList.remove('red', 'yellow', 'gray');
-		lblMentionsMessage.innerText = 'Your inbox is empty!';
+		lblMentionsMessage.innerText = 'Your inbox is empty /)0o0(\\';
 		return;
 	}
 
-	var percentUsed = Math.ceil(bytesInUse / 8192 * 100);
+	var percentUsed = Math.ceil(bytesInUse / 8192 * 100);	// TODO - Firefox says it's maximum
+															//		capacity is 1MB, but I need to
+															//		double check this.
 	lblMentionsMessage.innerText = 'Storage: ' + percentUsed + '%';
 
 	lblMentionsMessage.classList.toggle('red', (percentUsed >= 90));

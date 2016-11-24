@@ -207,12 +207,12 @@ select {
 
 #lblMentionsMessage {
     position: relative;
-	top: .75em;
-	left:	.75em;
+	top: 0em;
+	left:	0em;
 }
 
 #tblMentions {
-	max-height: 230px;
+	max-height: 200px;
 	overflow-y: auto;
 	word-wrap: break-word;
 }

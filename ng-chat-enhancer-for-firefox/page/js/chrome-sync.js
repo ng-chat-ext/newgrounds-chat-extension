@@ -180,7 +180,7 @@ var Mentions = {
 		// Convert data into string and compress.
 		o.Data.mentions = LZString.compressToUTF16(JSON.stringify(o.Data.mentions));
 
-		var saveMentions = browser.storage.local.set({ 'mentions': o.Data });
+		var saveMentions = browser.storage.local.set({ "mentions": o.Data });
 		
 		saveMentions.then(null, 
 			function(err){
