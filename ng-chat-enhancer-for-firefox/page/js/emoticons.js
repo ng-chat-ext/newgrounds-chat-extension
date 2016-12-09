@@ -1,3 +1,17 @@
+/*
+	Emoticons.js
+	Author: Jin
+	Co-author(s): Mykei
+
+	Adds a panel to the main page where the user can browse (dank memes)
+	and select emoticons from a selection that has been created by the
+	admins.
+
+	Cross-Browser Incompatibilities:
+		chrome: 	e.srcElement
+		firefox: 	e.target
+*/
+
 (function() {
 
 //------------------------------------------------------------
@@ -13,14 +27,27 @@ NGCE.Emoticons = {
 //------------------------------------------------------------
 
 var 
-	chatInputArea,
-	chatInputTextArea,
-	messagesArea,
-	messagesList,
-	moreMessagesArea,
-	diffScroll,
-	timerScroll,
+	chatInputArea,		//	.chat-input-area - contains the text area for user
+						//	input as well as the emote-btn for opening the emote
+						// 	panel.
 
+	chatInputTextArea,	//	.chat-input-area - The text area where the user
+						//	 inputs their content for each post.
+
+	messagesArea,		//	.messages-area - The window where all posts are sent to.
+
+	messagesList,		//	.messages-list - the <ul> where each post is listed.  Nothing
+						//	but high quality banter here.
+
+	moreMessagesArea,	//	.more-messages-area - Primary function is to return to the
+						//	bottom of .messages-list when this element is clicked.
+
+	diffScroll,			//	TODO - define
+
+	timerScroll,		//	TODO - define
+
+
+	//	Items are used to catagorize each meme into a seperate div.
 	dankList,
 	faicList,
 	fulpList,
@@ -28,6 +55,7 @@ var
 	pixelList,
 	animList,
 
+	//	Btns, that when clicked, the panel will scroll to the desired emote catagory.
 	dankTab,
 	fulpTab,
 	faicTab,
@@ -39,7 +67,7 @@ var
 	dankArr = []
 	;
 
-	var isOpen;
+	var isOpen;	//	TODO - Is this still being used?
 
 //------------------------------------------------------------
 
@@ -49,17 +77,17 @@ var
 // Private
 //------------------------------------------------------------
 
-
+//	Adds emote button next to .chat-input-area.  When clicked, the emote panel is revealed.
 function addEmoteBtn() {
 	//Btn to call popup menu
 	var emoteBtn = document.createElement("div");
 	emoteBtn.id = "emote-btn";
-	emoteBtn.style.backgroundImage = "url(" + chrome.extension.getURL("page/img/smile.svg") + ")";
+	emoteBtn.style.backgroundImage = "url(" + browser.extension.getURL("page/img/smile.svg") + ")";
 	emoteBtn.addEventListener('click', emoteBtnClick, false);
 	chatInputArea.appendChild(emoteBtn);
 };
 
-
+//	Called when .emote-btn element has been clicked
 function emoteBtnClick() {
 	var body = document.querySelector('body');
 	body.classList.toggle('ngce-emote-open');
@@ -67,11 +95,16 @@ function emoteBtnClick() {
 	//Autofocus on textarea
 	chatInputTextArea.focus();
 
-	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;
+	//scrollAtEnd = moreMessagesArea.classList.contains('hidden');									//	Searches for hidden field in 
+																									//	.more-messages-area.
+	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;	//	TODO - Logic seems solid at a glance.
+																									//	Find a way to explain in wurdz.
 	clearInterval(timerScroll);
 	timerScroll = setInterval(updateScroll, 10);
 };
 
+
+//	TODO - Two inits? ¿¡Porque!?
 function initExternal(e) {
 	var menu = new DOMParser().parseFromString(e.target.responseText, 'text/html');
 	document.querySelector('.chat-area').appendChild(menu.body.children['emote-popup']);
@@ -102,6 +135,31 @@ function initExternal(e) {
 	pixelTab.addEventListener('click', function(){ scrollTo(pixelList); });
 	animTab.addEventListener('click', function(){ scrollTo(animList); });
 };
+//	@@@ Redacted @@@
+// function continueInit() {
+// 	var ss = getStyleSheet();
+
+
+// 	var started = false;
+// 	var isEmot; // Flag if rule is an emoticon rule.
+// 	var r; // Holds current rule in loop.
+
+// 	// Loop through all emoticon rules.
+// 	// Note: Changed ss.rules to ss.cssRules cuz i think that what the problemo wuz
+// 	for (var i = ss.cssRules.length - 1; i >= 0; i--) {
+// 		r = ss.cssRules[i];
+
+// 		// Optimization for skipping all rules after emoticons.
+// 		isEmot = r.selectorText && r.selectorText.indexOf('ng-emoticon-') !== -1;
+// 		if (!started && !isEmot) continue;
+// 		else if (!started && isEmot) started = true;
+// 		else if (started && !isEmot) break;
+// 		// Skip all ineligible selectors.
+// 		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
+
+// 		createEmote(r.selectorText);
+// 	}
+// };
 
 function getStyleSheet() {
 	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
@@ -110,15 +168,16 @@ function getStyleSheet() {
 	}
 };
 
-
+//	@@@ Indacted @@@
 function processStyleSheet(ss) {
 	var started = false;
 	var isEmot; // Flag if rule is an emoticon rule.
 	var r; // Holds current rule in loop.
 
 	// Loop through all emoticon rules.
-	for (var i = 0; i <= ss.rules.length; i++) {
-		r = ss.rules[i];
+	// Note: Changed ss.rules to ss.cssRules cuz i think that what the problemo wuz
+	for (var i = 0; i <= ss.cssRules.length; i++) {
+		r = ss.cssRules[i];
 
 		// Optimization for skipping all rules after emoticons.
 		isEmot = r.selectorText && r.selectorText.indexOf('ng-emoticon-') !== -1;
@@ -128,19 +187,25 @@ function processStyleSheet(ss) {
 		// Skip all ineligible selectors.
 		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
 
-		createEmote(r);
+
+
+		createEmote(r);																//	Note: Changed r to r.selectorText, not sure if I 
+																									//	messed this up, or was some X-Browser issue
 	}
 };
 
 function createEmote(r){
+	//	TODO - Two selectorTexts.  Did I do this?
 	var className = r.selectorText.substring(1);
 	var name = className.split('-')[2];
 
 	var emote = document.createElement("div");
 	emote.setAttribute("title", name);
 	emote.addEventListener("click", emoteClick);
-	emote.classList.add(className, 'ng-emoticon', 'emote');
+	emote.classList.add(className, 'ng-emoticon', 'emote');					//	Use of class list, adds classes
+																			//	as if it were an array.  Efficient ^^
 
+	//	TODO - Comment all regex in english for ease.
 	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
 		case "ng":
 			if (r.style.background !== '') {
@@ -190,7 +255,8 @@ function processEmoteArrays() {
 };
 
 function emoteClick(e) {
-	var name = e.srcElement.getAttribute('title');
+	var name = e.target.getAttribute('title');						//	Name of the emoticon.  Note: Changed e.srcElement
+																	//	to e.target cuz fifo.
 	var v = chatInputTextArea.value;
 	var p = chatInputTextArea.selectionStart;
 	var end = p;
@@ -213,12 +279,17 @@ function emoteClick(e) {
 //------------------------------------------------------------
 
 function messagesAreaTransitionEnd(e) {
-	if (e.propertyName !== 'height' || e.srcElement !== messagesArea)
+	//	Checks if the event has a property of height, and it's call element is .messages-area.
+	//	Note: changed e.srcElement to e.target cuz fiatfux
+	if (e.propertyName !== 'height' || e.target !== messagesArea)
 		return;
 	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
 	clearInterval(timerScroll);
 };
 
+
+//	Updates the scroll position of .messages-area to make room and compensate for.messages-area's 
+//	height as it grows at such a rate.
 function updateScroll() {
 	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
 };
@@ -256,6 +327,7 @@ function sendXHR(url, callback) {
 //------------------------------------------------------------
 
 function init() {
+	//	See top of page where these vars are initialized for their descriptions.
 	chatInputArea = document.querySelector(".chat-input-area");
 	chatInputTextArea = document.getElementById("chat-input-textarea");
 	messagesArea = document.querySelector(".messages-area");
@@ -263,14 +335,19 @@ function init() {
 	moreMessagesArea = document.querySelector(".more-messages-area");
 
 
-	messagesArea.addEventListener('webkitTransitionEnd', messagesAreaTransitionEnd);
+	messagesArea.addEventListener('transitionend', messagesAreaTransitionEnd);	//	Listens for when
+																				//	.messages-area is done
+																				//	making way for emote-popup.
+																				//	Note: changed webkitTransitionEnd
+																				//	to transitionend cuz fiyahfax.
 
-	addEmoteBtn();
+	addEmoteBtn();																//	crème de le résistance
 
-	sendXHR(chrome.extension.getURL("page/html/template.html"), function (e) {
-		initExternal(e);
+	//	Grabs template html to store the emoticons, the divs that hold them, and their buttons.
+	sendXHR(browser.extension.getURL("page/html/template.html"), function (e) {
+		initExternal(e);	
 		processStyleSheet(getStyleSheet());
-		processEmoteArrays();
+		processEmoteArrays();	
 	});
 }
 

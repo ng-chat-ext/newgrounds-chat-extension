@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+<head>
+	<meta charset="utf-8" /> 
+	
+	<title>Newgrounds Chat Enhancer</title>
+	<link type="text/css" rel="stylesheet" href="popup.css" />
+</head>
+<body>
+
+
+	<div class="header-btns">
+		<div><input type="button" id="btnMenu1" value="Settings">
+		</div><div><input type="button" id="btnMenu2" value="Guide">
+		</div><div><input type="button" id="btnMenu3" value="Mentions">
+		</div><div><input type="button" id="btnMenu4" class="mar-top-sm" value="Sounds">
+		</div><div><input type="button" id="btnMenu5" class="mar-top-sm" value="Block List">
+		</div><div><input type="button" id="btnMenu6" class="mar-top-sm" value="Stats">
+		</div>
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Settings</h1>
+
+
+		<div class="table">
+
+			<!-- User Last Seen -->
+			<div>
+				<div>
+					Show All Last Seen
+				</div><div>
+					<input type="checkbox" id="chkSetLastSeen" value="lastSeen" />
+				</div>
+			</div>
+
+			<!-- zornuzkull Mode -->
+			<div>
+				<div>
+					zonuzkull Mode
+				</div><div>
+					<input type="checkbox" id="chkSetZornMode" value="zornMode" />
+				</div>
+			</div>
+
+			<!-- Full Width -->
+			<div>
+				<div title="Chat stretches if window is wider than 1200px.">
+					Full Width [<span class="orange">?</span>]
+				</div><div>
+					<input type="checkbox" id="chkFullWidth" value="fullWidth" />
+				</div>
+			</div>
+
+			<!-- Font -->
+			<div>
+				<div>
+					<div title="Set font for chat.">
+						Font [<a target="_blank" href="http://pomax.nihongoresources.com/downloads/fonttest/" title="View installed fonts.">?</a>]
+					</div>
+					<br>
+					<div class="orange">Current: <div id="lblFontCurrent"></div></div>
+				</div><div>
+					<input type="text" id="txtCustomFont" />
+					<input type="button" id="btnFontClear" class="mar-top-sm" value="Clear" />
+					<input type="button" id="btnFontSet" class="mar-top-sm" value="Set" />
+				</div>
+			</div>
+
+
+
+			<!-- Display Density -->
+			<div>
+				<div>
+					Display Density
+				</div><div>
+					<div class="select-wrapper">
+						<select id="ddlDensity">
+	  						<option value="0">Default&nbsp;</option>
+	  						<!--<option value="1">Cozy</option>-->
+	  						<option value="2">Compact&nbsp;</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+		
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Guide</h1>
+
+		<a target="_blank" href="http://jin.newgrounds.com/news/post/965492">Extension News Page</a>
+		<br>
+		<a target="_blank" href="http://24901miles.newgrounds.com/news/post/963481">Newgrounds Chat Emoticon and Command List</a>
+		<br>
+		<a target="_blank" href="https://www.newgrounds.com/account/blocked">Block Users via Newgrounds</a>
+		<br>
+		<a target="_blank" href="http://kaomoji.ru/en/#contents">Japanese Emoticons</a>
+
+		
+
+		<h2>Extension Commands:</h2>
+		<div class="table">
+			<div>
+				<div>/clear</div><div>Clears all messages</div>
+			</div>
+			<div>
+				<div>/mute @Name</div><div>Mutes user</div>
+			</div>
+			<div>
+				<div>/unmute @Name</div><div>Unmutes user</div>
+			</div>
+		</div>
+
+	</div>
+
+
+	<div class="menu">
+
+		<div class="vmc">
+			<!-- <h1>Mentions</h1>
+
+			<div class="mar-left-md">
+				<div class="select-wrapper">
+					<select id="ddlMentions">
+						<option value="0">Select an action...</option>
+						<option value="1">Mark all as read</option>
+						<option value="2">Mark all as unread&nbsp;</option>
+						<option value="3">Delete all</option>
+					</select>
+				</div>
+
+				<input type="button" id="btnMentionsGo" value="Go" />
+			</div>
+		</div>
+
+		<div id="lblMentionsMessage">Your inbox is empty!</div>
+
+		<div id="tblMentions"> -->
+		<p>Comming soon 😥</p>
+		</div>
+
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Sounds</h1>
+
+		<div>Will detect sounds if opened on the NG chat page.</div>
+		<br>
+		<div id="tblSounds" class="table"></div>
+
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Block List</h1>
+
+		<input type="text" id="txtUsername" />
+		<input type="button" id="btnBlockUser" class="mar-top-sm" value="Block User" />
+		<div id="txtBlockStatus"></div>
+
+		<ol id="olNameList"></ol>
+
+	</div>
+
+
+
+	<div class="menu">
+
+		<h1>Stats</h1>
+
+		<div class="table">
+			<div>
+				<div>Messages sent</div><div id="txtStatMsgSent"></div>
+			</div>
+			<div>
+				<div>Times mentioned</div><div id="txtStatMentioned"></div>
+			</div>
+		</div>
+
+		<p class="gray">
+			Please <a target="_blank" href="http://jin.newgrounds.com/news/post/965492" >tell me</a> if you want something tracked.
+		</p>
+
+	</div>
+
+
+	
+	<!-- Imports -->
+	<script src="js/vendor/lz-string.min.js"></script>
+
+	<script src="js/_ngce.js"></script>
+	<script src="js/chrome-sync.js"></script>
+
+	<script src="js/block.js"></script>
+	<script src="js/mentions.js"></script>
+	<script src="js/settings.js"></script>
+	<script src="js/sounds.js"></script>
+	<script src="js/stats.js"></script>
+
+	<script src="popup.js"></script>
+
+</body>
+</html>
+

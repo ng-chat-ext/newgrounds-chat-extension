@@ -247,17 +247,24 @@
 	background-color: #23272a;
 	display: inline-block;
 	height: 242px;
+	margin-top: 30px;	/* Added because the #tab-list didn't clear the div below it */  
 	overflow-y: auto;
 	width: 100%;
 }
 
+/*
+	Note: Changed from 1em to 2em for Cross to FF;
+*/
 .emote-list {
 	margin-bottom: 1em;
 }
 
 
-
-.fancy-scrollbar::-webkit-scrollbar {
+/*	
+	No custom scrollbar instructions exist for firefox
+	via css... *SIIIIIIIIIGH*
+*/
+/*.fancy-scrollbar::-webkit-scrollbar {
     width: 6px;
 }
  
@@ -269,7 +276,7 @@
 .fancy-scrollbar::-webkit-scrollbar-thumb {
     border-radius: 6px;
     background-color: #999;
-}
+}*/
 
 
 .emote {
