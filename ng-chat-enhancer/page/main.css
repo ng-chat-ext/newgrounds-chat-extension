@@ -220,9 +220,6 @@
 	flex-direction: column;
 	justify-content: space-between;
 	overflow-y: auto;
-	position: absolute;
-	top: 0;
-	left: 0;
 }
 
 #tab-list .tab{
