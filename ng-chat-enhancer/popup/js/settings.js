@@ -21,6 +21,8 @@ var btnFontClear;
 var btnFontSet;
 // Zornuzkull mode
 var chkSetZornMode;
+// Emoticons
+var ddlEmoteHide;
 // Density
 var ddlDensity;
 // Full Width
@@ -40,19 +42,19 @@ function chkSetLastSeenChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.lastSeen = chkSetLastSeen.checked;
 	o.save();
-};
+}
 
 function chkSetZornModeChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.zornMode = chkSetZornMode.checked;
 	o.save();
-};
+}
 
 function chkFullWidthChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.fullWidth = chkFullWidth.checked;
 	o.save();
-};
+}
 
 function btnFontClearClick() {
 	var o = NGCE.ChromeSync.Settings;
@@ -60,7 +62,7 @@ function btnFontClearClick() {
 	o.save();
 
 	lblFontCurrent.innerText = 'Default';
-};
+}
 
 function btnFontSetClick() {
 	var val = txtCustomFont.value.trim();
@@ -73,19 +75,25 @@ function btnFontSetClick() {
 
 	lblFontCurrent.innerText = val;
 	txtCustomFont.value = '';
-};
+}
+
+function ddlEmoteHideChange() {
+	var o = NGCE.ChromeSync.Settings;
+	o.Data.emoteHide = ddlEmoteHide.value;
+	o.save();
+}
 
 function ddlDensityChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.density = ddlDensity.value;
 	o.save();
-};
+}
 
 function ddlMoreMessagesChange() {
 	var o = NGCE.ChromeSync.Settings;
 	o.Data.moreMessages = ddlMoreMessages.value;
 	o.save();
-};
+}
 
 
 
@@ -98,6 +106,7 @@ function refreshSettings() {
 	chkSetZornMode.checked = o.zornMode;
 	chkFullWidth.checked = o.fullWidth;
 	lblFontCurrent.innerText = o.customFont || 'Default';
+	ddlEmoteHide.value = o.emoteHide || 0;
 	ddlDensity.value = o.density || 0;
 	ddlMoreMessages.value = o.moreMessages || 0;
 };
@@ -123,6 +132,8 @@ function init() {
 	btnFontClear = document.getElementById('btnFontClear');
 	btnFontSet = document.getElementById('btnFontSet');
 	//
+	ddlEmoteHide = document.getElementById('ddlEmoteHide');
+	//
 	ddlDensity = document.getElementById('ddlDensity');
 	//
 	ddlMoreMessages = document.getElementById('ddlMoreMessages');
@@ -133,6 +144,7 @@ function init() {
 	chkFullWidth.addEventListener('change', chkFullWidthChange);
 	btnFontClear.addEventListener('click', btnFontClearClick);
 	btnFontSet.addEventListener('click', btnFontSetClick);
+	ddlEmoteHide.addEventListener('change', ddlEmoteHideChange);
 	ddlDensity.addEventListener('change', ddlDensityChange);
 	ddlMoreMessages.addEventListener('change', ddlMoreMessagesChange);
 

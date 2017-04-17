@@ -4,7 +4,7 @@
 	"name": "Newgrounds Chat Enhancer",
 	"short_name": "NGCE",
 	"description": "Glorified blocker.",
-	"version": "1.0.12.0",
+	"version": "1.0.15.2",
 
 	"browser_action": {
 		"default_icon": {
@@ -19,33 +19,40 @@
 	},
 
 	"permissions": [
-		"storage"
+		"storage",
+		"https://api.imgur.com/3/image"
 	],
 
 	"content_scripts": [
 		{
-			"css": [ "page/main.css" ],
-			"js": [
-				"page/js/vendor/lz-string.min.js",
-
-				"page/js/_ngce.js",
-				"page/js/chrome-sync.js",
-
-				"page/js/block.js",
-				"page/js/emoticons.js",
-				"page/js/key-commands.js",
-				"page/js/last-seen.js",
-				"page/js/mentions.js",
-				"page/js/settings.js",
-				"page/js/sounds.js",
-				"page/js/stats.js",
-
-				"page/main.js"
+			"all_frames":	true,
+			"run_at":		"document_start",
+			"matches": 		["https://chat.newgrounds.com/*"],
+			"css": [
+				"page/main.css",
+				"page/css/emoticons.css"
 			],
-			"all_frames": true,
-			"run_at": "document_start",
-			"matches": [
-				"https://chat.newgrounds.com/*"
+			"js": [
+				"shared/js/vendor/lz-string.min.js",
+				"shared/js/core/_ngce.js",
+				"page/js/helper/_helper.js",
+				"page/js/helper/imgur.js",
+				"page/js/helper/text.js",
+				"page/js/helper/watch.js",
+				"page/js/core/obj/message-info.js",
+				"page/js/core/obj/user-info.js",
+				"page/js/core/chrome-sync.js",
+				"page/js/core/block.js",
+				"page/js/core/emoticons.js",
+				"page/js/core/image-upload.js",
+				"page/js/core/key-commands.js",
+				"page/js/core/last-seen.js",
+				"page/js/core/mentions.js",
+				"page/js/core/radio.js",
+				"page/js/core/settings.js",
+				"page/js/core/sounds.js",
+				"page/js/core/stats.js",
+				"page/main.js"
 			]
 		}
 	],

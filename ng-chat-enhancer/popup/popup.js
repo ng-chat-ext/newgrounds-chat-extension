@@ -31,7 +31,7 @@ function init() {
 
 	// Initialize components.
 	NGCE.ChromeSync.init();
-	NGCE.Block.init();
+	NGCE.Block.init(NGCE.ChromeSync.BlockList);
 	NGCE.Mentions.init();
 	NGCE.Sounds.init();
 	NGCE.Settings.init();

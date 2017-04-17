@@ -19,7 +19,7 @@ NGCE.LastSeen = {
 //------------------------------------------------------------
 
 function timerTick() {
-	var nodes = document.querySelectorAll('#page .user-list > li[style*="display: inline-block;"]');
+	var nodes = document.querySelectorAll('#page .user-list > li');
 	var username, statusNode;
 	var dateFound, dateNow = new Date();
 
@@ -47,21 +47,20 @@ function timerTick() {
 
 function init() {
 	setInterval(timerTick, 5000);
+	NGCE.Helper.Watch.watch('message', NGCE.LastSeen.update);
 };
 
-function update(messageNode) {
-	var usernameNode = messageNode.querySelector('.msg-username');
-	if (!usernameNode)
+function update(obj) {
+	if (!obj.username)
 		return;
 
 	var lst = NGCE.LastSeen.Times;
-	var username = usernameNode.innerText;
 	var found = false;
 
 	// Update last seen time.
 	for (var i = lst.length - 1; i >= 0; i--) {
-		if (lst[i].username === username) {
-			lst[i].date = new Date();
+		if (lst[i].username === obj.username) {
+			lst[i].date = obj.time;
 			found = true;
 			break;
 		}
@@ -69,12 +68,15 @@ function update(messageNode) {
 
 	// Insert new if user not found.
 	if (!found)
-		lst.push({ username: username, date: new Date() });
+		lst.push({ username: obj.username, date: obj.time });
 };
 
-function showAll(show) {
-	var cl = document.querySelector('ul.user-list').classList;
-	show ? cl.add('show-status') : cl.remove('show-status')
+function showAll() {
+	var o = NGCE.ChromeSync.Settings.Data;
+	if (!o) return;
+	var ulist = document.querySelector('ul.user-list');
+	if (!ulist) return;
+	o.lastSeen ? ulist.classList.add('show-status') : ulist.classList.remove('show-status')
 };
 
 function getDateByUsername(username) {

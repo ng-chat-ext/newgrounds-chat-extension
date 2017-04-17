@@ -6,7 +6,17 @@ NGCE.Block = {
 	refresh: refresh,
 	applyToUserNode: applyToUserNode,
 	applyToMessageNode: applyToMessageNode
-};
+}
+//------------------------------------------------------------
+
+
+
+//------------------------------------------------------------
+// Private Variables
+//------------------------------------------------------------
+
+var _bl;
+
 //------------------------------------------------------------
 
 
@@ -15,22 +25,15 @@ NGCE.Block = {
 // Private
 //------------------------------------------------------------
 
-function isMessageContainsBlockedMention(messageNode) {
-	var o = NGCE.ChromeSync.BlockList.Data;
-	var links = messageNode.querySelectorAll('.msg-text a');
-
-	if (links.length === 0)
-		return false;
-
-	for (var i = 0; i < links.length; i++) {
-		if (o.indexOf(links[i].innerText.substr(1)) === -1)
+function isMessageContainsBlockedMention(mentions) {
+	for (var i = 0; i < mentions.length; i++) {
+		if (_bl.Data.indexOf(mentions[i]) === -1)
 			continue;
-
 		return true;
 	}
 
 	return false;
-};
+}
 
 //------------------------------------------------------------
 
@@ -41,41 +44,42 @@ function isMessageContainsBlockedMention(messageNode) {
 //------------------------------------------------------------
 
 function init() {
-	
-	NGCE.ChromeSync.BlockList.load(refresh);
-};
+	_bl = NGCE.ChromeSync.BlockList;
+
+	_bl.load(refresh);
+	NGCE.Helper.Watch.watch('user', NGCE.Block.applyToUserNode);
+	NGCE.Helper.Watch.watch('message', NGCE.Block.applyToMessageNode);
+}
 
 function refresh() {
 	refreshUserList();
 	refreshMessagesList();
-};
+}
 
 //------------------------------------------------------------
 
 function refreshUserList() {
-	var o = NGCE.ChromeSync.BlockList.Data;
-	var items = document.querySelectorAll('.user-list li');
+	var items = document.querySelectorAll('.chat-area .user-list li');
 
 	for (var i = items.length - 1; i >= 0; i--) {
 		// Remove block class.
 		items[i].classList.remove('client-block');
-
+		
 		// Re-apply block class if qualify.
-		for (var j = o.length - 1; j >= 0; j--) {
+		for (var j = _bl.Data.length - 1; j >= 0; j--) {
 			applyToUserNode(items[i]);
 		}
 	}
-};
+}
 
-function applyToUserNode(node) {
-	if (isUserBlocked(getUsernameFromUserNode(node)))
-		node.classList.add('client-block');
-};
+function applyToUserNode(obj) {
+	if (isBlocked(obj.username))
+		obj.node.classList.add('client-block');
+}
 
 //------------------------------------------------------------
 
 function refreshMessagesList() {
-	var o = NGCE.ChromeSync.BlockList.Data;
 	var items = document.querySelectorAll('.messages-list li');
 
 	for (var i = items.length - 1; i >= 0; i--) {
@@ -83,51 +87,37 @@ function refreshMessagesList() {
 		items[i].classList.remove('client-block');
 
 		// Re-apply block class if qualify.
-		for (var j = o.length - 1; j >= 0; j--) {
-			applyToMessageNode(items[i], o);
+		for (var j = _bl.Data.length - 1; j >= 0; j--) {
+			applyToMessageNode(new NGCE.Obj.MessageInfo(items[i]));
 		}
 	}
 
-	// Update messages area scroll position.
+	// Update messages area scroll position. (Not working!)
 	var area = document.querySelector('.messages-area');
 	area.scrollTop = 0;
 	area.scrollTop = area.scrollHeight - area.clientHeight;
-};
+}
 
-function applyToMessageNode(messageNode) {
-	var usernameNode = messageNode.querySelector('.msg-username');
-
-	if (!usernameNode)
+function applyToMessageNode(obj) {
+	if (!obj.username)
 		return;
 
 	// Remove messages from user.
-	if (isUserBlocked(usernameNode.innerText)) {
-		messageNode.classList.add('client-block');
-		return;
-	}
-
 	// Remove messages mentioning user.
-	if (isMessageContainsBlockedMention(messageNode))
-		messageNode.classList.add('client-block');
-};
+	if (isBlocked(obj.username) || isMessageContainsBlockedMention(obj.mentions))
+		obj.node.classList.add('client-block');
+}
 
 //------------------------------------------------------------
 
-function getUsernameFromUserNode(node) {
-
-	return node.querySelector('.user-list-username').getAttribute('ngce-name');
-};
-
-function isUserBlocked(username) {
-	var o = NGCE.ChromeSync.BlockList.Data;
-
-	for (var i = o.length - 1; i >= 0; i--) {
-		if (o[i] === username)
+function isBlocked(username) {
+	for (var i = _bl.Data.length - 1; i >= 0; i--) {
+		if (_bl.Data[i].toLowerCase() === username.toLowerCase())
 			return true;
 	}
 
 	return false;
-};
+}
 
 //------------------------------------------------------------
 

@@ -53,11 +53,7 @@
 
 		<a target="_blank" href="http://jin.newgrounds.com/news/post/965492">Extension News Page</a>
 		<br>
-		<a target="_blank" href="http://24901miles.newgrounds.com/news/post/963481">Newgrounds Chat Emoticon and Command List</a>
-		<br>
 		<a target="_blank" href="https://www.newgrounds.com/account/blocked">Block Users via Newgrounds</a>
-		<br>
-		<a target="_blank" href="http://kaomoji.ru/en/#contents">Japanese Emoticons</a>
 
 		
 
@@ -124,6 +120,20 @@
 					<input type="text" id="txtCustomFont" />
 					<input type="button" id="btnFontClear" class="mar-top-sm" value="Clear" />
 					<input type="button" id="btnFontSet" class="mar-top-sm" value="Set" />
+				</div>
+			</div>
+
+			<!-- Emoticons -->
+			<div>
+				<div title="Selectively disable emoticons and/or GIFs.">
+					Emoticons [<span class="orange">?</span>]
+				</div><div>
+					<div class="select-wrapper">
+						<select id="ddlEmoteHide">
+	  						<option value="0">Default&nbsp;</option>
+	  						<option value="1">Disable Emotes&nbsp;</option>
+						</select>
+					</div>
 				</div>
 			</div>
 
@@ -211,19 +221,16 @@
 
 	
 	<!-- Imports -->
-	<script src="js/vendor/lz-string.min.js"></script>
-
-	<script src="js/_ngce.js"></script>
+	<script src="../shared/js/vendor/lz-string.min.js"></script>
+	<script src="../shared/js/core/_ngce.js"></script>
 	<script src="js/chrome-sync.js"></script>
-
 	<script src="js/block.js"></script>
 	<script src="js/mentions.js"></script>
 	<script src="js/settings.js"></script>
 	<script src="js/sounds.js"></script>
 	<script src="js/stats.js"></script>
-
 	<script src="popup.js"></script>
-
+	
 </body>
 </html>
 

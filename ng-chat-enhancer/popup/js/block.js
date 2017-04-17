@@ -16,7 +16,7 @@ var txtUsername;
 var btnBlockUser;
 var olNameList;
 
-var o = NGCE.ChromeSync.BlockList;
+var csBL;
 
 //------------------------------------------------------------
 
@@ -34,32 +34,34 @@ function blockUser(username) {
 		return;
 	}
 
-	if (o.Data.indexOf(tmp) !== -1) {
+	if (csBL.Data.indexOf(tmp) !== -1) {
 		showStatus('User already blocked.');
 		return;
 	}
 
 	// Add name to list.
-	o.Data.push(tmp);
+	csBL.Data.push(tmp);
 
 	// Save list.
-	o.save(function() {
+	csBL.save(saveCallback);
+	function saveCallback() {
 		showStatus('User blocked: ' + tmp);
 		addListItem(tmp, tmp);
-	});
+	}
 };
 
 function unblockUser(username) {
 	// Remove name from list.
-	var index = o.Data.indexOf(username);
+	var index = csBL.Data.indexOf(username);
 	if (index !== -1)
-		o.Data.splice(index, 1);
+		csBL.Data.splice(index, 1);
 
-
-	o.save(function() {
+	// Save list.
+	csBL.save(saveCallback);
+	function saveCallback() {
 		showStatus('User unblocked: ' + username);
 		removeListItem(username, username);
-	});
+	}
 };
 
 
@@ -97,9 +99,7 @@ function txtUsernameKeyDown(e) {
 //------------------------------------------------------------
 
 function refreshBlockList() {
-	var o = NGCE.ChromeSync.BlockList.Data;
-
-	o.forEach(function(value) {
+	csBL.Data.forEach(function(value) {
 		addListItem(value, value);
 	});
 };
@@ -112,7 +112,9 @@ function refreshBlockList() {
 // Public
 //------------------------------------------------------------
 
-function init() {
+function init(chromeSyncBlockList) {
+	csBL = chromeSyncBlockList;
+
 	txtUsername = document.getElementById('txtUsername');
 	btnBlockUser = document.getElementById('btnBlockUser');
 	olNameList = document.getElementById('olNameList');

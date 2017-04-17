@@ -16,6 +16,9 @@ NGCE.KeyCommands = {
 //------------------------------------------------------------
 
 var ta; // chat-input-textarea
+var chatArea; // chat-area
+
+var _ngceCS;
 
 //------------------------------------------------------------
 
@@ -31,8 +34,8 @@ function chatInputKeyPress(e) {
 
     //Close Emote widget if open
     var page = document.getElementById("page");
-    if(page.className =="page-up" &&
-     ta === document.activeElement)	page.className = "page-down";
+    if(page.className =="page-up" && ta === document.activeElement)
+    	page.className = "page-down";
 
     // Check if text is a command.
     if (ta.value[0] === '/')
@@ -57,11 +60,22 @@ function handleCommand(e) {
 	    if (!NGCE.KeyCommands.MapLookup[command].preventSending)
 	    	return;
 
+	    // Due to input text area adjusting its height when an Enter keypress is detected,
+	    // we will need to reset the height back to the previous height.
+	    var chatAreaHeight = chatArea.style.height;
+	    var textAreaHeight = ta.style.height;
+
 	    // Stop propagation if command is successfully executed.
 		e.stopImmediatePropagation();
 
-		// Also clear textarea.
-		setTimeout(function() { ta.value = ''; }, 10);
+		setTimeout(function() {
+			// Clear textarea.
+			ta.value = '';
+			// Reset height.
+			ta.style.height = textAreaHeight;
+			chatArea.style.height = chatAreaHeight;
+		}, 10);
+
 	} catch(err) {
 		console.error("Error in handleCommand: " + err);
 	}
@@ -119,23 +133,24 @@ function cmdMute(args) {
 	var duration = args.shift();
 	var reason = args.join(' ');
 
-	NGCE.ChromeSync.BlockList.add(name, true);
+	_ngceCS.BlockList.add(name, true);
 };
 
 function cmdUnmute(args) {
 	var name = processName(args[0]);
 
-	NGCE.ChromeSync.BlockList.remove(name, true);
+	_ngceCS.BlockList.remove(name, true);
 };
 
 //------------------------------------------------------------
 
 function applyZornMode() {
-	if (NGCE.ChromeSync.Settings.Data.zornMode === true) {
-		var c = ta.value[ta.value.length - 1];
-		if (ta.value.length > 0 && c !== '?' && c !== '!')
-			ta.value += '...';
-	}
+	if (_ngceCS.Settings.Data.zornMode !== true)
+		return;
+	
+	var c = ta.value[ta.value.length - 1];
+	if (ta.value.length > 0 && c !== '?' && c !== '!')
+		ta.value += '...';
 };
 
 //------------------------------------------------------------
@@ -153,7 +168,10 @@ function processName(name) {
 // Public
 //------------------------------------------------------------
 
-function init() {
+function init(ngceChromeSync) {
+	_ngceCS = NGCE.ChromeSync;
+
+	chatArea = document.querySelector('.chat-area');
 	ta = document.getElementById('chat-input-textarea');
 	ta.addEventListener('keydown', chatInputKeyPress);
 

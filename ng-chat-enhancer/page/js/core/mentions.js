@@ -2,7 +2,7 @@
 
 //------------------------------------------------------------
 NGCE.Mentions = {
-	isMentioned: isMentioned,
+	init: init,
 	store: store
 };
 //------------------------------------------------------------
@@ -36,34 +36,35 @@ function getRawText(node) {
 // Public
 //------------------------------------------------------------
 
-function isMentioned(msgNode) {
-	return (msgNode.querySelector('.msg-text-area.mention') != null || msgNode.querySelector('.me-message-text.mention') != null);
+function init() {
+	NGCE.Helper.Watch.watch('mentioned', NGCE.Mentions.store);
 };
 
-function store(msgNode) {
+function store(obj) {
 	// Create object for storage.
-	var obj = {
+	var mObj = {
 		read: false, // Flag to indicate whether this mention has been marked as read/unread.
-		channel: document.querySelector('.sub-header-channel-name').innerText // Channel name.
+		channel: document.getElementsByTagName('title')[0].innerText.split(' ')[0], // Channel name.
+		type: obj.type
 	};
 
 	// Message type specific properties.
-	if (msgNode.querySelector('.msg-text-area') != null) {
-		obj.type = 1;
-		var userNode = msgNode.querySelector('.msg-username');
-		obj.username = userNode.innerText;
-		obj.userType = userNode.classList.contains('supporter') ? 'supporter' :
-					   userNode.classList.contains('mod') ? 'mod' :
-					   userNode.classList.contains('admin') ? 'admin' : '';
-		obj.time = msgNode.querySelector('.msg-time').innerText;
-		obj.text = msgNode.querySelector('.msg-text-dmtext').innerText + getRawText(msgNode.querySelector('.msg-text'));
-	} else if (msgNode.querySelector('.me-message-text') != null) {
-		obj.type = 2;
-		obj.text = getRawText(msgNode.querySelector('.me-message-text'));
+	switch(mObj.type) {
+		case 1:
+			mObj.username = obj.username;
+			mObj.userType = obj.node.classList.contains('supporter') ? 'supporter' :
+							obj.node.classList.contains('mod') ? 'mod' :
+							obj.node.classList.contains('admin') ? 'admin' : '';
+			mObj.time = obj.node.querySelector('.msg-time').innerText;
+			mObj.text = obj.node.querySelector('.msg-text-dmtext').innerText + getRawText(obj.node.querySelector('.msg-text'));
+			break;
+		case 2:
+			mObj.text = getRawText(obj.node.querySelector('.me-message-text'));
+			break;
 	}
-
+	
 	// Add object to sync.
-	NGCE.ChromeSync.Mentions.add(obj, true);
+	NGCE.ChromeSync.Mentions.add(mObj, true);
 };
 
 //------------------------------------------------------------

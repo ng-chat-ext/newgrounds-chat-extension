@@ -21,25 +21,40 @@ var
 	diffScroll,
 	timerScroll,
 
+	tabs,
+	lists,
+
 	dankList,
 	faicList,
 	fulpList,
 	picoList,
 	pixelList,
 	animList,
-
-	dankTab,
-	fulpTab,
-	faicTab,
-	picoTab,
-	pixelTab,
-	animTab,
+	kaoList,
 
 	animArr = [],
 	dankArr = []
 	;
-
+	var menuCurr;
 	var isOpen;
+
+var kaomojis = [
+	{ text: '（＾－＾）', title: 'happy' },
+	{ text: '( ˘ ³˘) ❤', title: 'kissing' },
+	{ text: '.･ﾟﾟ･(>д<)･ﾟﾟ･.', title: 'cry' },
+	{ text: '(´・ω・｀)', title: 'denko' },
+	{ text: '(◕ᴗ◕✿)', title: 'flower girl' },
+	{ text: '( ͡° ͜ʖ ͡°)', title: 'le lenny' },
+	{ text: '(⌐■_■)', title: 'hell yeah' },
+	{ text: '(ಠ_ಠ)', title: 'disapproval' },
+	{ text: '(ಥ_ಥ)', title: 'deep cry' },
+	{ text: '╮(￣～￣)╭', title: 'indifference' },
+	{ text: '¯\\ˍ(ツ)ˍ/¯', title: 'shrug' },
+	{ text: 'ᕕ( ᐛ )ᕗ', title: 'strolling happy gary' },
+	{ text: '(╯°□°）╯︵ ┻━┻', title: 'table flip' },
+	{ text: '┬──┬ ノ( ゜-゜ノ)', title: 'table set' },
+	{ text: '( ´-ω･)︻┻┳══━一', title: 'sniper' },
+];
 
 //------------------------------------------------------------
 
@@ -49,7 +64,6 @@ var
 // Private
 //------------------------------------------------------------
 
-
 function addEmoteBtn() {
 	//Btn to call popup menu
 	var emoteBtn = document.createElement("div");
@@ -57,8 +71,7 @@ function addEmoteBtn() {
 	emoteBtn.style.backgroundImage = "url(" + chrome.extension.getURL("page/img/smile.svg") + ")";
 	emoteBtn.addEventListener('click', emoteBtnClick, false);
 	chatInputArea.appendChild(emoteBtn);
-};
-
+}
 
 function emoteBtnClick() {
 	var body = document.querySelector('body');
@@ -70,15 +83,23 @@ function emoteBtnClick() {
 	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;
 	clearInterval(timerScroll);
 	timerScroll = setInterval(updateScroll, 10);
-};
+}
 
 function initExternal(e) {
 	var menu = new DOMParser().parseFromString(e.target.responseText, 'text/html');
 	document.querySelector('.chat-area').appendChild(menu.body.children['emote-popup']);
 
+	// Return focus to textbox when container is clicked.
 	var emotePopup = document.getElementById("emote-popup");
-	emotePopup.classList.add('emote-container');
 	emotePopup.addEventListener('click', function(){ chatInputTextArea.focus(); }, false);
+
+	// Setup tabs and lists.
+	tabs = document.querySelectorAll("#tab-list > .tab");
+	lists = document.querySelectorAll("#emote-list > .list");
+	for (var i = 0; i < tabs.length; i++) {
+		(function(i) { tabs[i].addEventListener('click', function() { switchList(i) }); }(i));
+	}
+	switchList(0);
 
 	// Get elements.
 	dankList = document.getElementById("dank-list");
@@ -87,29 +108,25 @@ function initExternal(e) {
 	picoList = document.getElementById("pico-list");
 	pixelList = document.getElementById("pixel-list");
 	animList = document.getElementById("anim-list");
-	dankTab = document.getElementById("dank-tab");
-	fulpTab = document.getElementById("fulp-tab");
-	faicTab = document.getElementById("faic-tab");
-	picoTab = document.getElementById("pico-tab");
-	pixelTab = document.getElementById("pixel-tab");
-	animTab = document.getElementById("anim-tab");
+	kaoList = document.getElementById("kao-list");
+}
 
-	// Assign events
-	dankTab.addEventListener('click',function(){ scrollTo(dankList); });
-	fulpTab.addEventListener('click', function(){ scrollTo(fulpList); });
-	faicTab.addEventListener('click', function(){ scrollTo(faicList); });
-	picoTab.addEventListener('click', function(){ scrollTo(picoList); });
-	pixelTab.addEventListener('click', function(){ scrollTo(pixelList); });
-	animTab.addEventListener('click', function(){ scrollTo(animList); });
-};
+function switchList(index) {
+	if (typeof (menuCurr) !== 'undefined')
+		document.querySelector('#emote-list > .list.show').classList.remove('show');
+
+	menuCurr = index;
+	document.querySelectorAll('#emote-list > .list')[menuCurr].classList.add('show');
+}
+
+//------------------------------------------------------------
 
 function getStyleSheet() {
 	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
 		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
 			return document.styleSheets[i];
 	}
-};
-
+}
 
 function processStyleSheet(ss) {
 	var started = false;
@@ -130,7 +147,7 @@ function processStyleSheet(ss) {
 
 		createEmote(r);
 	}
-};
+}
 
 function createEmote(r){
 	var className = r.selectorText.substring(1);
@@ -174,9 +191,17 @@ function createEmote(r){
 			dankList.appendChild(emote);
 			emote.classList.add('small-emote');
 	}
-};
+}
 
-function processEmoteArrays() {
+function createKaomoji(text, title) {
+	var emote = document.createElement("span");
+	emote.setAttribute("title", title);
+	emote.addEventListener("click", kaoClick);
+	emote.innerText = text;
+	kaoList.appendChild(emote);
+}
+
+function sortAndAddElems() {
 	animArr.sort(sortByProperty('name'));
 	dankArr.sort(sortByProperty('name'));
 
@@ -187,28 +212,15 @@ function processEmoteArrays() {
 	for (var i = 0; i < dankArr.length; i++) {
 		dankList.appendChild(dankArr[i].elem);
 	}
-};
+}
 
 function emoteClick(e) {
-	var name = e.srcElement.getAttribute('title');
-	var v = chatInputTextArea.value;
-	var p = chatInputTextArea.selectionStart;
-	var end = p;
-	var val = '';
+	NGCE.Helper.Text.insert(e.srcElement.getAttribute('title'), chatInputTextArea);
+}
 
-	// Add space padding to the front and back of the inserted text if there isn't any.
-	// I believe this might improve user experience because emoticons are sent as text.
-	if (p !== 0 && v[p-1] !== ' ') { val += ' '; end++; }
-	val += name;
-	if (v[p] !== ' ') 	{ val += ' '; end++; }
-
-	// Insert text at caret position.
-	chatInputTextArea.value = v.substr(0, p) + val + v.substr(p);
-
-	// Move caret back to where it should be.
-	chatInputTextArea.selectionStart = end + name.length;
-	chatInputTextArea.selectionEnd = end + name.length;
-};
+function kaoClick(e) {
+	NGCE.Helper.Text.insert(e.srcElement.innerText, chatInputTextArea);
+}
 
 //------------------------------------------------------------
 
@@ -217,16 +229,11 @@ function messagesAreaTransitionEnd(e) {
 		return;
 	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
 	clearInterval(timerScroll);
-};
+}
 
 function updateScroll() {
 	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
-};
-
-function scrollTo(node){
-	var list = document.getElementById("emote-list");
-	list.scrollTop = node.offsetTop - list.offsetTop;
-};
+}
 
 function sortByProperty(property) {
     var sortOrder = 1;
@@ -245,7 +252,7 @@ function sendXHR(url, callback) {
 	xhr.onload = callback;
 	xhr.open('GET', url, true);
 	xhr.send(null);
-};
+}
 
 //------------------------------------------------------------
 
@@ -262,7 +269,6 @@ function init() {
 	messagesList = document.querySelector(".messages-list");
 	moreMessagesArea = document.querySelector(".more-messages-area");
 
-
 	messagesArea.addEventListener('webkitTransitionEnd', messagesAreaTransitionEnd);
 
 	addEmoteBtn();
@@ -270,7 +276,11 @@ function init() {
 	sendXHR(chrome.extension.getURL("page/html/template.html"), function (e) {
 		initExternal(e);
 		processStyleSheet(getStyleSheet());
-		processEmoteArrays();
+		sortAndAddElems();
+
+		for (var i = 0; i < kaomojis.length; i++) {
+			createKaomoji(kaomojis[i].text, kaomojis[i].title);
+		}
 	});
 }
 

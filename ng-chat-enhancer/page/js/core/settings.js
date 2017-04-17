@@ -29,12 +29,12 @@ function setFullWidth(isFull) {
 		return;
 
 	body.classList.toggle('ngce-fullwidth', isFull);
-};
+}
 
 function setFont(fontName) {
 
 	body.style.fontFamily = (fontName) ? fontName : null;
-};
+}
 
 function setDensity(density) {
 	// Reset
@@ -56,7 +56,25 @@ function setDensity(density) {
 		default:
 			break;
 	}
-};
+}
+
+function setEmoteHide(emoteHide) {
+	// Reset
+	body.classList.remove(
+		'ngce-emotehide'
+		);
+
+	// Apply
+	switch (emoteHide) {
+		case '0':
+			break;
+		case '1':
+			body.classList.add('ngce-emotehide');
+			break;
+		default:
+			break;
+	}
+}
 
 function setMoreMessages(moreMessages) {
 	var link = document.querySelector('.more-messages-area a');
@@ -80,7 +98,7 @@ function setMoreMessages(moreMessages) {
 		default:
 			break;
 	}
-};
+}
 
 //------------------------------------------------------------
 
@@ -91,7 +109,6 @@ function setMoreMessages(moreMessages) {
 //------------------------------------------------------------
 
 function init() {
-
 	NGCE.ChromeSync.Settings.load(NGCE.Settings.refresh);
 };
 
@@ -101,9 +118,10 @@ function refresh() {
 	body = document.getElementsByTagName('body')[0];
 	arrowDownURL = chrome.extension.getURL("page/img/arrow-down.svg");
 
-	NGCE.LastSeen.showAll(o.Data.lastSeen);
+	NGCE.LastSeen.showAll();
 	setFullWidth(o.Data.fullWidth);
 	setFont(o.Data.customFont);
+	setEmoteHide(o.Data.emoteHide);
 	setDensity(o.Data.density);
 	setMoreMessages(o.Data.moreMessages);
 };
