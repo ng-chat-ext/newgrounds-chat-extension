@@ -63,6 +63,10 @@ function store(obj) {
 			break;
 	}
 	
+	// Ignore system messages (sent by 'Chat').
+	if (mObj.type === 1 && mObj.username === 'Chat')
+		return;
+
 	// Add object to sync.
 	NGCE.ChromeSync.Mentions.add(mObj, true);
 };

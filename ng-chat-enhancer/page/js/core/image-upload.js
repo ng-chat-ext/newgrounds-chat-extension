@@ -68,7 +68,7 @@ function init() {
 	if (!(window.File && window.FileList && window.FileReader))
 		return;
 
-	messagesList = document.querySelector(".chat-area");
+	messagesList = document.querySelector(".messages-area");
 	chatInputTextArea = document.getElementById("chat-input-textarea");
 
 	messagesList.addEventListener('dragover', dragOver, false);

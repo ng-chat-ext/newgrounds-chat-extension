@@ -87,26 +87,8 @@
 /* Display Density */
 /*------------------------------------------------------------*/
 	
-	.ngce-density-cozy .msg-table-cell-icon {
-		width: 54px;
-	}
-	.ngce-density-cozy .msg-user-icon {
-		width: 36px;
-	}
-	
-	.ngce-density-compact .msg-table-cell-icon {
-		width: 54px;
-	}
-	.ngce-density-compact .msg-user-icon {
-		width: 36px;
-		margin-bottom: 4px;
-	}
-	.ngce-density-compact .msg-text-area {
-		margin-bottom: 0;
-	}
-	.ngce-density-compact .me-message-contents,
-	.ngce-density-compact .server-message-contents {
-		margin-bottom: 5px;
+	.ngce-density-compact .messages-list > li > .message {
+		margin: 0;
 	}
 
 /*------------------------------------------------------------*/
@@ -116,9 +98,23 @@
 /*------------------------------------------------------------*/
 /* Full Width */
 /*------------------------------------------------------------*/
+
+	.ngce-fullwidth #page {
+		background: #1b1717;
+	}
+
 	
-	.ngce-fullwidth .row {
+	.ngce-fullwidth .grid-container {
 		max-width: none;
+	}
+
+	.ngce-fullwidth .user-list {
+		white-space: normal;
+	}
+
+	.ngce-fullwidth .user-list > li {
+		float: left;
+		margin: 0.25rem 0 0.25rem 0.5rem !important;
 	}
 
 /*------------------------------------------------------------*/
@@ -135,13 +131,14 @@
 	}
 
 	.ngce-emote-open .more-messages-area {
-	    top: -335px !important;
+	    top: calc(-320px - 4.2rem) !important;
 	}
 
 	.ngce-more-small .more-messages-area {
 		height: 0 !important;
+	    left: initial;
 	    right: 2.5rem;
-	    top: calc(-55px + 1rem) !important;
+	    top: -4rem !important;
 		width: 0 !important;
 	}
 
@@ -167,14 +164,14 @@
 	}
 
 	.ngce-more-small .more-messages-area.visible a {
-		margin-top: -1.5rem;
+		margin-top: -1rem;
 		margin-left: -1.5rem;
 		width: 3rem;
 		height: 3rem;
 	}
 
 	.ngce-more-small.ngce-emote-open .more-messages-area {
-	    top: calc(-335px + 1rem) !important;
+	    top: calc(-375px - 1rem) !important;
 	}
 
 /*------------------------------------------------------------*/

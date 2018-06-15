@@ -18,8 +18,8 @@ var
 	messagesArea,
 	messagesList,
 	moreMessagesArea,
-	diffScroll,
-	timerScroll,
+	// diffScroll,
+	// timerScroll,
 
 	tabs,
 	lists,
@@ -42,18 +42,22 @@ var kaomojis = [
 	{ text: '（＾－＾）', title: 'happy' },
 	{ text: '( ˘ ³˘) ❤', title: 'kissing' },
 	{ text: '.･ﾟﾟ･(>д<)･ﾟﾟ･.', title: 'cry' },
+	{ text: '(ᗒᗣᗕ)՞', title: 'cry 2' },
+	{ text: '(ಥ_ಥ)', title: 'cry 3' },
 	{ text: '(´・ω・｀)', title: 'denko' },
 	{ text: '(◕ᴗ◕✿)', title: 'flower girl' },
 	{ text: '( ͡° ͜ʖ ͡°)', title: 'le lenny' },
 	{ text: '(⌐■_■)', title: 'hell yeah' },
 	{ text: '(ಠ_ಠ)', title: 'disapproval' },
-	{ text: '(ಥ_ಥ)', title: 'deep cry' },
 	{ text: '╮(￣～￣)╭', title: 'indifference' },
 	{ text: '¯\\ˍ(ツ)ˍ/¯', title: 'shrug' },
 	{ text: 'ᕕ( ᐛ )ᕗ', title: 'strolling happy gary' },
 	{ text: '(╯°□°）╯︵ ┻━┻', title: 'table flip' },
 	{ text: '┬──┬ ノ( ゜-゜ノ)', title: 'table set' },
-	{ text: '( ´-ω･)︻┻┳══━一', title: 'sniper' },
+	{ text: '( ´-ω･)︻┻┳══━一', title: 'camper' },
+	{ text: '(っ´ω`)ﾉ(╥ω╥)', title: 'sympathy' },
+	{ text: '(ｏ・_・)ノ”(ノ_<、)', title: 'sympathy 2' },
+	{ text: '(╬ ⇀‸↼)', title: 'impatient' },
 ];
 
 //------------------------------------------------------------
@@ -80,14 +84,14 @@ function emoteBtnClick() {
 	//Autofocus on textarea
 	chatInputTextArea.focus();
 
-	diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;
-	clearInterval(timerScroll);
-	timerScroll = setInterval(updateScroll, 10);
+	// diffScroll = messagesList.clientHeight - messagesArea.clientHeight - messagesArea.scrollTop;
+	// clearInterval(timerScroll);
+	// timerScroll = setInterval(updateScroll, 10);
 }
 
 function initExternal(e) {
 	var menu = new DOMParser().parseFromString(e.target.responseText, 'text/html');
-	document.querySelector('.chat-area').appendChild(menu.body.children['emote-popup']);
+	document.querySelector('.chat-input-row').appendChild(menu.body.children['emote-popup']);
 
 	// Return focus to textbox when container is clicked.
 	var emotePopup = document.getElementById("emote-popup");
@@ -123,7 +127,7 @@ function switchList(index) {
 
 function getStyleSheet() {
 	for (var i = document.styleSheets.length - 1; i >= 0; i--) {
-		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat'))
+		if (document.styleSheets[i].href && document.styleSheets[i].href.indexOf('build/chat') != -1)
 			return document.styleSheets[i];
 	}
 }
@@ -136,6 +140,7 @@ function processStyleSheet(ss) {
 	// Loop through all emoticon rules.
 	for (var i = 0; i <= ss.rules.length; i++) {
 		r = ss.rules[i];
+		if (!r) continue;
 
 		// Optimization for skipping all rules after emoticons.
 		isEmot = r.selectorText && r.selectorText.indexOf('ng-emoticon-') !== -1;
@@ -144,6 +149,8 @@ function processStyleSheet(ss) {
 		else if (started && !isEmot) break;
 		// Skip all ineligible selectors.
 		if (r.selectorText.indexOf('[') !== -1 || r.style.backgroundSize === 'cover') continue;
+		// Skip gif animations (so only frames are caught).
+		if (r.selectorText.indexOf('ng-emoticon-nga') !== -1 && r.selectorText.indexOf('frame') === -1) continue;
 
 		createEmote(r);
 	}
@@ -159,17 +166,16 @@ function createEmote(r){
 	emote.classList.add(className, 'ng-emoticon', 'emote');
 
 	switch(/([a-z]+)([A-z0-9]+)/g.exec(name)[1]){
-		case "ng":
-			if (r.style.background !== '') {
-				emote.classList.add('big-emote');
-				dankArr.push({ 'name': name, 'elem': emote });
-			} else {
-				faicList.appendChild(emote);
-				emote.classList.add('small-emote');
-			}
+		case "ngc":
+			emote.classList.add('big-emote');
+			dankArr.push({ 'name': name, 'elem': emote });
 			break;
 		case "tf":
 			fulpList.appendChild(emote);
+			emote.classList.add('small-emote');
+			break;
+		case "ngb":
+			faicList.appendChild(emote);
 			emote.classList.add('small-emote');
 			break;
 		case "ngp":
@@ -188,6 +194,7 @@ function createEmote(r){
 			// animList.appendChild(emote);
 			break;
 		default:
+			if (name === 'frame' || name === 'dropdown') break;
 			dankList.appendChild(emote);
 			emote.classList.add('small-emote');
 	}
@@ -231,9 +238,9 @@ function messagesAreaTransitionEnd(e) {
 	clearInterval(timerScroll);
 }
 
-function updateScroll() {
-	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
-}
+// function updateScroll() {
+// 	messagesArea.scrollTop = messagesList.clientHeight - messagesArea.clientHeight - diffScroll;
+// }
 
 function sortByProperty(property) {
     var sortOrder = 1;

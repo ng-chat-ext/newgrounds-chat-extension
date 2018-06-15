@@ -96,7 +96,8 @@ function initObserve() {
 		if (!node || node.nodeName !== "LI") return;
 
 		// Modify node.
-		changeUserListNodeStructure(node);
+		if (!node.querySelector('.user-list-status'))
+			changeUserListNodeStructure(node);
 		removeHref(node);
 
 		// Call functions watching this mutation.
@@ -172,9 +173,11 @@ function changeUserListNodeStructure(node) {
 
 	usernameNode.setAttribute('ngce-name', usernameNode.getAttribute('alt').split("'")[0]);
 	statusNode.innerText = 'last seen: -';
-
+	console.log(node);
 	try	{
-		node.replaceChild(wrapper, usernameNode);
+		usernameNode.parentNode.removeChild(usernameNode);
+		node.appendChild(wrapper);
+		//usernameNode.parentNode.replaceChild(wrapper, usernameNode);
 		wrapper.appendChild(firstLine);
 		wrapper.appendChild(statusNode);
 		firstLine.appendChild(actionToggleNode);

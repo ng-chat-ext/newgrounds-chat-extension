@@ -49,7 +49,7 @@
 			if (!timeNode)
 				return new Date();
 			else {
-				var regex = /(\d{2}):(\d{2}) (AM|PM)/g;
+				var regex = /(\d{1,2}):(\d{2}) (AM|PM)/g;
 				var match = regex.exec(timeNode.innerText);
 
 				var tmp = new Date();
