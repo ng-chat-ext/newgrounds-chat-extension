@@ -4,7 +4,8 @@
 
 .messages-area {
 	top: 0;
-	transition: top 0.2s ease;
+    transition: top 0.2s ease;
+    z-index: 0;
 }
 
 .ngce-emote-open .messages-area {
@@ -13,6 +14,15 @@
 
 .chat-input-row {
 	position: relative;
+}
+
+.ngc-header > .cell {
+    background-color: #1b1717;
+    z-index: 1;
+}
+
+.msg-embed-area {
+    max-width: 500px;
 }
 
 /*------------------------------------------------------------*/
@@ -67,8 +77,8 @@
 /*------------------------------------------------------------*/
 
 #tab-list{
-	border-top: 1px solid #23272a;
-	border-bottom: 1px solid #23272a;
+	border-top: 1.4px solid #23272a;
+	border-bottom: 1.4px solid #23272a;
 	height: 40px;
 	overflow: hidden;
 	width: 100%;
@@ -161,6 +171,30 @@
     cursor: pointer;
     display: inline-block;
     margin: .5rem 1rem;
+}
+
+/*------------------------------------------------------------*/
+/* Image Upload */
+/*------------------------------------------------------------*/
+/* body.ngce-image-over {
+    background-color: red;
+} */
+
+body.ngce-image-over::before {
+    background-color: rgba(0,0,0,.8);
+    content: 'Drop to upload.';
+    font-size: 2em;
+    border: 3px dashed rgba(128,128,128,0.8);
+    border-radius: 10px;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 3em;
+    pointer-events: none;
+    position: fixed;
+    text-align: center;
+    white-space: nowrap;
+    z-index: 1000;
 }
 
 /*------------------------------------------------------------*/

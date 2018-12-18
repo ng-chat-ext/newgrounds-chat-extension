@@ -51,7 +51,7 @@
 	],
 
 	"web_accessible_resources":[
-		"page/html/template.html",
+		"page/html/emoticons.html",
 		"page/img/smile.svg"
 	],
 

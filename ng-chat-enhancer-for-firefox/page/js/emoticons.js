@@ -344,8 +344,8 @@ function init() {
 	addEmoteBtn();																//	crème de le résistance
 
 	//	Grabs template html to store the emoticons, the divs that hold them, and their buttons.
-	sendXHR(browser.extension.getURL("page/html/template.html"), function (e) {
-		initExternal(e);	
+	sendXHR(browser.extension.getURL("page/html/emoticons.html"), function (e) {
+		initExternal(e);
 		processStyleSheet(getStyleSheet());
 		processEmoteArrays();	
 	});

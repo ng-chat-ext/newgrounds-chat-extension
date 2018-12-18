@@ -280,7 +280,7 @@ function init() {
 
 	addEmoteBtn();
 
-	sendXHR(chrome.extension.getURL("page/html/template.html"), function (e) {
+	sendXHR(chrome.extension.getURL("page/html/emoticons.html"), function (e) {
 		initExternal(e);
 		processStyleSheet(getStyleSheet());
 		sortAndAddElems();

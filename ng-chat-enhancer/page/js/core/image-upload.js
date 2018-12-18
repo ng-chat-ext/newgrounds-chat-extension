@@ -14,6 +14,7 @@ NGCE.ImageUpload = {
 
 var messagesList;
 var chatInputTextArea;
+var body;
 
 //------------------------------------------------------------
 
@@ -24,13 +25,13 @@ var chatInputTextArea;
 //------------------------------------------------------------
 
 function dragOver(e) {
-	// !!! check if text drag hover triggers this event.
 	e.stopPropagation();
 	e.preventDefault();
-	// e.target.className = (e.type == "dragover" ? "hover" : "");
+    body.classList.add('ngce-image-over');
 }
 
 function dragDrop(e) {
+    body.classList.remove('ngce-image-over');
 	e.stopPropagation();
 	e.preventDefault();
 
@@ -38,7 +39,11 @@ function dragDrop(e) {
 	for (var i = 0, f; f = files[i]; i++) {
 		parseFile(f);
 	}
-};
+}
+
+function dragLeave() {
+    body.classList.remove('ngce-image-over');
+}
 
 function parseFile(file) {
 	if (file.type.split('/')[0] !== 'image')
@@ -68,11 +73,13 @@ function init() {
 	if (!(window.File && window.FileList && window.FileReader))
 		return;
 
+    body = document.querySelector('body');
 	messagesList = document.querySelector(".messages-area");
 	chatInputTextArea = document.getElementById("chat-input-textarea");
 
-	messagesList.addEventListener('dragover', dragOver, false);
-	messagesList.addEventListener('drop', dragDrop, false);
+	body.addEventListener('dragover', dragOver, false);
+	body.addEventListener('drop', dragDrop, false);
+	body.addEventListener('dragleave', dragLeave, false);
 };
 
 //------------------------------------------------------------
